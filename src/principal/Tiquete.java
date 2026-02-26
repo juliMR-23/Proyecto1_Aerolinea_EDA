@@ -1,5 +1,3 @@
 package principal;
 
-public class Tiquete {
-
-}
+public class Tiquete {}

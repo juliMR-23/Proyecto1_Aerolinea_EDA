@@ -1,5 +1,3 @@
 package principal;
 
-public class Avion {
-
-}
+public class Avion {}

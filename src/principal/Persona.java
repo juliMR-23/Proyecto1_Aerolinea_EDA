@@ -1,5 +1,3 @@
 package principal;
 
-public class Persona {
-
-}
+public abstract class Persona {}

@@ -1,5 +1,3 @@
 package principal;
 
-public class Reserva {
-
-}
+public class Reserva {}
