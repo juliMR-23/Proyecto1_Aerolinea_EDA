@@ -3,6 +3,7 @@
 package principal;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class Vuelo {
     private final String id;
@@ -43,7 +44,7 @@ public class Vuelo {
         this.confirmado();
     }
 
-    public void setAtrado(LocalDateTime NewSalida){
+    public void setAtrasado(LocalDateTime NewSalida){
         this.fechaHoraSalida = NewSalida;
         this.fechaHoraLlegada = null; //TODO
         this.atrasado();
@@ -54,5 +55,69 @@ public class Vuelo {
     public void confirmado(){this.estadoVuelo="Confirmado";}
     public void atrasado(){this.estadoVuelo="Atrasado";}
     public void terminado(){this.estadoVuelo="Terminado";}
+
+  //Getters
+	public String getId() {return id;}
+	public String getNumVuelo() {return numVuelo;}
+	public Aeropuerto getOrigen() {return origen;}
+	public Aeropuerto getDestino() {return destino;}
+	public LocalDateTime getFechaHoraSalida() {return fechaHoraSalida;}
+	public LocalDateTime getFechaHoraLlegada() {return fechaHoraLlegada;}
+	public Avion getAvion() {return avion;}
+	public String getEstadoVuelo() {return estadoVuelo;}
+	public String getPuertaEmbarque() {return puertaEmbarque;}
+	public TripulanteCabina[] getTripulacion() {return tripulacion;}
+	public Piloto[] getPilotos() {return pilotos;}
+	public Reserva[] getReservas() {return reservas;}
+	
+	
+	
+	// Reservas y Asientos
+	
+	// Tripulantes
+	public boolean hasPilotosMin() {
+		int minPilotos = 2;
+		// if (ruta.getDuracion() > 8) minPilotos =3;
+		return pilotos.length  >= minPilotos;
+	}
+	
+	public boolean hasTripulacionMin() {
+		return tripulacion.length >= (avion.getCapacidad() /50);
+	}
+	
+	public void addCapitan(Piloto newCapitan) {
+		if(hasPilotosMin()) throw new IllegalStateException("");
+		if(pilotos[0] != null) throw new IllegalStateException("");
+		pilotos[0] = newCapitan;
+	}
+	
+	public void remCapitan() {
+		if(!hasPilotosMin()) throw new IllegalStateException("");
+		
+		pilotos = Arrays.copyOfRange(pilotos, 1, pilotos.length)
+	}
+	
+	public void addCopiloto(Piloto newCopiloto) {
+		if(hasPilotosMin()) throw new IllegalStateException("");
+		if(pilotos[1] != null) throw new IllegalStateException("");
+		pilotos[1] = newCopiloto;
+	}
+	
+	public void remCopiloto() {
+		pilotos[0] = null;
+	}
+	
+	
+	
+	public void addTripulante(TripulanteCabina newTripulante) {
+		if(hasPilotosMin()) throw new IllegalStateException("");
+		
+		tripulacion = Arrays.copyOf(tripulacion, tripulacion.length+1);
+		tripulacion[tripulacion.length-1] = newTripulante;
+	}
+
+	
+    
+    
 }
 
