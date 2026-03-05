@@ -1,5 +1,47 @@
 package principal;
 
 public class Tiquete {
-
+	String id;
+	String asiento;
+	String clase;
+	float precio;
+	Vuelo vuelo;
+	String nombrePasajero;
+	String numDocPasajero;
+	String tipoDocPasajero;
+	boolean perteneceReserva;
+	
+	
+	
+	public Tiquete(String id, String asiento, String clase, float precio, Vuelo vuelo, String nombrePasajero,
+			String numDocPasajero, String tipoDocPasajero, boolean perteneceReserva) {
+		this.id = id;
+		this.asiento = asiento;
+		this.clase = clase;
+		this.precio = precio;
+		this.vuelo = vuelo;
+		this.nombrePasajero = nombrePasajero;
+		this.numDocPasajero = numDocPasajero;
+		this.tipoDocPasajero = tipoDocPasajero;
+		this.perteneceReserva = perteneceReserva;
+	}
+	
+	public String getId() {return id;}
+	public void setId(String id) {this.id = id;}
+	public String getAsiento() {return asiento;}
+	public void setAsiento(String asiento) {this.asiento = asiento;}
+	public String getClase() {return clase;}
+	public void setClase(String clase) {this.clase = clase;}
+	public float getPrecio() {return precio;}
+	public void setPrecio(float precio) {this.precio = precio;}
+	public Vuelo getVuelo() {return vuelo;}
+	public void setVuelo(Vuelo vuelo) {this.vuelo = vuelo;}
+	public String getNombrePasajero() {return nombrePasajero;}
+	public void setNombrePasajero(String nombrePasajero) {this.nombrePasajero = nombrePasajero;}
+	public String getNumDocPasajero() {return numDocPasajero;}
+	public void setNumDocPasajero(String numDocPasajero) {this.numDocPasajero = numDocPasajero;}
+	public String getTipoDocPasajero() {return tipoDocPasajero;}
+	public void setTipoDocPasajero(String tipoDocPasajero) {this.tipoDocPasajero = tipoDocPasajero;}
+	public boolean isPerteneceReserva() {return perteneceReserva;}
+	public void setPerteneceReserva(boolean perteneceReserva) {this.perteneceReserva = perteneceReserva;}
 }

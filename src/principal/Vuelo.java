@@ -12,7 +12,7 @@ public class Vuelo {
     private LocalDateTime fechaHoraSalida;
     private LocalDateTime fechaHoraLlegada;
     private Avion avion;
-    private String estadoVuelo; //enum?
+    private String estadoVuelo; //enum
     private String puertaEmbarque;
     private TripulanteCabina[] tripulacion;
     private Piloto[] pilotos;
@@ -70,10 +70,6 @@ public class Vuelo {
 	public Piloto[] getPilotos() {return pilotos;}
 	public Reserva[] getReservas() {return reservas;}
 	
-	
-	
-	// Reservas y Asientos
-	
 	// Tripulantes
 	public boolean hasPilotosMin() {
 		int minPilotos = 2;
@@ -85,29 +81,24 @@ public class Vuelo {
 		return tripulacion.length >= (avion.getCapacidad() /50);
 	}
 	
-	public void addCapitan(Piloto newCapitan) {
+	public void addPiloto(Piloto newCapitan) {
 		if(hasPilotosMin()) throw new IllegalStateException("");
 		if(pilotos[0] != null) throw new IllegalStateException("");
 		pilotos[0] = newCapitan;
 	}
 	
-	public void remCapitan() {
-		if(!hasPilotosMin()) throw new IllegalStateException("");
-		
-		pilotos = Arrays.copyOfRange(pilotos, 1, pilotos.length)
+	public void remPiloto(int i) {
+	    if (!hasPilotosMin()) throw new IllegalStateException("");
+	    
+	    Piloto[] nuevo = new Piloto[pilotos.length - 1];
+	    int j = 0;
+	    for (int k = 0; k < pilotos.length; k++) {
+	        if (k != i) {
+	            nuevo[j++] = pilotos[k];
+	        }
+	    }
+	    pilotos = nuevo;
 	}
-	
-	public void addCopiloto(Piloto newCopiloto) {
-		if(hasPilotosMin()) throw new IllegalStateException("");
-		if(pilotos[1] != null) throw new IllegalStateException("");
-		pilotos[1] = newCopiloto;
-	}
-	
-	public void remCopiloto() {
-		pilotos[0] = null;
-	}
-	
-	
 	
 	public void addTripulante(TripulanteCabina newTripulante) {
 		if(hasPilotosMin()) throw new IllegalStateException("");
@@ -115,8 +106,21 @@ public class Vuelo {
 		tripulacion = Arrays.copyOf(tripulacion, tripulacion.length+1);
 		tripulacion[tripulacion.length-1] = newTripulante;
 	}
-
 	
+	public void remTripulante(int i) {
+	    if (!hasTripulacionMin()) throw new IllegalStateException("");
+	    
+	    TripulanteCabina[] nuevo = new TripulanteCabina[tripulacion.length - 1];
+	    int j = 0;
+	    for (int k = 0; k < tripulacion.length; k++) {
+	        if (k != i) {
+	            nuevo[j++] = tripulacion[k];
+	        }
+	    }
+	    tripulacion = nuevo;
+	}
+	
+	// Reservas y Asientos
     
     
 }
