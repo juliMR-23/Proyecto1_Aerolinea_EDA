@@ -9,8 +9,7 @@ public class Vuelo {
     private final String id;
     private final String numVuelo;
     private final Aeropuerto origen, destino;
-    private LocalDateTime fechaHoraSalida;
-    private LocalDateTime fechaHoraLlegada;
+    private LocalDateTime fechaHoraSalida, fechaHoraLlegada;
     private Avion avion;
     private String estadoVuelo; //enum
     private String puertaEmbarque;
