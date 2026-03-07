@@ -1,10 +1,10 @@
 package excepciones;
 
-public class EVueloYaAsignado extends Exception {
+public class EClienteInvalido extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public EVueloYaAsignado(String mensaje) {
+    public EClienteInvalido(String mensaje) {
         super(mensaje);
     }
 }

@@ -1,6 +1,7 @@
 package principal;
 
 import java.io.Serializable;
+import excepciones.EPersonaInvalida;
 
 abstract class Persona implements Serializable {
 

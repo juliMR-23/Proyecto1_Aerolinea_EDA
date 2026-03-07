@@ -1,4 +1,4 @@
-package Excepciones;
+package excepciones;
 
 public class noIdException extends Exception{
 	public noIdException(String msj) {
