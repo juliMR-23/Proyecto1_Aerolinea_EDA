@@ -41,9 +41,9 @@ public class Aerolinea implements Serializable{
 	}
 	
 	public void addAvion(String matricula, String marca, String modelo, int capacidad) throws EIDRepetido, EValorNulo, EValorNegativo {
-		if(indexAvion(matricula)!=-1) {
-			throw new EIDRepetido("Ya existe otro avion con este id");
-		}
+		if(indexAvion(matricula)!=-1)
+			throw new EIDRepetido("Ya existe otro avion con este id");//implementar en las demás listas cuando creen todas las clases
+		
 		Avion a = new Avion(matricula, marca, modelo, capacidad, true);
 		aviones = Arrays.copyOf(aviones, aviones.length+1);
 		aviones[aviones.length-1]=a;

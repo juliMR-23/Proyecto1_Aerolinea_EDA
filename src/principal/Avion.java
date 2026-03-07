@@ -21,7 +21,6 @@ public class Avion implements Serializable{
 		validarTexto(matricula, "La matrícula no puede estar vacía");
         validarTexto(marca, "La marca no puede estar vacía");
         validarTexto(modelo, "El modelo no puede estar vacío");
-
 		if(capacidad<=0)
 	    	throw new EValorNegativo("La capacidad debe ser mayor a cero");
 	    
@@ -69,9 +68,8 @@ public class Avion implements Serializable{
 	}
 
 	private void validarTexto(String valor, String msg) throws EValorNulo {
-	    if (valor == null || valor.trim().isEmpty()) {
+	    if (valor == null || valor.trim().isEmpty())
 	        throw new EValorNulo(msg);
-	    }
 	}
 	
 	public void wFicheroAvion(String dir) throws IOException {

@@ -1,7 +1,10 @@
 package excepciones;
 
 public class EValorNegativo extends Exception {
-    public EValorNegativo(String msg) {
-        super(msg);
+
+    private static final long serialVersionUID = 1L;
+
+    public EValorNegativo(String mensaje) {
+        super(mensaje);
     }
 }

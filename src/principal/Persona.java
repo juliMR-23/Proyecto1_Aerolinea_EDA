@@ -2,6 +2,8 @@ package principal;
 
 import java.io.Serializable;
 
+import excepciones.EPersonaInvalida;
+
 abstract class Persona implements Serializable {
 
     private static final long serialVersionUID = 1L;

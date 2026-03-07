@@ -21,7 +21,7 @@ public class Tiquete implements Serializable {
 		this.nombrePasajero = nombrePasajero;
 		this.numDocPasajero = numDocPasajero;
 		this.tipoDocPasajero = tipoDocPasajero;
-		copiarFicheroTiquete(direccionFichero);
+		
 	}
 	
 	public String getId() {return id;}

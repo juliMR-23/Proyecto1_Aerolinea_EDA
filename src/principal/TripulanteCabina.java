@@ -1,3 +1,52 @@
 package principal;
 
-public class TripulanteCabina extends Empleado {}
+import java.util.Arrays;
+import java.util.Date;
+
+import excepciones.EPersonaInvalida;
+
+public class TripulanteCabina extends Empleado {
+	private String[] idiomas;
+	
+	public TripulanteCabina(String id, String nombre, String tipoDocumento, String documento, String telefono,
+			String email, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia,
+			Aerolinea aerolinea) throws EPersonaInvalida {
+		super(id, nombre, tipoDocumento, documento, telefono, email, salarioBase, fechaContratacion, activo, aniosExperiencia, aerolinea);
+		idiomas=new String[0];
+	}
+
+	@Override
+	public double calcularSalario() {
+		return super.salarioBase;
+	}
+
+	public void addIdioma(String idioma) {
+		if(indexIdioma(idioma)==-1) {//para no guardar repetidos
+			idiomas = Arrays.copyOf(idiomas, idiomas.length+1);
+			idiomas[idiomas.length-1] = idioma;
+		}
+	}
+	public int indexIdioma(String idioma) {
+		int n=0;
+		while(n<idiomas.length && !idiomas[n].equalsIgnoreCase(idioma)) {
+			n++;
+		}
+		if(n<idiomas.length)
+			return n;
+		return -1;//si no lo encuentra retorna -1
+	}
+	public void deleteIdioma(String idioma) {
+		int n = indexIdioma(idioma);
+		if(n!=-1) {//el idioma existe
+			idiomas[n]=idiomas[idiomas.length-1];//reemplaza el idioma a borrar para que no queden "huecos" en el array
+			idiomas = Arrays.copyOf(idiomas, idiomas.length-1);//reduce el arreglo (elimina última pos)
+		}
+	}
+	public String[] listIdiomas() {
+		return idiomas;
+	}
+	public void setIdiomas(String[] idiomas) {
+		this.idiomas = idiomas;
+	}
+	
+}

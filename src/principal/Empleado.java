@@ -6,6 +6,13 @@ import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 
+import excepciones.EPersonaInvalida;
+import excepciones.EValorNegativo;
+import excepciones.EParametroInvalido;
+import excepciones.ECapacidadVuelosLlena;
+import excepciones.EVueloYaAsignado;
+import excepciones.EVueloNoEncontrado;
+
 abstract class Empleado extends Persona implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -141,7 +148,7 @@ abstract class Empleado extends Persona implements Serializable {
         fos.close();
     }
 
-    // GETTERS (según lo que te pidieron)
+
     public double getSalarioBase() {
         return this.salarioBase;
     }
@@ -162,7 +169,7 @@ abstract class Empleado extends Persona implements Serializable {
         return this.horasVueloAcumuladas;
     }
 
-    // SETTERS (según lo que te pidieron)
+
     public void setSalarioBase(double salarioBase) {
         this.salarioBase = salarioBase;
     }
