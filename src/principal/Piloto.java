@@ -1,5 +1,3 @@
 package principal;
 
-public class Piloto {
-
-}
+public class Piloto extends Empleado {}

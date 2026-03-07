@@ -1,5 +1,3 @@
 package principal;
 
-public class Aeropuerto {
-
-}
+public class Aeropuerto {}
