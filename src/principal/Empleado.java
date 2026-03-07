@@ -1,141 +1,185 @@
 package principal;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.util.Date;
 
-abstract class Empleado extends Persona {
-	
-	// ATRIBUTOS
-	private double salarioBase;
-	private Date fechaContratacion;
-	private boolean activo;
-	private int aniosExperiencia;
-	private Vuelo[] vuelosAsignados;
-	private Aerolinea aerolinea;
-	private int cantidadVuelos;
-	private static final int MAX_VUELOS = 10;
-	
-	// CONSTRUCTOR
-	public Empleado (String id, String nombre, String tipoDocumento, String documento, String telefono, String email, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea) {
-		super(id, nombre, tipoDocumento, documento, telefono, email);
-		this.salarioBase = salarioBase;
-		this.fechaContratacion = fechaContratacion;
-		this.activo = activo;
-		this.aniosExperiencia = aniosExperiencia;
-		this.aerolinea = aerolinea;
-		this.vuelosAsignados = new Vuelo[MAX_VUELOS];
+abstract class Empleado extends Persona implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    // ATRIBUTOS
+    protected double salarioBase;
+    protected Date fechaContratacion;
+    protected boolean activo;
+    protected int aniosExperiencia;
+    protected Vuelo[] vuelosAsignados;
+    protected Aerolinea aerolinea;
+    protected int cantidadVuelos;
+    protected static final int MAX_VUELOS = 10;
+    protected double horasVueloAcumuladas;
+
+    // CONSTRUCTOR
+    public Empleado(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea) throws EPersonaInvalida {
+    	super(id, nombre, tipoDocumento, documento, telefono, email);
+    	this.salarioBase = salarioBase;
+    	this.fechaContratacion = fechaContratacion;
+    	this.activo = activo;
+    	this.aniosExperiencia = aniosExperiencia;
+    	this.aerolinea = aerolinea;
+    	this.vuelosAsignados = new Vuelo[MAX_VUELOS];
     	this.cantidadVuelos = 0;
-	}
-		
-	// METODOS
-	public abstract double calcularSalario();
-	
-	// Metodo para asignar vuelos al Empleado
-	public void asignarVuelo(Vuelo vuelo) {
+    	this.horasVueloAcumuladas = 0.0;
+    }
 
-    	if (this.cantidadVuelos >= this.vuelosAsignados.length) {
+    // METODOS
+    public abstract double calcularSalario();
 
-        	System.out.println("No hay espacio para más vuelos.");
-        	return;
-    	}
+    // Metodo para registrar horas de vuelo
+    public void registrarHorasVuelo(double horas) throws EValorNegativo {
+        if (horas > 0) {
+            this.horasVueloAcumuladas += horas;
+        } else {
+            throw new EValorNegativo("Las horas de vuelo deben ser mayores que cero");
+        }
+    }
 
-    	// verificar que no exista ya ese id
-    	for (int i = 0; i < this.cantidadVuelos; i++) {
+    // Metodo para asignar vuelos al Empleado
+    public void asignarVuelo(Vuelo vuelo)
+            throws ECapacidadVuelosLlena, EVueloYaAsignado, EParametroInvalido {
+        if (vuelo == null) {
+            throw new EParametroInvalido("El vuelo no puede ser null");
+        }
 
-        	if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
+        if (this.cantidadVuelos >= this.vuelosAsignados.length) {
+            throw new ECapacidadVuelosLlena("No hay espacio para más vuelos para este empleado");
+        }
 
-            	System.out.println("El vuelo ya está asignado.");
-            	return;
-        	}
-    	}
+        // verificar que no exista ya ese id
+        for (int i = 0; i < this.cantidadVuelos; i++) {
+            if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
+                throw new EVueloYaAsignado(
+                        "El vuelo con id " + vuelo.getId() + " ya está asignado a este empleado");
+            }
+        }
 
-    	this.vuelosAsignados[this.cantidadVuelos] = vuelo;
-    	this.cantidadVuelos++;
-	}
+        this.vuelosAsignados[this.cantidadVuelos] = vuelo;
+        this.cantidadVuelos++;
+    }
 
-	// Metodo para buscar entre los vuelos asignados al empleado
-	public Vuelo[] buscarVuelosAsignados(Vuelo vuelo) {
+    // Metodo para buscar entre los vuelos asignados al empleado
+    public Vuelo[] buscarVuelosAsignados(Vuelo vuelo)
+            throws EVueloNoEncontrado, EParametroInvalido {
+        if (vuelo == null) {
+            throw new EParametroInvalido("El vuelo no puede ser null");
+        }
 
-    	int contador = 0;
+        int contador = 0;
 
-	    for (int i = 0; i < this.cantidadVuelos; i++) {
-    	    if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
-            	contador++;
-        	}
-    	}
+        for (int i = 0; i < this.cantidadVuelos; i++) {
+            if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
+                contador++;
+            }
+        }
 
-    	Vuelo[] encontrados = new Vuelo[contador];
-    	int index = 0;
+        if (contador == 0) {
+            throw new EVueloNoEncontrado(
+                    "Vuelo con id " + vuelo.getId() + " no encontrado entre los asignados");
+        }
 
-    	for (int i = 0; i < this.cantidadVuelos; i++) {
-        	if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
-	            encontrados[index] = this.vuelosAsignados[i];
-    	        index++;
-	        }
-    	}
+        Vuelo[] encontrados = new Vuelo[contador];
+        int index = 0;
 
-    	return encontrados;
-	}
+        for (int i = 0; i < this.cantidadVuelos; i++) {
+            if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
+                encontrados[index] = this.vuelosAsignados[i];
+                index++;
+            }
+        }
 
-	// Metodo para eliminar un vuelo asignado a un empleado
-	public void eliminarVueloAsignado(Vuelo vuelo) {
+        return encontrados;
+    }
 
-    	for (int i = 0; i < this.cantidadVuelos; i++) {
+    // Metodo para eliminar un vuelo asignado a un empleado
+    public void eliminarVueloAsignado(Vuelo vuelo)
+            throws EVueloNoEncontrado, EParametroInvalido {
+        if (vuelo == null) {
+            throw new EParametroInvalido("El vuelo no puede ser null");
+        }
 
-        	if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
+        for (int i = 0; i < this.cantidadVuelos; i++) {
+            if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
 
-            	// mover elementos hacia la izquierda
-            	for (int j = i; j < cantidadVuelos - 1; j++) {
-                	this.vuelosAsignados[j] = this.vuelosAsignados[j + 1];
-            	}
+                // mover elementos hacia la izquierda
+                for (int j = i; j < cantidadVuelos - 1; j++) {
+                    this.vuelosAsignados[j] = this.vuelosAsignados[j + 1];
+                }
 
-            	this.vuelosAsignados[cantidadVuelos - 1] = null;
-            	this.cantidadVuelos--;
+                this.vuelosAsignados[cantidadVuelos - 1] = null;
+                this.cantidadVuelos--;
 
-            	System.out.println("Vuelo eliminado.");
-            	return;
-        	}
-    	}
+                return;
+            }
+        }
 
-    	System.out.println("Vuelo no encontrado.");
-	}
-		
-	// GETTERS
-	public double getSalarioBase() {
-		return this.salarioBase;
-	}
-	
-	public Date getFechaContratacion() {
-		return this.fechaContratacion;
-	}
-	
-	public boolean isActivo() {
-		return this.activo;
-	}
-	
-	public int getAniosExperiencia() {
-		return this.aniosExperiencia;
-	}
+        throw new EVueloNoEncontrado(
+                "Vuelo con id " + vuelo.getId() + " no encontrado entre los asignados");
+    }
 
-	public Aerolinea getAerolinea() {
-		return this.aerolinea;
-	}
-			
-	// SETTERS
-	public void setSalarioBase(double salarioBase) {
-		this.salarioBase = salarioBase;
-	}
-	
-	public void setActivo(boolean activo) {
-		this.activo = activo;
-	}
-	
-	public void setAniosExperiencia(int aniosExperiencia) {
-		this.aniosExperiencia = aniosExperiencia;
-	}
+    // Método de ejemplo para serializar un Empleado a fichero
+    public void guardarEnFichero(String ruta) throws IOException, EParametroInvalido {
+        if (ruta == null || ruta.isEmpty()) {
+            throw new EParametroInvalido("La ruta del fichero no puede ser nula ni vacía");
+        }
 
-	public void setAerolinea(Aerolinea aerolinea) {
-		this.aerolinea = aerolinea;
-	}
-	
-	
+        FileOutputStream fos = new FileOutputStream(ruta);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(this);
+        oos.close();
+        fos.close();
+    }
+
+    // GETTERS (según lo que te pidieron)
+    public double getSalarioBase() {
+        return this.salarioBase;
+    }
+
+    public Date getFechaContratacion() {
+        return this.fechaContratacion;
+    }
+
+    public boolean isActivo() {
+        return this.activo;
+    }
+
+    public int getAniosExperiencia() {
+        return this.aniosExperiencia;
+    }
+
+    public double getHorasVueloAcumuladas() {
+        return this.horasVueloAcumuladas;
+    }
+
+    // SETTERS (según lo que te pidieron)
+    public void setSalarioBase(double salarioBase) {
+        this.salarioBase = salarioBase;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+    public void setAniosExperiencia(int aniosExperiencia) {
+        this.aniosExperiencia = aniosExperiencia;
+    }
+
+    public void setHorasVueloAcumuladas(double horasVueloAcumuladas) throws EValorNegativo {
+        if (horasVueloAcumuladas >= 0) {
+            this.horasVueloAcumuladas = horasVueloAcumuladas;
+        } else {
+            throw new EValorNegativo("Las horas de vuelo acumuladas no pueden ser negativas");
+        }
+    }
 }
