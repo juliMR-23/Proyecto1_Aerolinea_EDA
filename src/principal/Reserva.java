@@ -30,11 +30,9 @@ public class Reserva implements Serializable {
 	public void setTiquetes(Tiquete[] tiquetes) {this.tiquetes = tiquetes;}
 	public Tiquete[] getTiquetes() {return tiquetes;}
 
-	public void addTiquete(String id, String asiento, String clase, float precioInicial, Vuelo vuelo, String nombrePasajero,
-			String numDocPasajero, String tipoDocPasajero) {
+	public void addTiquete(String id, String asiento, double precio, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) {
 		tiquetes = Arrays.copyOf(tiquetes, tiquetes.length+1);
-		tiquetes[tiquetes.length-1] = new Tiquete(id, asiento, clase, precioInicial, vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero, true);
-		
+		tiquetes[tiquetes.length-1] = new Tiquete(id, asiento, precio, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
 	}
 	
 	public int indexTiquete(String id) throws noIdException {
