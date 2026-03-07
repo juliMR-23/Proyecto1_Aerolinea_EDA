@@ -3,7 +3,7 @@ package principal;
 import java.util.Arrays;
 import java.io.*;
 
-import Excepciones.noIdException;
+import excepciones.noIdException;
 
 public class Reserva implements Serializable {
 	String id;
@@ -17,7 +17,7 @@ public class Reserva implements Serializable {
 		this.cliente = cliente;
 		this.vuelo = vuelo;
 		this.activa = true;
-		copiarFicheroReserva(dirfichres);
+
 	}
 
 	public String getId() {return id;}

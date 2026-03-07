@@ -1,4 +1,4 @@
-package principal;
+package excepciones;
 
 public class EPersonaInvalida extends Exception {
 

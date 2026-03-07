@@ -1,4 +1,4 @@
-package principal;
+package excepciones;
 
 public class EParametroInvalido extends Exception {
 

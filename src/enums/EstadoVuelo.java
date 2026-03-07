@@ -1,4 +1,4 @@
-package principal;
+package enums;
 
 public enum EstadoVuelo {
 	PROGRAMADO,
