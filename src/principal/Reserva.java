@@ -12,11 +12,12 @@ public class Reserva implements Serializable {
 	Tiquete[] tiquetes = new Tiquete[0];
 	boolean activa;
 	
-	public Reserva(String id, Vuelo vuelo, Cliente cliente) {
+	public Reserva(String id, Vuelo vuelo, Cliente cliente, String dirfichres) throws IOException{
 		this.id = id;
 		this.cliente = cliente;
 		this.vuelo = vuelo;
 		this.activa = true;
+		copiarFicheroReserva(dirfichres);
 	}
 
 	public String getId() {return id;}
@@ -30,9 +31,9 @@ public class Reserva implements Serializable {
 	public void setTiquetes(Tiquete[] tiquetes) {this.tiquetes = tiquetes;}
 	public Tiquete[] getTiquetes() {return tiquetes;}
 
-	public void addTiquete(String id, String asiento, double precio, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) {
+	public void addTiquete(String id, String asiento, double precio, String nombrePasajero, String numDocPasajero, String tipoDocPasajero, String dirFichTiq) throws IOException {
 		tiquetes = Arrays.copyOf(tiquetes, tiquetes.length+1);
-		tiquetes[tiquetes.length-1] = new Tiquete(id, asiento, precio, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
+		tiquetes[tiquetes.length-1] = new Tiquete(id, asiento, precio, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero, dirFichTiq);
 	}
 	
 	public int indexTiquete(String id) throws noIdException {
@@ -63,4 +64,19 @@ public class Reserva implements Serializable {
 		return total;
 	}
 	
+	public void copiarFicheroReserva(String dir) throws IOException {
+		FileOutputStream f = new FileOutputStream(dir);
+		ObjectOutputStream b = new ObjectOutputStream(f);
+		b.writeObject((Reserva)this);
+		b.close();
+		f.close();
+	}
+	public static Reserva leerFicheroReserva(String dir) throws IOException, ClassNotFoundException {
+		FileInputStream f = new FileInputStream(dir);
+		ObjectInputStream b = new ObjectInputStream(f);
+		Reserva reserva = (Reserva) b.readObject();
+		b.close();
+		f.close();
+		return reserva;
+	}
 }

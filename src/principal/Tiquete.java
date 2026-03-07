@@ -13,7 +13,7 @@ public class Tiquete implements Serializable {
 	
 	
 	public Tiquete(String id, String asiento, double precio, Vuelo vuelo, String nombrePasajero,
-			String numDocPasajero, String tipoDocPasajero) {
+			String numDocPasajero, String tipoDocPasajero, String direccionFichero) throws IOException {
 		this.id = id;
 		this.asiento = asiento;
 		this.precio = precio;
@@ -21,6 +21,7 @@ public class Tiquete implements Serializable {
 		this.nombrePasajero = nombrePasajero;
 		this.numDocPasajero = numDocPasajero;
 		this.tipoDocPasajero = tipoDocPasajero;
+		copiarFicheroTiquete(direccionFichero);
 	}
 	
 	public String getId() {return id;}
@@ -37,4 +38,22 @@ public class Tiquete implements Serializable {
 	public void setNumDocPasajero(String numDocPasajero) {this.numDocPasajero = numDocPasajero;}
 	public String getTipoDocPasajero() {return tipoDocPasajero;}
 	public void setTipoDocPasajero(String tipoDocPasajero) {this.tipoDocPasajero = tipoDocPasajero;}
+	
+	public void copiarFicheroTiquete(String dir) throws IOException {
+		FileOutputStream f = new FileOutputStream(dir);
+		ObjectOutputStream b = new ObjectOutputStream(f);
+		b.writeObject((Tiquete)this);
+		b.close();
+		f.close();
+	}
+	public static Tiquete leerFicherTiquete(String dir) throws IOException, ClassNotFoundException {
+		FileInputStream f = new FileInputStream(dir);
+		ObjectInputStream b = new ObjectInputStream(f);
+		Tiquete tiquete = (Tiquete) b.readObject();
+		b.close();
+		f.close();
+		return tiquete;
+	}
+	
+
 }
