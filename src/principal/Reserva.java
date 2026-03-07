@@ -1,67 +1,82 @@
 package principal;
 
 import java.util.Arrays;
+import java.io.*;
 
 import Excepciones.noIdException;
 
-public class Reserva {
+public class Reserva implements Serializable {
 	String id;
+	Vuelo vuelo;
 	Cliente cliente;
 	Tiquete[] tiquetes = new Tiquete[0];
-	int descuento;
+	boolean activa;
 	
-	
-	
-	public Reserva(String id, Cliente cliente, int descuento) {
+	public Reserva(String id, Vuelo vuelo, Cliente cliente, String dirfichres) throws IOException{
 		this.id = id;
 		this.cliente = cliente;
-		this.descuento = descuento;
+		this.vuelo = vuelo;
+		this.activa = true;
+		copiarFicheroReserva(dirfichres);
 	}
 
 	public String getId() {return id;}
 	public void setId(String id) {this.id = id;}
 	public Cliente getCliente() {return cliente;}
 	public void setCliente(Cliente cliente) {this.cliente = cliente;}
-	public int getDescuento() {return descuento;}
-	public void setDescuento(int descuento) {this.descuento = descuento;}
-
+	public Vuelo getVuelo() {return vuelo;}
+	public void setVuelo(Vuelo vuelo) {this.vuelo = vuelo;}
+	public boolean isActiva() {return activa;}
+	public void setActiva(boolean activa) {this.activa = activa;}
+	public void setTiquetes(Tiquete[] tiquetes) {this.tiquetes = tiquetes;}
 	public Tiquete[] getTiquetes() {return tiquetes;}
 
-	public void anadirTiquete(String id, String asiento, String clase, float precioInicial, Vuelo vuelo, String nombrePasajero,
-			String numDocPasajero, String tipoDocPasajero) {
+	public void addTiquete(String id, String asiento, double precio, String nombrePasajero, String numDocPasajero, String tipoDocPasajero, String dirFichTiq) throws IOException {
 		tiquetes = Arrays.copyOf(tiquetes, tiquetes.length+1);
-		tiquetes[tiquetes.length-1] = new Tiquete(id, asiento, clase, (precioInicial*((100-descuento)/100)), vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero, true);
+		tiquetes[tiquetes.length-1] = new Tiquete(id, asiento, precio, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero, dirFichTiq);
 	}
 	
-	public Tiquete buscarTiquetePorPasajero(String tipoDoc, String numDoc) throws noIdException {
-		for(Tiquete t: tiquetes) {
-			if (t.getTipoDocPasajero().equals(tipoDoc) && t.getNumDocPasajero().equals(numDoc)) {
-				return t;
-			}
-		}
-		throw new noIdException("No existe un tiquete en esta reserva asignado a ese pasajero");
-	}
-	
-	public void deleteTiquete(Tiquete tiquete) throws noIdException{
+	public int indexTiquete(String id) throws noIdException {
 		int i = 0;
-		while(tiquetes[i]!=tiquete && i!= tiquetes.length) {
+		while (!tiquetes[i].equals(id)) {
 			i++;
 		}
-		if (i==tiquetes.length) {
-			throw new noIdException("Ese tiquete no existe");
-		}
-		
-		for(int j = i; j<tiquetes.length-1; j++) {
-			tiquetes[j]=tiquetes[j+1];
-		}
+		if (i==tiquetes.length) {throw new noIdException("No existe un tiquete en esta reserva asignado a ese pasajero");}
+		return i;
+	}
+	
+	public Tiquete searchTiquete(String id) throws noIdException{
+		return (tiquetes[indexTiquete(id)]);
+	}
+	
+	
+	public void deleteTiquete(String id) throws noIdException{
+		int i = 0;
+		tiquetes[indexTiquete(id)]=tiquetes[tiquetes.length-1];
 		tiquetes=Arrays.copyOf(tiquetes, tiquetes.length-1);
 	}
 	
-	public float calcularPrecioTotal() {
-		float total = 0;
+	public double calcularPrecioTotal() {
+		double total = 0;
 		for(Tiquete t:tiquetes) {
 			total+=t.getPrecio();
 		}
 		return total;
+	}
+	
+	public void copiarFicheroReserva(String dir) throws IOException {
+		FileOutputStream f = new FileOutputStream(dir);
+		ObjectOutputStream b = new ObjectOutputStream(f);
+		b.writeObject((Reserva)this);
+		b.close();
+		f.close();
+	}
+	public static Reserva leerFicheroReserva(String dir) throws IOException, ClassNotFoundException {
+		FileInputStream f = new FileInputStream(dir);
+		ObjectInputStream b = new ObjectInputStream(f);
+		Reserva reserva = (Reserva) b.readObject();
+		b.close();
+		f.close();
+		return reserva;
 	}
 }

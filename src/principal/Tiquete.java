@@ -1,39 +1,35 @@
 package principal;
+import java.io.*;
 
-public class Tiquete {
+public class Tiquete implements Serializable {
 	String id;
 	String asiento;
-	String clase;
-	float precio;
+	double precio;
 	Vuelo vuelo;
 	String nombrePasajero;
 	String numDocPasajero;
 	String tipoDocPasajero;
-	boolean perteneceReserva;
 	
 	
 	
-	public Tiquete(String id, String asiento, String clase, float precio, Vuelo vuelo, String nombrePasajero,
-			String numDocPasajero, String tipoDocPasajero, boolean perteneceReserva) {
+	public Tiquete(String id, String asiento, double precio, Vuelo vuelo, String nombrePasajero,
+			String numDocPasajero, String tipoDocPasajero, String direccionFichero) throws IOException {
 		this.id = id;
 		this.asiento = asiento;
-		this.clase = clase;
 		this.precio = precio;
 		this.vuelo = vuelo;
 		this.nombrePasajero = nombrePasajero;
 		this.numDocPasajero = numDocPasajero;
 		this.tipoDocPasajero = tipoDocPasajero;
-		this.perteneceReserva = perteneceReserva;
+		copiarFicheroTiquete(direccionFichero);
 	}
 	
 	public String getId() {return id;}
 	public void setId(String id) {this.id = id;}
 	public String getAsiento() {return asiento;}
 	public void setAsiento(String asiento) {this.asiento = asiento;}
-	public String getClase() {return clase;}
-	public void setClase(String clase) {this.clase = clase;}
-	public float getPrecio() {return precio;}
-	public void setPrecio(float precio) {this.precio = precio;}
+	public double getPrecio() {return precio;}
+	public void setPrecio(double precio) {this.precio = precio;}
 	public Vuelo getVuelo() {return vuelo;}
 	public void setVuelo(Vuelo vuelo) {this.vuelo = vuelo;}
 	public String getNombrePasajero() {return nombrePasajero;}
@@ -42,6 +38,22 @@ public class Tiquete {
 	public void setNumDocPasajero(String numDocPasajero) {this.numDocPasajero = numDocPasajero;}
 	public String getTipoDocPasajero() {return tipoDocPasajero;}
 	public void setTipoDocPasajero(String tipoDocPasajero) {this.tipoDocPasajero = tipoDocPasajero;}
-	public boolean isPerteneceReserva() {return perteneceReserva;}
-	public void setPerteneceReserva(boolean perteneceReserva) {this.perteneceReserva = perteneceReserva;}
+	
+	public void copiarFicheroTiquete(String dir) throws IOException {
+		FileOutputStream f = new FileOutputStream(dir);
+		ObjectOutputStream b = new ObjectOutputStream(f);
+		b.writeObject((Tiquete)this);
+		b.close();
+		f.close();
+	}
+	public static Tiquete leerFicherTiquete(String dir) throws IOException, ClassNotFoundException {
+		FileInputStream f = new FileInputStream(dir);
+		ObjectInputStream b = new ObjectInputStream(f);
+		Tiquete tiquete = (Tiquete) b.readObject();
+		b.close();
+		f.close();
+		return tiquete;
+	}
+	
+
 }
