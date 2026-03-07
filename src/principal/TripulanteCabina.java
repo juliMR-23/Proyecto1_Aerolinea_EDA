@@ -1,5 +1,3 @@
 package principal;
 
-public class TripulanteCabina {
-
-}
+public class TripulanteCabina extends Empleado {}

@@ -12,13 +12,13 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-
+ 
 # Maven Wrapper (sin el jar binario)
 .mvn/wrapper/maven-wrapper.jar
-
+ 
 # Kotlin
 .kotlin
-
+ 
 # IntelliJ IDEA
 .idea/modules.xml
 .idea/jarRepositories.xml

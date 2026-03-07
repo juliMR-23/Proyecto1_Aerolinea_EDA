@@ -1,5 +1,3 @@
 package principal;
 
-public class Vuelo {
-
-}
+public class Vuelo {}
