@@ -11,7 +11,9 @@ import java.util.Arrays;
 import java.util.Date;
 
 import excepciones.EIDRepetido;
+import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
+import excepciones.EInvalidTelefono;
 import excepciones.EPilotosInsuficientes;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
@@ -119,7 +121,7 @@ public class Aerolinea implements Serializable{
     }
 
     public void addCliente(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password) 
-            throws EIDRepetido, EValorNulo, EInvalidPass {
+            throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
 
         if(indexCliente(id) != -1)
             throw new EIDRepetido("Ya existe otro cliente con este id");
@@ -160,7 +162,7 @@ public class Aerolinea implements Serializable{
     }
 
     public void addPiloto(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
-			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass {
+			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
         if(indexEmpleado(id) != -1)
             throw new EIDRepetido("Ya existe otro empleado con este id");
 
@@ -169,7 +171,7 @@ public class Aerolinea implements Serializable{
         empleados[empleados.length - 1] = p;
     }
     public void addTripulanteCabina(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
-			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea)  throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass{
+			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea)  throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail{
         if(indexEmpleado(id) != -1)
             throw new EIDRepetido("Ya existe otro empleado con este id");
 

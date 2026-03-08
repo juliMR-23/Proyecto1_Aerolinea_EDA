@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.io.IOException;
 import java.io.Serializable;
 
+import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
+import excepciones.EInvalidTelefono;
 import excepciones.EValorNulo;
 import excepciones.noIdException;
 import util.Valida;
@@ -13,7 +15,7 @@ public class Cliente extends Persona implements Serializable {
 
 	private Reserva[] reservas;
 
-	public Cliente(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass {
+	public Cliente(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
 		super(id, nombre, tipoDocumento, documento, telefono, email, password);
 		this.reservas = new Reserva[0];
 	}
