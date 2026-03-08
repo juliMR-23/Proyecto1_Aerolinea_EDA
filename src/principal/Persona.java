@@ -2,6 +2,7 @@ package principal;
 
 import java.io.Serializable;
 
+import excepciones.EInvalidPass;
 import excepciones.EValorNulo;
 import util.Valida;
 
@@ -20,14 +21,19 @@ abstract class Persona implements Serializable {
 
     // CONSTRUCTOR
     public Persona(String id, String nombre, String tipoDocumento, String documento,
-                   String telefono, String email)throws EValorNulo{
+                   String telefono, String email, String password)throws EValorNulo, EInvalidPass{
 
     	Valida.validarTexto(id, "El id no puede ser null ni vacío");
     	Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
     	Valida.validarTexto(tipoDocumento, "El tipo de documento no puede ser null ni vacío");
     	Valida.validarTexto(documento, "El documento no puede ser null ni vacío");
     	Valida.validarTexto(telefono, "El teléfono no puede ser null ni vacío");
-    	Valida.validarTexto(email, "El email no puede ser null ni vacío");       	
+    	Valida.validarTexto(email, "El email no puede ser null ni vacío"); 
+    	Valida.validarTexto(password, "La contraseña no puede ser null ni vacía");
+    	if(password.length()<6)
+    		throw new EInvalidPass("La contraseña debe tener al menos 6 caracteres");
+    	if (!password.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])"))//regex
+            throw new EInvalidPass("La contraseña debe contener mayúsculas, minúsculas y números");
 
         this.id = id;
         this.nombre = nombre;
@@ -62,6 +68,10 @@ abstract class Persona implements Serializable {
         return this.email;
     }
 
+    public String getPass() {
+        return this.password;
+    }
+
     // SETTERS
     public void setNombre(String nombre) throws EValorNulo {
     	Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
@@ -87,4 +97,14 @@ abstract class Persona implements Serializable {
     	Valida.validarTexto(email, "El email no puede ser null ni vacío");
     	this.email = email;
     }
+    
+    public void setPass(String password) throws EValorNulo, EInvalidPass {
+    	Valida.validarTexto(password, "La contraseña no puede ser null ni vacío");
+    	if(password.length()<6)
+    		throw new EInvalidPass("La contraseña debe tener al menos 6 caracteres");
+    	if (!password.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])"))
+            throw new EInvalidPass("La contraseña debe contener mayúsculas, minúsculas y números");
+    	this.password = password;
+    }
+    
 }
