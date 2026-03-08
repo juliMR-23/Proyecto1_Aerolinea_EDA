@@ -13,7 +13,8 @@ public class Tiquete implements Serializable {
 	
 	
 	public Tiquete(String id, String asiento, double precio, Vuelo vuelo, String nombrePasajero,
-			String numDocPasajero, String tipoDocPasajero, String direccionFichero) throws IOException {
+			String numDocPasajero, String tipoDocPasajero) {
+		
 		this.id = id;
 		this.asiento = asiento;
 		this.precio = precio;

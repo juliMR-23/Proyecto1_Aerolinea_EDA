@@ -6,9 +6,9 @@ import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 
-import excepciones.EPersonaInvalida;
+
 import excepciones.EValorNegativo;
-import excepciones.EParametroInvalido;
+import excepciones.EValorNulo;
 import excepciones.ECapacidadVuelosLlena;
 import excepciones.EVueloYaAsignado;
 import excepciones.EVueloNoEncontrado;
@@ -29,13 +29,17 @@ abstract class Empleado extends Persona implements Serializable {
     protected double horasVueloAcumuladas;
 
     // CONSTRUCTOR
-    public Empleado(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea) throws EPersonaInvalida {
+    public Empleado(String id, String nombre, String tipoDocumento, String documento, String telefono, String email,
+    		double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo {
     	super(id, nombre, tipoDocumento, documento, telefono, email);
+    	if(salarioBase<=0 || aniosExperiencia<=0)
+    		throw new EValorNegativo("El salario base debe ser mayor a cero");
+    	if(aniosExperiencia<0)
+    		throw new EValorNegativo("Años de experiencia no puede ser negativo");
     	this.salarioBase = salarioBase;
     	this.fechaContratacion = fechaContratacion;
     	this.activo = activo;
     	this.aniosExperiencia = aniosExperiencia;
-    	this.aerolinea = aerolinea;
     	this.vuelosAsignados = new Vuelo[MAX_VUELOS];
     	this.cantidadVuelos = 0;
     	this.horasVueloAcumuladas = 0.0;
@@ -55,9 +59,9 @@ abstract class Empleado extends Persona implements Serializable {
 
     // Metodo para asignar vuelos al Empleado
     public void asignarVuelo(Vuelo vuelo)
-            throws ECapacidadVuelosLlena, EVueloYaAsignado, EParametroInvalido {
+            throws ECapacidadVuelosLlena, EVueloYaAsignado, EValorNulo {
         if (vuelo == null) {
-            throw new EParametroInvalido("El vuelo no puede ser null");
+            throw new EValorNulo("El vuelo no puede ser null");
         }
 
         if (this.cantidadVuelos >= this.vuelosAsignados.length) {
@@ -78,9 +82,9 @@ abstract class Empleado extends Persona implements Serializable {
 
     // Metodo para buscar entre los vuelos asignados al empleado
     public Vuelo[] buscarVuelosAsignados(Vuelo vuelo)
-            throws EVueloNoEncontrado, EParametroInvalido {
+            throws EVueloNoEncontrado, EValorNulo {
         if (vuelo == null) {
-            throw new EParametroInvalido("El vuelo no puede ser null");
+            throw new EValorNulo("El vuelo no puede ser null");
         }
 
         int contador = 0;
@@ -111,9 +115,9 @@ abstract class Empleado extends Persona implements Serializable {
 
     // Metodo para eliminar un vuelo asignado a un empleado
     public void eliminarVueloAsignado(Vuelo vuelo)
-            throws EVueloNoEncontrado, EParametroInvalido {
+            throws EVueloNoEncontrado, EValorNulo {
         if (vuelo == null) {
-            throw new EParametroInvalido("El vuelo no puede ser null");
+            throw new EValorNulo("El vuelo no puede ser null");
         }
 
         for (int i = 0; i < this.cantidadVuelos; i++) {
@@ -136,9 +140,9 @@ abstract class Empleado extends Persona implements Serializable {
     }
 
     // Método de ejemplo para serializar un Empleado a fichero
-    public void guardarEnFichero(String ruta) throws IOException, EParametroInvalido {
-        if (ruta == null || ruta.isEmpty()) {
-            throw new EParametroInvalido("La ruta del fichero no puede ser nula ni vacía");
+    public void guardarEnFichero(String ruta) throws IOException, EValorNulo {
+        if (ruta == null || ruta.isBlank()) {
+            throw new EValorNulo("La ruta del fichero no puede ser nula ni vacía");
         }
 
         FileOutputStream fos = new FileOutputStream(ruta);
@@ -170,20 +174,29 @@ abstract class Empleado extends Persona implements Serializable {
     }
 
 
-    public void setSalarioBase(double salarioBase) {
-        this.salarioBase = salarioBase;
+    public void setSalarioBase(double salarioBase) throws EValorNegativo {
+        if (salarioBase > 0) {
+        	this.salarioBase = salarioBase;
+        } else {
+            throw new EValorNegativo("Las horas de vuelo acumuladas no pueden ser negativas");
+        }
+        
     }
 
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
 
-    public void setAniosExperiencia(int aniosExperiencia) {
-        this.aniosExperiencia = aniosExperiencia;
+    public void setAniosExperiencia(int aniosExperiencia) throws EValorNegativo {
+    	if (aniosExperiencia>= 0) {
+        	this.aniosExperiencia = aniosExperiencia;
+        } else {
+            throw new EValorNegativo("Las horas de vuelo acumuladas no pueden ser negativas");
+        }
     }
 
     public void setHorasVueloAcumuladas(double horasVueloAcumuladas) throws EValorNegativo {
-        if (horasVueloAcumuladas >= 0) {
+    	if (horasVueloAcumuladas >= 0) {
             this.horasVueloAcumuladas = horasVueloAcumuladas;
         } else {
             throw new EValorNegativo("Las horas de vuelo acumuladas no pueden ser negativas");

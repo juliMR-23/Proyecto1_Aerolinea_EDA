@@ -6,11 +6,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 
 import excepciones.EIDRepetido;
+import excepciones.EPilotosInsuficientes;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
+import util.Valida;
 
 public class Aerolinea implements Serializable{
 	private String nombre;
@@ -20,9 +24,9 @@ public class Aerolinea implements Serializable{
 	private Empleado[] empleados;
 	private Vuelo[] vuelos;
 	
+	
 	public Aerolinea(String nombre) throws EValorNulo {
-	    if (nombre== null || nombre.trim().isEmpty())
-	        throw new EValorNulo("El nombre no puede estar vacío");
+	    Valida.validarTexto(nombre,"El nombre no puede estar vacío");
 		this.nombre = nombre;
         this.aeropuertos = new Aeropuerto[0];
         this.aviones = new Avion[0];
@@ -35,8 +39,7 @@ public class Aerolinea implements Serializable{
 		return nombre;
 	}
 	public void setNombre(String nombre) throws EValorNulo {
-		if (nombre == null || nombre.trim().isEmpty())
-	        throw new EValorNulo("El nombre no puede estar vacío");
+		Valida.validarTexto(nombre,"El nombre no puede estar vacío");
 		this.nombre = nombre;
 	}
 	
@@ -74,11 +77,15 @@ public class Aerolinea implements Serializable{
 		return aviones;
 	}
 	
-	/*
-	//ESPERAR A QUE LOS DEMÁS CREEN LAS CLASES
-	public void addAeropuerto(Aeropuerto aeropuerto) {
-        aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
-        aeropuertos[aeropuertos.length - 1] = aeropuerto;
+	
+	//lo mismo para las otras listas
+	public void addAeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria) throws EIDRepetido {
+		if(indexAeropuerto(id)!=-1)
+			throw new EIDRepetido("Ya existe otro aeropuerto con este id");
+		
+		Aeropuerto a = new Aeropuerto(id, nombre, ciudad, pais, codigoIATA, zonaHoraria);
+		aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
+        aeropuertos[aeropuertos.length - 1] = a;
     }
 
     public Aeropuerto searchAeropuerto(String id) {
@@ -110,9 +117,16 @@ public class Aerolinea implements Serializable{
         return aeropuertos;
     }
 
-    public void addCliente(Cliente cliente) {
+    public void addCliente(String id, String nombre, String tipoDocumento, String documento, String telefono, String email) 
+            throws EIDRepetido, EValorNulo {
+
+        if(indexCliente(id) != -1)
+            throw new EIDRepetido("Ya existe otro cliente con este id");
+
+        Cliente c = new Cliente(id, nombre, tipoDocumento, documento, telefono, email);
+
         clientes = Arrays.copyOf(clientes, clientes.length + 1);
-        clientes[clientes.length - 1] = cliente;
+        clientes[clientes.length - 1] = c;
     }
 
     public Cliente searchCliente(String id) {
@@ -144,9 +158,23 @@ public class Aerolinea implements Serializable{
         return clientes;
     }
 
-    public void addEmpleado(Empleado empleado) {
+    public void addPiloto(String id, String nombre, String tipoDocumento, String documento, String telefono, String email,
+			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea) throws EIDRepetido, EValorNulo, EValorNegativo {
+        if(indexEmpleado(id) != -1)
+            throw new EIDRepetido("Ya existe otro empleado con este id");
+
+        Piloto p = new Piloto(id, nombre, tipoDocumento, documento, telefono, email, salarioBase, fechaContratacion, activo, aniosExperiencia);
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
-        empleados[empleados.length - 1] = empleado;
+        empleados[empleados.length - 1] = p;
+    }
+    public void addTripulanteCabina(String id, String nombre, String tipoDocumento, String documento, String telefono, String email,
+			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea)  throws EIDRepetido, EValorNulo, EValorNegativo{
+        if(indexEmpleado(id) != -1)
+            throw new EIDRepetido("Ya existe otro empleado con este id");
+
+        TripulanteCabina t = new TripulanteCabina(id, nombre, tipoDocumento, documento, telefono, email, salarioBase, fechaContratacion, activo, aniosExperiencia);
+        empleados = Arrays.copyOf(empleados, empleados.length + 1);
+        empleados[empleados.length - 1] = t;
     }
 
     public Empleado searchEmpleado(String id) {
@@ -178,9 +206,13 @@ public class Aerolinea implements Serializable{
         return empleados;
     }
 
-    public void addVuelo(Vuelo vuelo) {
+    public void addVuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EIDRepetido, EValorNulo, EPilotosInsuficientes {
+        if(indexVuelo(id) != -1)
+            throw new EIDRepetido("Ya existe otro vuelo con este id");
+
+        Vuelo v = new Vuelo(id, origen, destino, fechaHoraSalida, avion, tripulacion, pilotos);
         vuelos = Arrays.copyOf(vuelos, vuelos.length + 1);
-        vuelos[vuelos.length - 1] = vuelo;
+        vuelos[vuelos.length - 1] = v;
     }
 
     public Vuelo searchVuelo(String id) {
@@ -211,16 +243,18 @@ public class Aerolinea implements Serializable{
     public Vuelo[] listVuelos() {
         return vuelos;
     }    
-    */
+    
 
-	public void wFicheroAerolinea(String dir) throws IOException {
+	public void wFicheroAerolinea(String dir) throws IOException, EValorNulo {
+		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
 		b.writeObject((Aerolinea)this);
-		b.close();
 		f.close();
+		b.close();
 	}
-	public static Aerolinea rFicheroAerolinea(String dir) throws IOException, ClassNotFoundException {
+	public static Aerolinea rFicheroAerolinea(String dir) throws IOException, ClassNotFoundException, EValorNulo {
+		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 	    FileInputStream f = new FileInputStream(dir);
 	    ObjectInputStream b = new ObjectInputStream(f);
 	    Aerolinea a = (Aerolinea) b.readObject();

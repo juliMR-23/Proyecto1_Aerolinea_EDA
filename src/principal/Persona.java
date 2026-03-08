@@ -2,7 +2,8 @@ package principal;
 
 import java.io.Serializable;
 
-import excepciones.EPersonaInvalida;
+import excepciones.EValorNulo;
+import util.Valida;
 
 abstract class Persona implements Serializable {
 
@@ -15,18 +16,18 @@ abstract class Persona implements Serializable {
     protected String documento;
     protected String telefono;
     protected String email;
+    protected String password;
 
     // CONSTRUCTOR
     public Persona(String id, String nombre, String tipoDocumento, String documento,
-                   String telefono, String email) throws EPersonaInvalida {
+                   String telefono, String email)throws EValorNulo{
 
-    	if (id == null || nombre == null || tipoDocumento == null || documento == null || telefono == null || email == null) {
-    		throw new EPersonaInvalida("No pueden haber valores null");
-    	}
-
-    	if (id.isEmpty() || nombre.isEmpty() || tipoDocumento.isEmpty() || documento.isEmpty() || telefono.isEmpty() || email.isEmpty()) {
-    		throw new EPersonaInvalida("No pueden haber valores vacíos");
-    	}
+    	Valida.validarTexto(id, "El id no puede ser null ni vacío");
+    	Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
+    	Valida.validarTexto(tipoDocumento, "El tipo de documento no puede ser null ni vacío");
+    	Valida.validarTexto(documento, "El documento no puede ser null ni vacío");
+    	Valida.validarTexto(telefono, "El teléfono no puede ser null ni vacío");
+    	Valida.validarTexto(email, "El email no puede ser null ni vacío");       	
 
         this.id = id;
         this.nombre = nombre;
@@ -62,38 +63,28 @@ abstract class Persona implements Serializable {
     }
 
     // SETTERS
-    public void setNombre(String nombre) throws EPersonaInvalida {
-        if (nombre == null || nombre.isEmpty()) {
-            throw new EPersonaInvalida("El nombre no puede ser nulo ni vacío");
-        }
+    public void setNombre(String nombre) throws EValorNulo {
+    	Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
         this.nombre = nombre;
     }
 
-    public void setTipoDocumento(String tipoDocumento) throws EPersonaInvalida {
-        if (tipoDocumento == null || tipoDocumento.isEmpty()) {
-            throw new EPersonaInvalida("El tipo de documento no puede ser nulo ni vacío");
-        }
-        this.tipoDocumento = tipoDocumento;
+    public void setTipoDocumento(String tipoDocumento) throws EValorNulo {
+    	Valida.validarTexto(tipoDocumento, "El tipo de documento no puede ser null ni vacío");
+    	this.tipoDocumento = tipoDocumento;
     }
 
-    public void setDocumento(String documento) throws EPersonaInvalida {
-        if (documento == null || documento.isEmpty()) {
-            throw new EPersonaInvalida("El documento no puede ser nulo ni vacío");
-        }
-        this.documento = documento;
+    public void setDocumento(String documento) throws EValorNulo {
+    	Valida.validarTexto(documento, "El documento no puede ser null ni vacío");
+    	this.documento = documento;
     }
 
-    public void setTelefono(String telefono) throws EPersonaInvalida {
-        if (telefono == null || telefono.isEmpty()) {
-            throw new EPersonaInvalida("El teléfono no puede ser nulo ni vacío");
-        }
+    public void setTelefono(String telefono) throws EValorNulo {
+    	Valida.validarTexto(telefono, "El teléfono no puede ser null ni vacío");
         this.telefono = telefono;
     }
 
-    public void setEmail(String email) throws EPersonaInvalida {
-        if (email == null || email.isEmpty()) {
-            throw new EPersonaInvalida("El email no puede ser nulo ni vacío");
-        }
-        this.email = email;
+    public void setEmail(String email) throws EValorNulo {
+    	Valida.validarTexto(email, "El email no puede ser null ni vacío");
+    	this.email = email;
     }
 }

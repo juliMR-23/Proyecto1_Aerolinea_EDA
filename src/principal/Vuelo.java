@@ -5,6 +5,10 @@ package principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import excepciones.EPilotosInsuficientes;
+import excepciones.EValorNulo;
+import util.Valida;
+
 public class Vuelo {
     private final String id;
     private final String numVuelo;
@@ -18,8 +22,23 @@ public class Vuelo {
     private Reserva[] reservas;
 
     // Constructor
-    public Vuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos){
-        this.id = null; //TODO
+    public Vuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes{
+        
+    	Valida.validarTexto(id, "El id no puede estar vacío");
+
+        if (origen == null)
+            throw new EValorNulo("El aeropuerto de origen no puede estar vacío");
+        if (destino == null)
+            throw new EValorNulo("El aeropuerto de destino no puede estar vacío");
+        if (avion == null)
+            throw new EValorNulo("El avión no puede estar vacío");
+        if (tripulacion == null || tripulacion.length == 0)
+            throw new EValorNulo("La tripulación no puede ser nula");
+        if (pilotos == null || pilotos.length == 0)
+            throw new EValorNulo("Los pilotos no pueden ser nulo");  
+        if(!hasPilotosMin())
+        	throw new EPilotosInsuficientes();
+    	this.id = id;
         this.numVuelo = null; //TODO
         this.origen = origen;
         this.destino = destino;
