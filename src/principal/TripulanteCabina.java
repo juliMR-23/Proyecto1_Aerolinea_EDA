@@ -3,24 +3,28 @@ package principal;
 import java.util.Arrays;
 import java.util.Date;
 
-import excepciones.EPersonaInvalida;
+import excepciones.EValorNegativo;
+import excepciones.EValorNulo;
+
+
 
 public class TripulanteCabina extends Empleado {
 	private String[] idiomas;
 	
 	public TripulanteCabina(String id, String nombre, String tipoDocumento, String documento, String telefono,
-			String email, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia,
-			Aerolinea aerolinea) throws EPersonaInvalida {
-		super(id, nombre, tipoDocumento, documento, telefono, email, salarioBase, fechaContratacion, activo, aniosExperiencia, aerolinea);
+			String email, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo {
+		super(id, nombre, tipoDocumento, documento, telefono, email, salarioBase, fechaContratacion, activo, aniosExperiencia);
 		idiomas=new String[0];
 	}
 
 	@Override
 	public double calcularSalario() {
-		return super.salarioBase;
+		return super.salarioBase + 10*idiomas.length + 100*super.aniosExperiencia;
 	}
 
-	public void addIdioma(String idioma) {
+	public void addIdioma(String idioma) throws EValorNulo {
+		if(idioma.isBlank())
+			throw new EValorNulo("El idioma no puede estar vacío");
 		if(indexIdioma(idioma)==-1) {//para no guardar repetidos
 			idiomas = Arrays.copyOf(idiomas, idiomas.length+1);
 			idiomas[idiomas.length-1] = idioma;
