@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import excepciones.EIDRepetido;
+import excepciones.EInvalidPass;
 import excepciones.EPilotosInsuficientes;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
@@ -117,13 +118,13 @@ public class Aerolinea implements Serializable{
         return aeropuertos;
     }
 
-    public void addCliente(String id, String nombre, String tipoDocumento, String documento, String telefono, String email) 
-            throws EIDRepetido, EValorNulo {
+    public void addCliente(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password) 
+            throws EIDRepetido, EValorNulo, EInvalidPass {
 
         if(indexCliente(id) != -1)
             throw new EIDRepetido("Ya existe otro cliente con este id");
 
-        Cliente c = new Cliente(id, nombre, tipoDocumento, documento, telefono, email);
+        Cliente c = new Cliente(id, nombre, tipoDocumento, documento, telefono, email, password);
 
         clientes = Arrays.copyOf(clientes, clientes.length + 1);
         clientes[clientes.length - 1] = c;
@@ -158,21 +159,21 @@ public class Aerolinea implements Serializable{
         return clientes;
     }
 
-    public void addPiloto(String id, String nombre, String tipoDocumento, String documento, String telefono, String email,
-			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea) throws EIDRepetido, EValorNulo, EValorNegativo {
+    public void addPiloto(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
+			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass {
         if(indexEmpleado(id) != -1)
             throw new EIDRepetido("Ya existe otro empleado con este id");
 
-        Piloto p = new Piloto(id, nombre, tipoDocumento, documento, telefono, email, salarioBase, fechaContratacion, activo, aniosExperiencia);
+        Piloto p = new Piloto(id, nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
         empleados[empleados.length - 1] = p;
     }
-    public void addTripulanteCabina(String id, String nombre, String tipoDocumento, String documento, String telefono, String email,
-			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea)  throws EIDRepetido, EValorNulo, EValorNegativo{
+    public void addTripulanteCabina(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
+			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea)  throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass{
         if(indexEmpleado(id) != -1)
             throw new EIDRepetido("Ya existe otro empleado con este id");
 
-        TripulanteCabina t = new TripulanteCabina(id, nombre, tipoDocumento, documento, telefono, email, salarioBase, fechaContratacion, activo, aniosExperiencia);
+        TripulanteCabina t = new TripulanteCabina(id, nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
         empleados[empleados.length - 1] = t;
     }
