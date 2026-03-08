@@ -2,9 +2,7 @@ package principal;
 
 import java.io.Serializable;
 
-import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
-import excepciones.EInvalidTelefono;
 import excepciones.EValorNulo;
 import util.Valida;
 
@@ -23,7 +21,7 @@ abstract class Persona implements Serializable {
 
     // CONSTRUCTOR
     public Persona(String id, String nombre, String tipoDocumento, String documento,
-                   String telefono, String email, String password)throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail{
+                   String telefono, String email, String password)throws EValorNulo, EInvalidPass{
 
     	Valida.validarTexto(id, "El id no puede ser null ni vacío");
     	Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
@@ -32,14 +30,6 @@ abstract class Persona implements Serializable {
     	Valida.validarTexto(telefono, "El teléfono no puede ser null ni vacío");
     	Valida.validarTexto(email, "El email no puede ser null ni vacío"); 
     	Valida.validarTexto(password, "La contraseña no puede ser null ni vacía");
-    	if(telefono.matches("[0-9]+"))
-    		throw new EInvalidTelefono("La contraseña debe tener al menos 6 caracteres");
-    	if (telefono.length()<7 || telefono.length()>10)//regex
-            throw new EInvalidTelefono("El teléfono debe tener entre 7 y 10 dígitos");
-    	if(email.length()<8)
-    		throw new EInvalidEmail("El email debe tener al menos 8 caracteres");
-    	if (!email.matches(".+@.+\\..+"))//regex
-            throw new EInvalidEmail("Formato inválido para email");
     	if(password.length()<6)
     		throw new EInvalidPass("La contraseña debe tener al menos 6 caracteres");
     	if (!password.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])"))//regex

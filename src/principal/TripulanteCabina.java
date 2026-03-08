@@ -3,9 +3,7 @@ package principal;
 import java.util.Arrays;
 import java.util.Date;
 
-import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
-import excepciones.EInvalidTelefono;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 
@@ -15,7 +13,7 @@ public class TripulanteCabina extends Empleado {
 	private String[] idiomas;
 	
 	public TripulanteCabina(String id, String nombre, String tipoDocumento, String documento, String telefono, String email,
-			String password, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
+			String password, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass {
 		super(id, nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
 		idiomas=new String[0];
 	}
