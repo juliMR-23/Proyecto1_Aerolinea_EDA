@@ -10,9 +10,7 @@ import java.util.Date;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import excepciones.ECapacidadVuelosLlena;
-import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
-import excepciones.EInvalidTelefono;
 import excepciones.EVueloYaAsignado;
 import excepciones.EVueloNoEncontrado;
 
@@ -33,7 +31,7 @@ abstract class Empleado extends Persona implements Serializable {
 
     // CONSTRUCTOR
     public Empleado(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
-    		double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
+    		double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass {
     	super(id, nombre, tipoDocumento, documento, telefono, email, password);
     	if(salarioBase<=0 || aniosExperiencia<=0)
     		throw new EValorNegativo("El salario base debe ser mayor a cero");
