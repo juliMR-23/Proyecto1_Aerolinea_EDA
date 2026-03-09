@@ -18,8 +18,10 @@ public class Avion implements Serializable{
 	private String modelo;
 	private int capacidad;//cantidad de pasajeros que puede llevar
 	private boolean disponible;
+	//velocidad Ground Speed en NUDOS
+	private double velocidad;
 	
-	public Avion(String matricula, String marca, String modelo, int capacidad, boolean disponible) throws EValorNulo, EValorNegativo {
+	public Avion(String matricula, String marca, String modelo, int capacidad, boolean disponible, double velocidad) throws EValorNulo, EValorNegativo {
 		Valida.validarTexto(matricula, "La matrícula no puede estar vacía");
 		Valida.validarTexto(marca, "La marca no puede estar vacía");
 		Valida.validarTexto(modelo, "El modelo no puede estar vacío");
@@ -31,6 +33,7 @@ public class Avion implements Serializable{
 		this.modelo = modelo;
 		this.capacidad = capacidad;
 		this.disponible = disponible;
+		this.velocidad = velocidad;
 	}
 	
 	public String getMatricula() {
@@ -84,6 +87,14 @@ public class Avion implements Serializable{
 	    f.close();
 	    b.close();
 	    return a;
+	}
+
+	public double getVelocidad() {
+		return velocidad;
+	}
+
+	public void setVelocidad(double velocidad) {
+		this.velocidad = velocidad;
 	}
 	
 }

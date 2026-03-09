@@ -15,9 +15,9 @@ import excepciones.EValorNulo;
 public class TripulanteCabina extends Empleado implements Serializable{
 	private String[] idiomas;
 	
-	public TripulanteCabina(String id, String nombre, String tipoDocumento, String documento, String telefono, String email,
+	public TripulanteCabina(String nombre, String tipoDocumento, String documento, String telefono, String email,
 			String password, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
-		super(id, nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
+		super(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
 		idiomas=new String[0];
 	}
 

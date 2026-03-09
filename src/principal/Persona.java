@@ -6,6 +6,7 @@ import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
 import excepciones.EValorNulo;
+import util.IDAsign;
 import util.Valida;
 
 abstract class Persona implements Serializable {
@@ -20,26 +21,28 @@ abstract class Persona implements Serializable {
     protected String telefono;
     protected String email;
     protected String password;
+    protected static int cont = 0;
 
     // CONSTRUCTOR
-    public Persona(String id, String nombre, String tipoDocumento, String documento,
-                   String telefono, String email, String password)throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail{
+    public Persona(String nombre, String tipoDocumento, String documento,
+                   String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail{
 
-    	Valida.validarTexto(id, "El id no puede ser null ni vacío");
     	Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
     	Valida.validarTexto(tipoDocumento, "El tipo de documento no puede ser null ni vacío");
     	Valida.validarTexto(documento, "El documento no puede ser null ni vacío");
+    	
     	validarTelefono(telefono);
     	validarEmail(email); 
     	validarPassword(password);
-
-        this.id = id;
+    	
+    	this.id=IDAsign.asignar("PE",cont);
         this.nombre = nombre;
         this.tipoDocumento = tipoDocumento;
         this.documento = documento;
         this.telefono = telefono;
         this.email = email;
         this.password = password;
+        cont++;
     }
 
     // GETTERS

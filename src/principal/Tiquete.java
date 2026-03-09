@@ -1,23 +1,38 @@
 package principal;
 import java.io.*;
 
+import excepciones.EValorNegativo;
+import excepciones.EValorNulo;
+import util.IDAsign;
+import util.Valida;
+
 public class Tiquete implements Serializable {
-	String id;
-	String asiento;
-	double precio;
-	Vuelo vuelo;
-	String nombrePasajero;
-	String numDocPasajero;
-	String tipoDocPasajero;
+	private String id;
+	private String asiento;
+	private double precio;
+	private Vuelo vuelo;
+	private String nombrePasajero;
+	private String numDocPasajero;
+	private String tipoDocPasajero;
+	private static int cont = 0;
 	
 	
+	private static final long serialVersionUID = 1L;
 	
-	public Tiquete(String id, String asiento, double precio, Vuelo vuelo, String nombrePasajero,
-			String numDocPasajero, String tipoDocPasajero) {
+	public Tiquete(String id, String asiento, Vuelo vuelo, String nombrePasajero,
+			String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EValorNegativo {
 		
-		this.id = id;
+		Valida.validarTexto(asiento, "El asiento no puede ser vacío");
+		Valida.validarTexto(nombrePasajero, "El nombre del pasajero no puede ser vacío");
+		// Soy Sofia Soto
+		Valida.validarTexto(numDocPasajero, "El tipo de documento del pasajero no puede ser vacío");
+		Valida.validarTexto(tipoDocPasajero, "El número de documento del pasajero no puede ser vacío");
+		if(vuelo == null) {throw new EValorNulo("El vuelo no puede estar vacío");}
+		
+		this.id = IDAsign.asignar("TI",cont);
+		
 		this.asiento = asiento;
-		this.precio = precio;
+		this.precio = vuelo.getPrecio();
 		this.vuelo = vuelo;
 		this.nombrePasajero = nombrePasajero;
 		this.numDocPasajero = numDocPasajero;

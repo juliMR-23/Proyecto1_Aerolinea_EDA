@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import excepciones.EValorNulo;
 import util.Valida;
+import util.IDAsign;
 
 public class Aeropuerto implements Serializable{
 
@@ -12,18 +13,26 @@ public class Aeropuerto implements Serializable{
 	private String ciudad;
 	private String pais;
 	private String zonaHoraria;
+	private double longitud;
+	private double latitud;
+	private static int cont = 0;
 
-	public Aeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria) throws EValorNulo {
+
+	public Aeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EValorNulo {
 		Valida.validarTexto(id, "El id no puede estar vacío");
 		Valida.validarTexto(nombre, "El nombre no puede estar vacío");
 		Valida.validarTexto(ciudad, "La ciudad no puede estar vacía");
 		Valida.validarTexto(pais, "El país no puede estar vacío");
 		Valida.validarTexto(zonaHoraria, "La zona horaria no puede estar vacía");
-		this.id = id;
+		
+		this.id = IDAsign.asignar("AE", cont);
 		this.nombre = nombre;
 		this.ciudad = ciudad;
 		this.pais = pais;
 		this.zonaHoraria = zonaHoraria;
+		this.longitud = longitud;
+		this.latitud = latitud;
+		cont++;
 	}
 
 	public String getId() {
@@ -55,4 +64,14 @@ public class Aeropuerto implements Serializable{
 		Valida.validarTexto(zonaHoraria, "La zona horaria no puede estar vacía");
 		this.zonaHoraria = zonaHoraria;
 	}
+
+	public double getLongitud() {
+		return longitud;
+	}
+
+	public double getLatitud() {
+		return latitud;
+	}
+	
+	
 }
