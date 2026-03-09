@@ -19,8 +19,8 @@ public class Tiquete implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public Tiquete(String id, String asiento, Vuelo vuelo, String nombrePasajero,
-			String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EValorNegativo {
+	public Tiquete(String asiento, Vuelo vuelo, String nombrePasajero,
+			String numDocPasajero, String tipoDocPasajero) throws EValorNulo{
 		
 		Valida.validarTexto(asiento, "El asiento no puede ser vacío");
 		Valida.validarTexto(nombrePasajero, "El nombre del pasajero no puede ser vacío");

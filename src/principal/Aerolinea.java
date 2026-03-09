@@ -14,6 +14,7 @@ import excepciones.EIDRepetido;
 import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
+import excepciones.EInvalidDocumento;
 import excepciones.EPilotosInsuficientes;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
@@ -125,11 +126,12 @@ public class Aerolinea implements Serializable{
     }
 
     public void addCliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) 
-            throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
+            throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
 
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
+        
         Cliente c = new Cliente(nombre, tipoDocumento, documento, telefono, email, password);
         if(indexCliente(c.getId()) != -1)
             throw new EIDRepetido("Ya existe otro cliente con este id");
@@ -167,7 +169,7 @@ public class Aerolinea implements Serializable{
     }
 
     public void addPiloto(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
-			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
+			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
         
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
@@ -179,7 +181,7 @@ public class Aerolinea implements Serializable{
         empleados[empleados.length - 1] = p;
     }
     public void addTripulanteCabina(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
-			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia)  throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail{
+			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia)  throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento{
     	
     	if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
@@ -251,7 +253,7 @@ public class Aerolinea implements Serializable{
     public void deleteVuelo(String id) {
         int i = indexVuelo(id);
         if (i != -1) {
-            for (int j = i; j < vuelos.length - 1; j++)
+            for (int j = i; j < vuelos.length -1; j++)
                 vuelos[j] = vuelos[j + 1];
             vuelos = Arrays.copyOf(vuelos, vuelos.length - 1);
         }
@@ -264,7 +266,7 @@ public class Aerolinea implements Serializable{
 
     public void addAdministrador(String nombre, String tipoDocumento, String documento,
             String telefono, String email, String password)
-            throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
+            throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
 
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
@@ -300,7 +302,7 @@ public class Aerolinea implements Serializable{
         int i = indexAdministrador(id);
 
         if (i != -1) {
-            for (int j = i; j < administradores.length - 1; j++)
+            for (int j = i; j < administradores.length-1; j++)
                 administradores[j] = administradores[j + 1];
             administradores = Arrays.copyOf(administradores, administradores.length - 1);
         }

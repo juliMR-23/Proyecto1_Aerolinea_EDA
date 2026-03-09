@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
-import excepciones.noIdException;
 import util.IDAsign;
 import util.Valida;
 
@@ -48,29 +47,37 @@ public class Reserva implements Serializable {
 	public void setTiquetes(Tiquete[] tiquetes) {this.tiquetes = tiquetes;}
 	public Tiquete[] getTiquetes() {return tiquetes;}
 
-	public void addTiquete(String id, String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EValorNegativo {
+	public void addTiquete(String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo{
+		Tiquete t=new Tiquete(asiento, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
 		tiquetes = Arrays.copyOf(tiquetes, tiquetes.length+1);
-		tiquetes[tiquetes.length-1] = new Tiquete(id, asiento, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
+		tiquetes[tiquetes.length-1] = t;
 	}
 	
-	public int indexTiquete(String id) throws noIdException {
+	public int indexTiquete(String id) {
 		int i = 0;
-		while (i<tiquetes.length && !tiquetes[i].equals(id)) {
+		while (i<tiquetes.length && !tiquetes[i].getId().equalsIgnoreCase(id)) {
 			i++;
 		}
-		if (i==tiquetes.length) {throw new noIdException("No existe un tiquete en esta reserva asignado a ese pasajero");}
+		if (i==tiquetes.length)
+			return -1;
 		return i;
 	}
 	
-	public Tiquete searchTiquete(String id) throws noIdException{
-		return (tiquetes[indexTiquete(id)]);
+	public Tiquete searchTiquete(String id){
+		int i = indexTiquete(id);
+        if(i == -1)
+            return null;
+        return tiquetes[i];
 	}
 	
 	
-	public void deleteTiquete(String id) throws noIdException{
-		int i = 0;
-		tiquetes[indexTiquete(id)]=tiquetes[tiquetes.length-1];
-		tiquetes=Arrays.copyOf(tiquetes, tiquetes.length-1);
+	public void deleteTiquete(String id){
+		int i = indexTiquete(id);
+        if (i != -1) {
+            for (int j = i; j < tiquetes.length- 1; j++)
+            	tiquetes[j] = tiquetes[j + 1];
+            tiquetes = Arrays.copyOf(tiquetes, tiquetes.length - 1);
+        }
 	}
 	
 	public double calcularPrecioTotal() {
