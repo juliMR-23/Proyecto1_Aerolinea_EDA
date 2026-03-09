@@ -9,14 +9,18 @@ public class Aeropuerto {
 	private String ciudad;
 	private String pais;
 	private String zonaHoraria;
+	private double longitud;
+	private double latitud;
 	private static int cont = 0;
 
-	public Aeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria) {
+	public Aeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) {
 		this.id = IDAsign.asignar("AE", cont);
 		this.nombre = nombre;
 		this.ciudad = ciudad;
 		this.pais = pais;
 		this.zonaHoraria = zonaHoraria;
+		this.longitud = longitud;
+		this.latitud = latitud;
 		cont++;
 	}
 
@@ -47,4 +51,14 @@ public class Aeropuerto {
 	public void setZonaHoraria(String zonaHoraria) {
 		this.zonaHoraria = zonaHoraria;
 	}
+
+	public double getLongitud() {
+		return longitud;
+	}
+
+	public double getLatitud() {
+		return latitud;
+	}
+	
+	
 }

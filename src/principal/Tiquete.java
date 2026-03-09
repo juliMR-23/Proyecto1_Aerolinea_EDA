@@ -24,6 +24,7 @@ public class Tiquete implements Serializable {
 		
 		Valida.validarTexto(asiento, "El asiento no puede ser vacío");
 		Valida.validarTexto(nombrePasajero, "El nombre del pasajero no puede ser vacío");
+		// Soy Sofia Soto
 		Valida.validarTexto(numDocPasajero, "El tipo de documento del pasajero no puede ser vacío");
 		Valida.validarTexto(tipoDocPasajero, "El número de documento del pasajero no puede ser vacío");
 		if(vuelo == null) {throw new EValorNulo("El vuelo no puede estar vacío");}

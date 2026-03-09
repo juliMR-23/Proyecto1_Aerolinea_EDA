@@ -142,6 +142,12 @@ public class Vuelo {
 	    tripulacion = nuevo;
 	}
 	
+	public int calcularDuracion() {
+		double distancia = Math.sqrt(Math.pow((origen.getLatitud()-destino.getLatitud()),2)+Math.pow((origen.getLongitud()-destino.getLongitud()),2));
+		distancia = Math.toRadians(distancia)*6371;
+		return (int)((distancia/(avion.getVelocidad()*1.852))*60);
+	}
+	
 	// Reservas y Asientos
     
     

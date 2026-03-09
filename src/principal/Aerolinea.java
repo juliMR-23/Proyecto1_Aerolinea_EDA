@@ -48,11 +48,11 @@ public class Aerolinea implements Serializable{
 		this.nombre = nombre;
 	}
 	
-	public void addAvion(String matricula, String marca, String modelo, int capacidad) throws EIDRepetido, EValorNulo, EValorNegativo {
+	public void addAvion(String matricula, String marca, String modelo, int capacidad, double velocidad) throws EIDRepetido, EValorNulo, EValorNegativo {
 		if(indexAvion(matricula)!=-1)
 			throw new EIDRepetido("Ya existe otro avion con este id");//implementar en las demás listas cuando creen todas las clases
 		
-		Avion a = new Avion(matricula, marca, modelo, capacidad, true);
+		Avion a = new Avion(matricula, marca, modelo, capacidad, true, velocidad);
 		aviones = Arrays.copyOf(aviones, aviones.length+1);
 		aviones[aviones.length-1]=a;
 	}
@@ -84,11 +84,11 @@ public class Aerolinea implements Serializable{
 	
 	
 	//lo mismo para las otras listas
-	public void addAeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria) throws EIDRepetido {
+	public void addAeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EIDRepetido {
 		if(indexAeropuerto(id)!=-1)
 			throw new EIDRepetido("Ya existe otro aeropuerto con este id");
 		
-		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, codigoIATA, zonaHoraria);
+		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, codigoIATA, zonaHoraria, longitud, latitud);
 		aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
         aeropuertos[aeropuertos.length - 1] = a;
     }
