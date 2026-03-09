@@ -151,6 +151,7 @@ public class Vuelo implements Serializable{
 		return (int)((distancia/(avion.getVelocidad()*1.852))*60);
 	}
 	
+	
 	// Reservas y Asientos
     
     

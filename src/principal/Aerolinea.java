@@ -18,6 +18,7 @@ import excepciones.EInvalidDocumento;
 import excepciones.EPilotosInsuficientes;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
+import util.IDAsign;
 import util.Valida;
 
 public class Aerolinea implements Serializable{
@@ -90,11 +91,10 @@ public class Aerolinea implements Serializable{
 	public void addAeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
 		
 		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, codigoIATA, zonaHoraria, longitud, latitud);
-		if(indexAeropuerto(a.getId())!=-1)
-			throw new EIDRepetido("Ya existe otro aeropuerto con este id");
 		aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
         aeropuertos[aeropuertos.length - 1] = a;
     }
+	
 
     public Aeropuerto searchAeropuerto(String id) {
         int i = indexAeropuerto(id);
@@ -326,9 +326,20 @@ public class Aerolinea implements Serializable{
         if(i<empleados.length)
         	return true;
         
+        i = 0;
+        while (i < administradores.length && !administradores[i].getEmail().equalsIgnoreCase(email)) i++;
+        if(i<administradores.length)
+        	return true;
+        
         return false;
     }
     
+    
+	public void inicializarConst() {
+		Aeropuerto.setCont(IDAsign.numFromId(aeropuertos[aeropuertos.length-1].getId())+1);
+		Persona.setCont(Math.max(IDAsign.numFromId(administradores[administradores.length-1].getId()),Math.max(IDAsign.numFromId(clientes[clientes.length-1].getId()), IDAsign.numFromId(empleados[empleados.length-1].getId())))+1);
+		//Tiquete.setCont(IDAsign.numFromId(aeropuertos[aeropuertos.length-1].getId())+1);
+	}
 
 	public void wFicheroAerolinea(String dir) throws IOException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");

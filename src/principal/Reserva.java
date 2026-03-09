@@ -105,4 +105,11 @@ public class Reserva implements Serializable {
 		b.close();
 		return reserva;
 	}
+	public static int getCont() {
+		return cont;
+	}
+
+	public static void setCont(int cont) {
+		Reserva.cont = cont;
+	}
 }

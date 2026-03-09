@@ -73,6 +73,14 @@ public class Aeropuerto implements Serializable{
 	public double getLatitud() {
 		return latitud;
 	}
+
+	public static int getCont() {
+		return cont;
+	}
+
+	public static void setCont(int cont) {
+		Aeropuerto.cont = cont;
+	}
 	
 	
 }
