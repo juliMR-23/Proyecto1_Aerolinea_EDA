@@ -7,24 +7,26 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import excepciones.EPilotosInsuficientes;
+import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
+import util.IDAsign;
 import util.Valida;
 
 public class Vuelo implements Serializable{
     private final String id;
-    private final String numVuelo;
     private final Aeropuerto origen, destino;
     private LocalDateTime fechaHoraSalida, fechaHoraLlegada;
     private Avion avion;
-    private String estadoVuelo; //enum
+    private String estadoVuelo; 
     private String puertaEmbarque;
     private TripulanteCabina[] tripulacion;
     private Piloto[] pilotos;
     private Reserva[] reservas;
     private double precio;
+    private static int cont = 0;
 
     // Constructor
-    public Vuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes{
+    public Vuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos, double precio) throws EValorNulo, EPilotosInsuficientes, EValorNegativo{
         
     	Valida.validarTexto(id, "El id no puede estar vacío");
 
@@ -40,18 +42,23 @@ public class Vuelo implements Serializable{
             throw new EValorNulo("Los pilotos no pueden ser nulo");  
         if(!hasPilotosMin())
         	throw new EPilotosInsuficientes();
-    	this.id = id;
-        this.numVuelo = null; //TODO
+        if(precio <= 0) throw new EValorNegativo("El precio no puede ser 0 o negativo");
+        
+    	this.id = IDAsign.asignar("VU", cont);
         this.origen = origen;
         this.destino = destino;
         this.fechaHoraSalida = fechaHoraSalida;
-        this.fechaHoraLlegada = null; //TODO
+        this.fechaHoraLlegada = calcularHoraLlegada();
         this.avion = avion;
         this.estadoVuelo = "Programado";
         this.puertaEmbarque = null;
         this.tripulacion = tripulacion;
         this.pilotos = pilotos;
         this.reservas = new Reserva[0];
+        this.precio = precio;
+        
+        cont++;
+        
     }
 
     // Setters
@@ -66,7 +73,7 @@ public class Vuelo implements Serializable{
 
     public void setAtrasado(LocalDateTime NewSalida){
         this.fechaHoraSalida = NewSalida;
-        this.fechaHoraLlegada = null; //TODO
+        this.fechaHoraLlegada = calcularHoraLlegada(); 
         this.atrasado();
     }
     public double getPrecio() {
@@ -81,7 +88,6 @@ public class Vuelo implements Serializable{
 
   //Getters
 	public String getId() {return id;}
-	public String getNumVuelo() {return numVuelo;}
 	public Aeropuerto getOrigen() {return origen;}
 	public Aeropuerto getDestino() {return destino;}
 	public LocalDateTime getFechaHoraSalida() {return fechaHoraSalida;}
@@ -96,7 +102,7 @@ public class Vuelo implements Serializable{
 	// Tripulantes
 	public boolean hasPilotosMin() {
 		int minPilotos = 2;
-		// if (ruta.getDuracion() > 8) minPilotos =3;
+		// TODO: Duracion mayor a 8 horas = 3
 		return pilotos.length  >= minPilotos;
 	}
 	
@@ -104,8 +110,9 @@ public class Vuelo implements Serializable{
 		return tripulacion.length >= (avion.getCapacidad() /50);
 	}
 	
-	public void addPiloto(Piloto newCapitan) {
-		if(hasPilotosMin()) throw new IllegalStateException("");
+	//TODO: Cambiar metodo para pilotos en general
+	public void addPiloto(Piloto newCapitan) throws EPilotosInsuficientes {
+		if(hasPilotosMin()) throw new EPilotosInsuficientes();
 		if(pilotos[0] != null) throw new IllegalStateException("");
 		pilotos[0] = newCapitan;
 	}
@@ -149,7 +156,9 @@ public class Vuelo implements Serializable{
 		return (int)((distancia/(avion.getVelocidad()*1.852))*60);
 	}
 	
-	// Reservas y Asientos
+	public LocalDateTime calcularHoraLlegada() {
+		return fechaHoraSalida.plusMinutes(calcularDuracion());
+	}
     
     
 }
