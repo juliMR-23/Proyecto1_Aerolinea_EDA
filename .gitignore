@@ -71,3 +71,5 @@ buildNumber.properties
 *.swp
 
 **/application.properties
+/target/
+*.class

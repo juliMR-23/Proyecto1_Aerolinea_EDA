@@ -1,9 +1,11 @@
 package principal;
 
+import java.io.Serializable;
+
 import excepciones.EValorNulo;
 import util.Valida;
 
-public class Aeropuerto {
+public class Aeropuerto implements Serializable{
 
 	private String id;
 	private String nombre;

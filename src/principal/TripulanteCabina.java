@@ -1,19 +1,22 @@
 package principal;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 
+import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
+import excepciones.EInvalidTelefono;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 
 
 
-public class TripulanteCabina extends Empleado {
+public class TripulanteCabina extends Empleado implements Serializable{
 	private String[] idiomas;
 	
 	public TripulanteCabina(String id, String nombre, String tipoDocumento, String documento, String telefono, String email,
-			String password, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass {
+			String password, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
 		super(id, nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
 		idiomas=new String[0];
 	}
