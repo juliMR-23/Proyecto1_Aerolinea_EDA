@@ -48,11 +48,11 @@ public class Aerolinea implements Serializable{
 		this.nombre = nombre;
 	}
 	
-	public void addAvion(String matricula, String marca, String modelo, int capacidad) throws EIDRepetido, EValorNulo, EValorNegativo {
+	public void addAvion(String matricula, String marca, String modelo, int capacidad, double velocidad) throws EIDRepetido, EValorNulo, EValorNegativo {
 		if(indexAvion(matricula)!=-1)
 			throw new EIDRepetido("Ya existe otro avion con este id");//implementar en las demás listas cuando creen todas las clases
 		
-		Avion a = new Avion(matricula, marca, modelo, capacidad, true);
+		Avion a = new Avion(matricula, marca, modelo, capacidad, true, velocidad);
 		aviones = Arrays.copyOf(aviones, aviones.length+1);
 		aviones[aviones.length-1]=a;
 	}
@@ -84,11 +84,11 @@ public class Aerolinea implements Serializable{
 	
 	
 	//lo mismo para las otras listas
-	public void addAeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria) throws EIDRepetido, EValorNulo {
+	public void addAeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
 		if(indexAeropuerto(id)!=-1)
 			throw new EIDRepetido("Ya existe otro aeropuerto con este id");
 		
-		Aeropuerto a = new Aeropuerto(id, nombre, ciudad, pais, codigoIATA, zonaHoraria);
+		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, codigoIATA, zonaHoraria, longitud, latitud);
 		aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
         aeropuertos[aeropuertos.length - 1] = a;
     }
@@ -130,7 +130,7 @@ public class Aerolinea implements Serializable{
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
-        Cliente c = new Cliente(id, nombre, tipoDocumento, documento, telefono, email, password);
+        Cliente c = new Cliente(nombre, tipoDocumento, documento, telefono, email, password);
 
         clientes = Arrays.copyOf(clientes, clientes.length + 1);
         clientes[clientes.length - 1] = c;
@@ -172,7 +172,7 @@ public class Aerolinea implements Serializable{
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
-        Piloto p = new Piloto(id, nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
+        Piloto p = new Piloto(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
         empleados[empleados.length - 1] = p;
     }
@@ -183,7 +183,7 @@ public class Aerolinea implements Serializable{
     	if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
-        TripulanteCabina t = new TripulanteCabina(id, nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
+        TripulanteCabina t = new TripulanteCabina(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
         empleados[empleados.length - 1] = t;
     }
@@ -266,7 +266,7 @@ public class Aerolinea implements Serializable{
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
-        Administrador a = new Administrador(id, nombre, tipoDocumento, documento, telefono, email, password);
+        Administrador a = new Administrador(nombre, tipoDocumento, documento, telefono, email, password);
 
         administradores = Arrays.copyOf(administradores, administradores.length + 1);
         administradores[administradores.length - 1] = a;

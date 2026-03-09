@@ -4,9 +4,11 @@ import java.util.Arrays;
 import java.io.IOException;
 import java.io.Serializable;
 
+import excepciones.EIDRepetido;
 import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
+import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import excepciones.noIdException;
 import util.Valida;
@@ -15,18 +17,18 @@ public class Cliente extends Persona implements Serializable {
 
 	private Reserva[] reservas;
 
-	public Cliente(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
-		super(id, nombre, tipoDocumento, documento, telefono, email, password);
+	public Cliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
+		super(nombre, tipoDocumento, documento, telefono, email, password);
 		this.reservas = new Reserva[0];
 	}
 
-	public void addReserva(String id, Vuelo vuelo) throws EValorNulo {
+	public void addReserva(String id, Vuelo vuelo) throws EValorNulo, EIDRepetido {
 		Valida.validarTexto(id, "El id de la reserva no puede ser nulo ni vacío");
 		if (vuelo == null)
 			throw new EValorNulo("El vuelo no puede ser nulo");
 		if (indexReserva(id) != -1)
-			throw new EValorNulo("Ya existe una reserva con ese id");
-		Reserva r = new Reserva(id, vuelo, this);
+			throw new EIDRepetido("Ya existe una reserva con ese id");
+		Reserva r = new Reserva(vuelo, this);
 		reservas = Arrays.copyOf(reservas, reservas.length + 1);
 		reservas[reservas.length - 1] = r;
 	}
@@ -56,11 +58,11 @@ public class Cliente extends Persona implements Serializable {
 		}
 	}
 
-	public void addTiqueteOnReserva(Reserva reserva, String id, String asiento, double precio, String nombrePasajero, String numDoc, String tipoDoc, String dirFich) throws EValorNulo {
+	public void addTiqueteOnReserva(Reserva reserva, String id, String asiento, String nombrePasajero, String numDoc, String tipoDoc) throws EValorNulo, EValorNegativo {
 		if (reserva == null)
 			throw new EValorNulo("La reserva no puede ser nula");
 		int i = indexReserva(reserva.getId()); 
-		reservas[i].addTiquete(id, asiento, precio, nombrePasajero, numDoc, tipoDoc, dirFich);
+		reservas[i].addTiquete(id, asiento, nombrePasajero, numDoc, tipoDoc);
 	}
 
 	public int indexTiqueteOnReserva(Reserva reserva, String id) throws EValorNulo, noIdException {

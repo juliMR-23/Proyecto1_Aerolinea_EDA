@@ -21,6 +21,7 @@ public class Vuelo implements Serializable{
     private TripulanteCabina[] tripulacion;
     private Piloto[] pilotos;
     private Reserva[] reservas;
+    private double precio;
 
     // Constructor
     public Vuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes{
@@ -68,7 +69,10 @@ public class Vuelo implements Serializable{
         this.fechaHoraLlegada = null; //TODO
         this.atrasado();
     }
-
+    public double getPrecio() {
+    	return precio;
+    }
+    
     // Estado de vuelo
     public void cancelado(){this.estadoVuelo="Cancelado";}
     public void confirmado(){this.estadoVuelo="Confirmado";}
@@ -137,6 +141,12 @@ public class Vuelo implements Serializable{
 	        }
 	    }
 	    tripulacion = nuevo;
+	}
+	
+	public int calcularDuracion() {
+		double distancia = Math.sqrt(Math.pow((origen.getLatitud()-destino.getLatitud()),2)+Math.pow((origen.getLongitud()-destino.getLongitud()),2));
+		distancia = Math.toRadians(distancia)*6371;
+		return (int)((distancia/(avion.getVelocidad()*1.852))*60);
 	}
 	
 	// Reservas y Asientos

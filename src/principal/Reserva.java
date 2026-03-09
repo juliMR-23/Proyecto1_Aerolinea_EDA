@@ -2,24 +2,39 @@ package principal;
 
 import java.util.Arrays;
 import java.io.*;
+import java.time.LocalDateTime;
 
+import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import excepciones.noIdException;
+import util.IDAsign;
 import util.Valida;
 
 public class Reserva implements Serializable {
-	String id;
-	Vuelo vuelo;
-	Cliente cliente;
-	Tiquete[] tiquetes = new Tiquete[0];
-	boolean activa;
+	private String id;
+	private Vuelo vuelo;
+	private Cliente cliente;
+	private Tiquete[] tiquetes = new Tiquete[0];
+	private boolean activa;
+	private static int cont = 0;
 	
-	public Reserva(String id, Vuelo vuelo, Cliente cliente) {
-		this.id = id;
+	private static final long serialVersionUID = 1L;
+	
+	public Reserva(Vuelo vuelo, Cliente cliente) throws EValorNulo {
+		
+		if(vuelo == null) {throw new EValorNulo("El vuelo no puede estar vacío");}
+		if(cliente == null) {throw new EValorNulo("El cliente no puede estar vacío");}
+		
+		this.id = IDAsign.asignar("RE",cont);
 		this.cliente = cliente;
 		this.vuelo = vuelo;
 		this.activa = true;
-
+		cont++;
+	}
+	public void validarActive() {
+		if(vuelo.getFechaHoraSalida().isBefore(LocalDateTime.now())) {
+			setActiva(false);
+		};
 	}
 
 	public String getId() {return id;}
@@ -33,9 +48,9 @@ public class Reserva implements Serializable {
 	public void setTiquetes(Tiquete[] tiquetes) {this.tiquetes = tiquetes;}
 	public Tiquete[] getTiquetes() {return tiquetes;}
 
-	public void addTiquete(String id, String asiento, double precio, String nombrePasajero, String numDocPasajero, String tipoDocPasajero, String dirFichTiq) {
+	public void addTiquete(String id, String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EValorNegativo {
 		tiquetes = Arrays.copyOf(tiquetes, tiquetes.length+1);
-		tiquetes[tiquetes.length-1] = new Tiquete(id, asiento, precio, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
+		tiquetes[tiquetes.length-1] = new Tiquete(id, asiento, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
 	}
 	
 	public int indexTiquete(String id) throws noIdException {

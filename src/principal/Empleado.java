@@ -32,9 +32,9 @@ abstract class Empleado extends Persona implements Serializable {
     protected double horasVueloAcumuladas;
 
     // CONSTRUCTOR
-    public Empleado(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
+    public Empleado(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
     		double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
-    	super(id, nombre, tipoDocumento, documento, telefono, email, password);
+    	super(nombre, tipoDocumento, documento, telefono, email, password);
     	if(salarioBase<=0 || aniosExperiencia<=0)
     		throw new EValorNegativo("El salario base debe ser mayor a cero");
     	if(aniosExperiencia<0)
