@@ -1,6 +1,7 @@
 package principal;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 
 import excepciones.EInvalidEmail;
@@ -19,4 +20,12 @@ public class Piloto extends Empleado implements Serializable{
 	public double calcularSalario() {
 		return super.salarioBase + 200*super.aniosExperiencia + 500;
 	}
+	public Vuelo[] getVuelosAsignados() {
+	    return Arrays.copyOf(vuelosAsignados, cantidadVuelos);
+	}
+
+	public int getCantidadVuelos() {
+	    return cantidadVuelos;
+	}
+
 }

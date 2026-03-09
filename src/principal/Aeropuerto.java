@@ -18,8 +18,8 @@ public class Aeropuerto implements Serializable{
 	private static int cont = 0;
 
 
-	public Aeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EValorNulo {
-		Valida.validarTexto(id, "El id no puede estar vacío");
+	public Aeropuerto(String nombre, String ciudad, String pais, String zonaHoraria, double longitud, double latitud) throws EValorNulo {
+
 		Valida.validarTexto(nombre, "El nombre no puede estar vacío");
 		Valida.validarTexto(ciudad, "La ciudad no puede estar vacía");
 		Valida.validarTexto(pais, "El país no puede estar vacío");

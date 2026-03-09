@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0"
+            style="-fx-background-color: #1E2A35;"
+            xmlns="http://javafx.com/javafx/23"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.ComprarVueloViewController">
+
+    <ScrollPane fitToWidth="true"
+                style="-fx-background: transparent;
+                       -fx-background-color: transparent;
+                       -fx-border-color: transparent;"
+                AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+
+        <VBox alignment="TOP_CENTER" spacing="32.0"
+              style="-fx-padding: 100 200 60 200;">
+
+            <!-- TÍTULO -->
+            <VBox alignment="CENTER" spacing="8.0">
+                <Label text="Confirmar Compra"
+                       style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #ECF0F1;"/>
+                <Label fx:id="lblResumenVuelo" text=""
+                       style="-fx-font-size: 18px; -fx-text-fill: #C9A84C;"/>
+            </VBox>
+
+            <!-- RESUMEN DEL VUELO -->
+            <HBox alignment="CENTER" spacing="0.0"
+                  style="-fx-background-color: #FFFFFF;
+                         -fx-background-radius: 16;
+                         -fx-padding: 24 40 24 40;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0, 0, 4);"
+                  maxWidth="1200.0">
+
+                <VBox alignment="CENTER" spacing="4.0" prefWidth="200.0">
+                    <Label fx:id="lblHoraSalida"
+                           style="-fx-font-size: 40px; -fx-font-weight: bold; -fx-text-fill: #1E2A35;"/>
+                    <Label fx:id="lblCodOrigen"
+                           style="-fx-font-size: 16px; -fx-text-fill: #666666; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <VBox alignment="CENTER" spacing="6.0" HBox.hgrow="ALWAYS">
+                    <Label fx:id="lblDuracion"
+                           style="-fx-font-size: 13px; -fx-text-fill: #888888;"/>
+                    <HBox alignment="CENTER" spacing="0.0">
+                        <Label text="●" style="-fx-text-fill: #1E2A35; -fx-font-size: 9px;"/>
+                        <Region HBox.hgrow="ALWAYS"
+                                style="-fx-border-color: #AAAAAA; -fx-border-width: 1 0 0 0;
+                                       -fx-border-style: dashed; -fx-min-height: 1;"/>
+                        <Label text="✈"
+                               style="-fx-text-fill: #1E2A35; -fx-font-size: 22px; -fx-padding: 0 8 0 8;"/>
+                        <Region HBox.hgrow="ALWAYS"
+                                style="-fx-border-color: #AAAAAA; -fx-border-width: 1 0 0 0;
+                                       -fx-border-style: dashed; -fx-min-height: 1;"/>
+                        <Label text="●" style="-fx-text-fill: #1E2A35; -fx-font-size: 9px;"/>
+                    </HBox>
+                </VBox>
+
+                <VBox alignment="CENTER" spacing="4.0" prefWidth="200.0">
+                    <Label fx:id="lblHoraLlegada"
+                           style="-fx-font-size: 40px; -fx-font-weight: bold; -fx-text-fill: #1E2A35;"/>
+                    <Label fx:id="lblCodDestino"
+                           style="-fx-font-size: 16px; -fx-text-fill: #666666; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <Region prefWidth="60.0"/>
+
+                <VBox alignment="CENTER_RIGHT" spacing="4.0" prefWidth="200.0">
+                    <Label text="Precio por tiquete"
+                           style="-fx-font-size: 13px; -fx-text-fill: #888888;"/>
+                    <Label fx:id="lblPrecioPorTiquete"
+                           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1E2A35;"/>
+                </VBox>
+            </HBox>
+
+            <!-- FORMULARIOS PASAJEROS (llenados dinámicamente) -->
+            <VBox fx:id="vboxPasajeros" spacing="20.0" maxWidth="1200.0"/>
+
+            <!-- TOTAL + CONFIRMAR -->
+            <HBox alignment="CENTER_RIGHT" spacing="24.0" maxWidth="1200.0">
+                <VBox alignment="CENTER_RIGHT" spacing="4.0">
+                    <Label text="Total a pagar"
+                           style="-fx-font-size: 14px; -fx-text-fill: #888888;"/>
+                    <Label fx:id="lblTotal" text="COP 0"
+                           style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #C9A84C;"/>
+                </VBox>
+                <Button fx:id="btnConfirmar"
+                        text="Confirmar Compra  ✔"
+                        onAction="#handleConfirmar"
+                        prefWidth="260.0" prefHeight="64.0"
+                        style="-fx-background-color: #C9A84C;
+                               -fx-text-fill: #1E2A35;
+                               -fx-font-size: 18px;
+                               -fx-font-weight: bold;
+                               -fx-background-radius: 12;
+                               -fx-cursor: hand;
+                               -fx-border-color: transparent;"/>
+            </HBox>
+
+            <!-- MENSAJE RESULTADO -->
+            <Label fx:id="lblMensaje" text=""
+                   style="-fx-font-size: 18px;"
+                   wrapText="true" maxWidth="1200.0"/>
+
+            <!-- VOLVER -->
+            <Button fx:id="btnVolver"
+                    text="← Volver a resultados"
+                    onAction="#handleVolver"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #7F8C8D;
+                           -fx-font-size: 15px;
+                           -fx-border-color: transparent;
+                           -fx-cursor: hand;"/>
+        </VBox>
+    </ScrollPane>
+
+    <Label text="✈  EDArolinea"
+           style="-fx-text-fill: #C9A84C; -fx-font-size: 24px; -fx-font-weight: bold;"
+           AnchorPane.topAnchor="28.0" AnchorPane.leftAnchor="48.0"/>
+</AnchorPane>

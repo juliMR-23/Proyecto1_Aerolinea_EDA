@@ -88,7 +88,7 @@ public class Aerolinea implements Serializable{
 		if(indexAeropuerto(id)!=-1)
 			throw new EIDRepetido("Ya existe otro aeropuerto con este id");
 		
-		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, codigoIATA, zonaHoraria, longitud, latitud);
+		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, zonaHoraria, longitud, latitud);
 		aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
         aeropuertos[aeropuertos.length - 1] = a;
     }
@@ -217,11 +217,9 @@ public class Aerolinea implements Serializable{
         return empleados;
     }
 
-    public void addVuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EIDRepetido, EValorNulo, EPilotosInsuficientes {
-        if(indexVuelo(id) != -1)
-            throw new EIDRepetido("Ya existe otro vuelo con este id");
+    public void addVuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EIDRepetido, EValorNulo, EPilotosInsuficientes, EValorNegativo {
 
-        Vuelo v = new Vuelo(id, origen, destino, fechaHoraSalida, avion, tripulacion, pilotos);
+        Vuelo v = new Vuelo(origen, destino, fechaHoraSalida, avion, tripulacion, pilotos, 0);
         vuelos = Arrays.copyOf(vuelos, vuelos.length + 1);
         vuelos[vuelos.length - 1] = v;
     }

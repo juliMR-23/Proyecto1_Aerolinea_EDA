@@ -56,5 +56,13 @@ public class TripulanteCabina extends Empleado implements Serializable{
 	public void setIdiomas(String[] idiomas) {
 		this.idiomas = idiomas;
 	}
+
+	public int getCantidadVuelos() {
+		return cantidadVuelos;
+	}
+
+		public Vuelo[] getVuelosAsignados() {
+	    return Arrays.copyOf(vuelosAsignados, cantidadVuelos);
+	}
 	
 }

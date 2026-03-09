@@ -1,14 +1,13 @@
-/* ===== Fuente Aldrich ===== */
 @font-face {
-    font-family: 'Aldrich';
-    src: url('../fonts/Aldrich-Regular.ttf');
+    -fx-font-family: 'Quantico';
+    src: url('/fonts/Quantico-Bold.ttf');
 }
 
-/* ===== Base global ===== */
 .root {
-    -fx-font-family: 'Aldrich';
-    -fx-background-color: #1E2A35;
+    -fx-font-family: 'Quantico';
+	-fx-background-color: #1E2A35;
 }
+
 
 /* ===== Branding izquierdo ===== */
 

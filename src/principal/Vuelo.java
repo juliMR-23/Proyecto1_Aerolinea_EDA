@@ -26,9 +26,7 @@ public class Vuelo implements Serializable{
     private static int cont = 0;
 
     // Constructor
-    public Vuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos, double precio) throws EValorNulo, EPilotosInsuficientes, EValorNegativo{
-        
-    	Valida.validarTexto(id, "El id no puede estar vacío");
+    public Vuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos, double precio) throws EValorNulo, EPilotosInsuficientes, EValorNegativo{
 
         if (origen == null)
             throw new EValorNulo("El aeropuerto de origen no puede estar vacío");
@@ -40,20 +38,23 @@ public class Vuelo implements Serializable{
             throw new EValorNulo("La tripulación no puede ser nula");
         if (pilotos == null || pilotos.length == 0)
             throw new EValorNulo("Los pilotos no pueden ser nulo");  
-        if(!hasPilotosMin())
-        	throw new EPilotosInsuficientes();
+
         if(precio <= 0) throw new EValorNegativo("El precio no puede ser 0 o negativo");
         
     	this.id = IDAsign.asignar("VU", cont);
         this.origen = origen;
         this.destino = destino;
         this.fechaHoraSalida = fechaHoraSalida;
-        this.fechaHoraLlegada = calcularHoraLlegada();
         this.avion = avion;
+        this.fechaHoraLlegada = calcularHoraLlegada();
         this.estadoVuelo = "Programado";
         this.puertaEmbarque = null;
         this.tripulacion = tripulacion;
         this.pilotos = pilotos;
+        
+        if(!hasPilotosMin())
+        	throw new EPilotosInsuficientes();
+        
         this.reservas = new Reserva[0];
         this.precio = precio;
         
