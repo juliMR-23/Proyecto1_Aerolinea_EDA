@@ -28,6 +28,7 @@ public class Aerolinea implements Serializable{
 	private Empleado[] empleados;
 	private Vuelo[] vuelos;
 	private Administrador[] administradores;
+	private static final long serialVersionUID = 1L;
 	
 	
 	public Aerolinea(String nombre) throws EValorNulo {

@@ -20,6 +20,7 @@ public class Avion implements Serializable{
 	private boolean disponible;
 	//velocidad Ground Speed en NUDOS
 	private double velocidad;
+	private static final long serialVersionUID = 1L;
 	
 	public Avion(String matricula, String marca, String modelo, int capacidad, boolean disponible, double velocidad) throws EValorNulo, EValorNegativo {
 		Valida.validarTexto(matricula, "La matrícula no puede estar vacía");

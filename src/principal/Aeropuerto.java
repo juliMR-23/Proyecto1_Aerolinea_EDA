@@ -16,6 +16,7 @@ public class Aeropuerto implements Serializable{
 	private double longitud;
 	private double latitud;
 	private static int cont = 0;
+	private static final long serialVersionUID = 1L;
 
 
 	public Aeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EValorNulo {

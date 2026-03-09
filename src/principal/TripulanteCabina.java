@@ -15,6 +15,7 @@ import excepciones.EValorNulo;
 
 public class TripulanteCabina extends Empleado implements Serializable{
 	private String[] idiomas;
+	private static final long serialVersionUID = 1L;
 	
 	public TripulanteCabina(String nombre, String tipoDocumento, String documento, String telefono, String email,
 			String password, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
