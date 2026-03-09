@@ -72,11 +72,12 @@ public class Aerolinea implements Serializable{
 		return -1;//si no lo encuentra retorna -1
 	}
 	public void deleteAvion(String id) {
-		int i = indexAvion(id);
-		if(i!=-1) {//el avion existe, está en la lista
-			aviones[i]=aviones[aviones.length-1];//evita espacios vacíos
-			aviones = Arrays.copyOf(aviones, aviones.length-1);//reducir arreglo (elimina última pos)
-		}
+	    int i = indexAvion(id);
+	    if (i != -1) {//el avion existe, está en la lista
+	        for (int j = i; j < aviones.length - 1; j++)
+	            aviones[j] = aviones[j + 1];//evita espacios vacíos, mismo orden
+	        aviones = Arrays.copyOf(aviones, aviones.length - 1);//reducir arreglo (elimina última pos)
+	    }
 	}
 	public Avion[] listAviones() {
 		return aviones;
@@ -84,11 +85,11 @@ public class Aerolinea implements Serializable{
 	
 	
 	//lo mismo para las otras listas
-	public void addAeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
-		if(indexAeropuerto(id)!=-1)
-			throw new EIDRepetido("Ya existe otro aeropuerto con este id");
+	public void addAeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
 		
 		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, codigoIATA, zonaHoraria, longitud, latitud);
+		if(indexAeropuerto(a.getId())!=-1)
+			throw new EIDRepetido("Ya existe otro aeropuerto con este id");
 		aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
         aeropuertos[aeropuertos.length - 1] = a;
     }
@@ -112,8 +113,9 @@ public class Aerolinea implements Serializable{
 
     public void deleteAeropuerto(String id) {
         int i = indexAeropuerto(id);
-        if(i != -1) {
-            aeropuertos[i] = aeropuertos[aeropuertos.length - 1];
+        if (i != -1) {
+            for (int j = i; j < aeropuertos.length - 1; j++)
+                aeropuertos[j] = aeropuertos[j + 1];
             aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length - 1);
         }
     }
@@ -122,16 +124,15 @@ public class Aerolinea implements Serializable{
         return aeropuertos;
     }
 
-    public void addCliente(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password) 
+    public void addCliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) 
             throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
 
-        if(indexCliente(id) != -1)
-            throw new EIDRepetido("Ya existe otro cliente con este id");
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
         Cliente c = new Cliente(nombre, tipoDocumento, documento, telefono, email, password);
-
+        if(indexCliente(c.getId()) != -1)
+            throw new EIDRepetido("Ya existe otro cliente con este id");
         clientes = Arrays.copyOf(clientes, clientes.length + 1);
         clientes[clientes.length - 1] = c;
     }
@@ -152,38 +153,40 @@ public class Aerolinea implements Serializable{
             return n;
         return -1;
     }
-
     public void deleteCliente(String id) {
         int i = indexCliente(id);
-        if(i != -1) {
-            clientes[i] = clientes[clientes.length - 1];
+        if (i != -1) {
+            for (int j = i; j < clientes.length - 1; j++)
+                clientes[j] = clientes[j + 1];
+
             clientes = Arrays.copyOf(clientes, clientes.length - 1);
         }
     }
-
     public Cliente[] listClientes() {
         return clientes;
     }
 
-    public void addPiloto(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
-			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
-        if(indexEmpleado(id) != -1)
-            throw new EIDRepetido("Ya existe otro empleado con este id");
+    public void addPiloto(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
+			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
+        
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
         Piloto p = new Piloto(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
+        if(indexEmpleado(p.getId()) != -1)
+            throw new EIDRepetido("Ya existe otro empleado con este id");
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
         empleados[empleados.length - 1] = p;
     }
-    public void addTripulanteCabina(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
-			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia, Aerolinea aerolinea)  throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail{
-    	if(indexEmpleado(id) != -1)
-            throw new EIDRepetido("Ya existe otro empleado con este id");
+    public void addTripulanteCabina(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
+			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia)  throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail{
+    	
     	if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
         TripulanteCabina t = new TripulanteCabina(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
+        if(indexEmpleado(t.getId()) != -1)
+            throw new EIDRepetido("Ya existe otro empleado con este id");
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
         empleados[empleados.length - 1] = t;
     }
@@ -207,8 +210,10 @@ public class Aerolinea implements Serializable{
 
     public void deleteEmpleado(String id) {
         int i = indexEmpleado(id);
-        if(i != -1) {
-            empleados[i] = empleados[empleados.length - 1];
+        if (i != -1) {
+            for (int j = i; j < empleados.length-1; j++)
+                empleados[j] = empleados[j + 1];
+            
             empleados = Arrays.copyOf(empleados, empleados.length - 1);
         }
     }
@@ -245,8 +250,9 @@ public class Aerolinea implements Serializable{
 
     public void deleteVuelo(String id) {
         int i = indexVuelo(id);
-        if(i != -1) {
-            vuelos[i] = vuelos[vuelos.length - 1];
+        if (i != -1) {
+            for (int j = i; j < vuelos.length - 1; j++)
+                vuelos[j] = vuelos[j + 1];
             vuelos = Arrays.copyOf(vuelos, vuelos.length - 1);
         }
     }
@@ -256,18 +262,16 @@ public class Aerolinea implements Serializable{
     }
     
 
-    public void addAdministrador(String id, String nombre, String tipoDocumento, String documento,
+    public void addAdministrador(String nombre, String tipoDocumento, String documento,
             String telefono, String email, String password)
             throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
-
-        if(indexAdministrador(id) != -1)
-            throw new EIDRepetido("Ya existe otro administrador con este id");
 
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
         Administrador a = new Administrador(nombre, tipoDocumento, documento, telefono, email, password);
-
+        if(indexAdministrador(a.getId()) != -1)
+            throw new EIDRepetido("Ya existe otro administrador con este id");
         administradores = Arrays.copyOf(administradores, administradores.length + 1);
         administradores[administradores.length - 1] = a;
     }
@@ -295,8 +299,9 @@ public class Aerolinea implements Serializable{
     public void deleteAdministrador(String id) {
         int i = indexAdministrador(id);
 
-        if(i != -1) {
-            administradores[i] = administradores[administradores.length - 1];
+        if (i != -1) {
+            for (int j = i; j < administradores.length - 1; j++)
+                administradores[j] = administradores[j + 1];
             administradores = Arrays.copyOf(administradores, administradores.length - 1);
         }
     }

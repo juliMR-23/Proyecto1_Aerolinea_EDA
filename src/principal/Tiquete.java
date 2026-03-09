@@ -37,7 +37,7 @@ public class Tiquete implements Serializable {
 		this.nombrePasajero = nombrePasajero;
 		this.numDocPasajero = numDocPasajero;
 		this.tipoDocPasajero = tipoDocPasajero;
-		
+		cont++;
 	}
 	
 	public String getId() {return id;}
@@ -59,15 +59,15 @@ public class Tiquete implements Serializable {
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
 		b.writeObject((Tiquete)this);
-		b.close();
 		f.close();
+		b.close();
 	}
 	public static Tiquete leerFicherTiquete(String dir) throws IOException, ClassNotFoundException {
 		FileInputStream f = new FileInputStream(dir);
 		ObjectInputStream b = new ObjectInputStream(f);
 		Tiquete tiquete = (Tiquete) b.readObject();
-		b.close();
 		f.close();
+		b.close();
 		return tiquete;
 	}
 	

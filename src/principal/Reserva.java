@@ -55,7 +55,7 @@ public class Reserva implements Serializable {
 	
 	public int indexTiquete(String id) throws noIdException {
 		int i = 0;
-		while (!tiquetes[i].equals(id)) {
+		while (i<tiquetes.length && !tiquetes[i].equals(id)) {
 			i++;
 		}
 		if (i==tiquetes.length) {throw new noIdException("No existe un tiquete en esta reserva asignado a ese pasajero");}
@@ -86,16 +86,16 @@ public class Reserva implements Serializable {
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
 		b.writeObject((Reserva)this);
-		b.close();
 		f.close();
+		b.close();
 	}
 	public static Reserva leerFicheroReserva(String dir) throws IOException, ClassNotFoundException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 		FileInputStream f = new FileInputStream(dir);
 		ObjectInputStream b = new ObjectInputStream(f);
 		Reserva reserva = (Reserva) b.readObject();
-		b.close();
 		f.close();
+		b.close();
 		return reserva;
 	}
 }
