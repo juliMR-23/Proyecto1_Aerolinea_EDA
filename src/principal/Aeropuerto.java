@@ -1,5 +1,7 @@
 package principal;
 
+import util.IDAsign;
+
 public class Aeropuerto {
 
 	private String id;
@@ -7,13 +9,15 @@ public class Aeropuerto {
 	private String ciudad;
 	private String pais;
 	private String zonaHoraria;
+	private static int cont = 0;
 
-	public Aeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria) {
-		this.id = id;
+	public Aeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria) {
+		this.id = IDAsign.asignar("AE", cont);
 		this.nombre = nombre;
 		this.ciudad = ciudad;
 		this.pais = pais;
 		this.zonaHoraria = zonaHoraria;
+		cont++;
 	}
 
 	public String getId() {

@@ -17,8 +17,8 @@ public class Cliente extends Persona implements Serializable {
 
 	private Reserva[] reservas;
 
-	public Cliente(String id, String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
-		super(id, nombre, tipoDocumento, documento, telefono, email, password);
+	public Cliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
+		super(nombre, tipoDocumento, documento, telefono, email, password);
 		this.reservas = new Reserva[0];
 	}
 

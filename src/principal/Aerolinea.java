@@ -88,7 +88,7 @@ public class Aerolinea implements Serializable{
 		if(indexAeropuerto(id)!=-1)
 			throw new EIDRepetido("Ya existe otro aeropuerto con este id");
 		
-		Aeropuerto a = new Aeropuerto(id, nombre, ciudad, pais, codigoIATA, zonaHoraria);
+		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, codigoIATA, zonaHoraria);
 		aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
         aeropuertos[aeropuertos.length - 1] = a;
     }
@@ -130,7 +130,7 @@ public class Aerolinea implements Serializable{
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
-        Cliente c = new Cliente(id, nombre, tipoDocumento, documento, telefono, email, password);
+        Cliente c = new Cliente(nombre, tipoDocumento, documento, telefono, email, password);
 
         clientes = Arrays.copyOf(clientes, clientes.length + 1);
         clientes[clientes.length - 1] = c;
@@ -172,7 +172,7 @@ public class Aerolinea implements Serializable{
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
-        Piloto p = new Piloto(id, nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
+        Piloto p = new Piloto(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
         empleados[empleados.length - 1] = p;
     }
@@ -183,7 +183,7 @@ public class Aerolinea implements Serializable{
     	if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
-        TripulanteCabina t = new TripulanteCabina(id, nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
+        TripulanteCabina t = new TripulanteCabina(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
         empleados[empleados.length - 1] = t;
     }

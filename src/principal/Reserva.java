@@ -2,6 +2,7 @@ package principal;
 
 import java.util.Arrays;
 import java.io.*;
+import java.time.LocalDateTime;
 
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
@@ -29,6 +30,11 @@ public class Reserva implements Serializable {
 		this.vuelo = vuelo;
 		this.activa = true;
 		cont++;
+	}
+	public void validarActive() {
+		if(vuelo.getFechaHoraSalida().isBefore(LocalDateTime.now())) {
+			setActiva(false);
+		};
 	}
 
 	public String getId() {return id;}
