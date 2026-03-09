@@ -1,5 +1,8 @@
 package principal;
 
+import excepciones.EValorNulo;
+import util.Valida;
+
 public class Aeropuerto {
 
 	private String id;
@@ -8,7 +11,12 @@ public class Aeropuerto {
 	private String pais;
 	private String zonaHoraria;
 
-	public Aeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria) {
+	public Aeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria) throws EValorNulo {
+		Valida.validarTexto(id, "El id no puede estar vacío");
+		Valida.validarTexto(nombre, "El nombre no puede estar vacío");
+		Valida.validarTexto(ciudad, "La ciudad no puede estar vacía");
+		Valida.validarTexto(pais, "El país no puede estar vacío");
+		Valida.validarTexto(zonaHoraria, "La zona horaria no puede estar vacía");
 		this.id = id;
 		this.nombre = nombre;
 		this.ciudad = ciudad;
@@ -24,7 +32,8 @@ public class Aeropuerto {
 		return this.nombre;
 	}
 
-	public void setNombre(String nombre) {
+	public void setNombre(String nombre) throws EValorNulo {
+		Valida.validarTexto(nombre, "El nombre no puede estar vacío");
 		this.nombre = nombre;
 	}
 
@@ -40,7 +49,8 @@ public class Aeropuerto {
 		return this.zonaHoraria;
 	}
 
-	public void setZonaHoraria(String zonaHoraria) {
+	public void setZonaHoraria(String zonaHoraria) throws EValorNulo {
+		Valida.validarTexto(zonaHoraria, "La zona horaria no puede estar vacía");
 		this.zonaHoraria = zonaHoraria;
 	}
 }
