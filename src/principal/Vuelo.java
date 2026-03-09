@@ -20,6 +20,7 @@ public class Vuelo {
     private TripulanteCabina[] tripulacion;
     private Piloto[] pilotos;
     private Reserva[] reservas;
+    private double precio;
 
     // Constructor
     public Vuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes{
@@ -67,7 +68,10 @@ public class Vuelo {
         this.fechaHoraLlegada = null; //TODO
         this.atrasado();
     }
-
+    public double getPrecio() {
+    	return precio;
+    }
+    
     // Estado de vuelo
     public void cancelado(){this.estadoVuelo="Cancelado";}
     public void confirmado(){this.estadoVuelo="Confirmado";}

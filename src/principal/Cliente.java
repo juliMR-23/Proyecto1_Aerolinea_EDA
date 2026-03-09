@@ -8,6 +8,7 @@ import excepciones.EIDRepetido;
 import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
+import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import excepciones.noIdException;
 import util.Valida;
@@ -56,11 +57,11 @@ public class Cliente extends Persona implements Serializable {
 		}
 	}
 
-	public void addTiqueteOnReserva(Reserva reserva, String id, String asiento, double precio, String nombrePasajero, String numDoc, String tipoDoc, String dirFich) throws EValorNulo {
+	public void addTiqueteOnReserva(Reserva reserva, String id, String asiento, String nombrePasajero, String numDoc, String tipoDoc) throws EValorNulo, EValorNegativo {
 		if (reserva == null)
 			throw new EValorNulo("La reserva no puede ser nula");
 		int i = indexReserva(reserva.getId()); 
-		reservas[i].addTiquete(id, asiento, precio, nombrePasajero, numDoc, tipoDoc, dirFich);
+		reservas[i].addTiquete(id, asiento, nombrePasajero, numDoc, tipoDoc);
 	}
 
 	public int indexTiqueteOnReserva(Reserva reserva, String id) throws EValorNulo, noIdException {

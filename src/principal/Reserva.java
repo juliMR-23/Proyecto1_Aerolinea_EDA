@@ -3,6 +3,7 @@ package principal;
 import java.util.Arrays;
 import java.io.*;
 
+import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import excepciones.noIdException;
 import util.Valida;
@@ -14,7 +15,11 @@ public class Reserva implements Serializable {
 	Tiquete[] tiquetes = new Tiquete[0];
 	boolean activa;
 	
-	public Reserva(String id, Vuelo vuelo, Cliente cliente) {
+	public Reserva(String id, Vuelo vuelo, Cliente cliente) throws EValorNulo {
+		
+		if(vuelo == null) {throw new EValorNulo("El vuelo no puede estar vacío");}
+		if(cliente == null) {throw new EValorNulo("El cliente no puede estar vacío");}
+		
 		this.id = id;
 		this.cliente = cliente;
 		this.vuelo = vuelo;
@@ -33,9 +38,9 @@ public class Reserva implements Serializable {
 	public void setTiquetes(Tiquete[] tiquetes) {this.tiquetes = tiquetes;}
 	public Tiquete[] getTiquetes() {return tiquetes;}
 
-	public void addTiquete(String id, String asiento, double precio, String nombrePasajero, String numDocPasajero, String tipoDocPasajero, String dirFichTiq) {
+	public void addTiquete(String id, String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EValorNegativo {
 		tiquetes = Arrays.copyOf(tiquetes, tiquetes.length+1);
-		tiquetes[tiquetes.length-1] = new Tiquete(id, asiento, precio, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
+		tiquetes[tiquetes.length-1] = new Tiquete(id, asiento, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
 	}
 	
 	public int indexTiquete(String id) throws noIdException {

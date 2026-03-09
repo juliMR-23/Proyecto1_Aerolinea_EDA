@@ -1,6 +1,10 @@
 package principal;
 import java.io.*;
 
+import excepciones.EValorNegativo;
+import excepciones.EValorNulo;
+import util.Valida;
+
 public class Tiquete implements Serializable {
 	String id;
 	String asiento;
@@ -12,12 +16,18 @@ public class Tiquete implements Serializable {
 	
 	
 	
-	public Tiquete(String id, String asiento, double precio, Vuelo vuelo, String nombrePasajero,
-			String numDocPasajero, String tipoDocPasajero) {
+	public Tiquete(String id, String asiento, Vuelo vuelo, String nombrePasajero,
+			String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EValorNegativo {
+		
+		Valida.validarTexto(asiento, "El asiento no puede ser vacío");
+		Valida.validarTexto(nombrePasajero, "El nombre del pasajero no puede ser vacío");
+		Valida.validarTexto(numDocPasajero, "El tipo de documento del pasajero no puede ser vacío");
+		Valida.validarTexto(tipoDocPasajero, "El número de documento del pasajero no puede ser vacío");
+		if(vuelo == null) {throw new EValorNulo("El vuelo no puede estar vacío");}
 		
 		this.id = id;
 		this.asiento = asiento;
-		this.precio = precio;
+		this.precio = vuelo.getPrecio();
 		this.vuelo = vuelo;
 		this.nombrePasajero = nombrePasajero;
 		this.numDocPasajero = numDocPasajero;
