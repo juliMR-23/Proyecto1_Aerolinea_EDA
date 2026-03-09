@@ -29,21 +29,10 @@ abstract class Persona implements Serializable {
     	Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
     	Valida.validarTexto(tipoDocumento, "El tipo de documento no puede ser null ni vacío");
     	Valida.validarTexto(documento, "El documento no puede ser null ni vacío");
-    	Valida.validarTexto(telefono, "El teléfono no puede ser null ni vacío");
-    	Valida.validarTexto(email, "El email no puede ser null ni vacío"); 
-    	Valida.validarTexto(password, "La contraseña no puede ser null ni vacía");
-    	if(telefono.matches("[0-9]+"))
-    		throw new EInvalidTelefono("La contraseña debe tener al menos 6 caracteres");
-    	if (telefono.length()<7 || telefono.length()>10)//regex
-            throw new EInvalidTelefono("El teléfono debe tener entre 7 y 10 dígitos");
-    	if(email.length()<8)
-    		throw new EInvalidEmail("El email debe tener al menos 8 caracteres");
-    	if (!email.matches(".+@.+\\..+"))//regex
-            throw new EInvalidEmail("Formato inválido para email");
-    	if(password.length()<6)
-    		throw new EInvalidPass("La contraseña debe tener al menos 6 caracteres");
-    	if (!password.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])"))//regex
-            throw new EInvalidPass("La contraseña debe contener mayúsculas, minúsculas y números");
+    	validarTelefono(telefono);
+    	validarEmail(email); 
+    	validarPassword(password);
+    	
 
         this.id = id;
         this.nombre = nombre;
@@ -51,6 +40,7 @@ abstract class Persona implements Serializable {
         this.documento = documento;
         this.telefono = telefono;
         this.email = email;
+        this.password = password;
     }
 
     // GETTERS
@@ -78,7 +68,7 @@ abstract class Persona implements Serializable {
         return this.email;
     }
 
-    public String getPass() {
+    public String getPassword() {
         return this.password;
     }
 
@@ -98,23 +88,43 @@ abstract class Persona implements Serializable {
     	this.documento = documento;
     }
 
-    public void setTelefono(String telefono) throws EValorNulo {
-    	Valida.validarTexto(telefono, "El teléfono no puede ser null ni vacío");
+    public void setTelefono(String telefono) throws EValorNulo, EInvalidTelefono {
+    	validarTelefono(telefono);
         this.telefono = telefono;
     }
 
-    public void setEmail(String email) throws EValorNulo {
-    	Valida.validarTexto(email, "El email no puede ser null ni vacío");
+    public void setEmail(String email) throws EValorNulo, EInvalidEmail {
+    	validarEmail(email); 
     	this.email = email;
     }
     
-    public void setPass(String password) throws EValorNulo, EInvalidPass {
-    	Valida.validarTexto(password, "La contraseña no puede ser null ni vacío");
+    public void setPassword(String password) throws EValorNulo, EInvalidPass {
+    	validarPassword(password);
+    	this.password = password;
+    }
+    
+    private void validarTelefono(String telefono) throws EValorNulo, EInvalidTelefono {
+        Valida.validarTexto(telefono, "El teléfono no puede ser null ni vacío");
+        if(!telefono.matches("[0-9]+"))
+            throw new EInvalidTelefono("El teléfono solo puede contener números");
+        if (telefono.length()<7 || telefono.length()>10)
+            throw new EInvalidTelefono("El teléfono debe tener entre 7 y 10 dígitos");
+    }
+    
+    private void validarEmail(String email) throws EValorNulo, EInvalidEmail {
+    	Valida.validarTexto(email, "El email no puede ser null ni vacío"); 
+    	if(email.length()<8)
+    		throw new EInvalidEmail("El email debe tener al menos 8 caracteres");
+    	if (!email.matches(".+@.+\\..+"))//regex
+            throw new EInvalidEmail("Formato inválido para email");
+    }
+    
+    private void validarPassword(String password) throws EValorNulo, EInvalidPass {
+    	Valida.validarTexto(password, "La contraseña no puede ser null ni vacía");
     	if(password.length()<6)
     		throw new EInvalidPass("La contraseña debe tener al menos 6 caracteres");
-    	if (!password.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])"))
+    	if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+"))//regex
             throw new EInvalidPass("La contraseña debe contener mayúsculas, minúsculas y números");
-    	this.password = password;
     }
     
 }
