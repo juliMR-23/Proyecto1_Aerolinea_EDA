@@ -52,6 +52,7 @@ public class Vuelo implements Serializable{
         this.tripulacion = tripulacion;
         this.pilotos = pilotos;
         this.reservas = new Reserva[0];
+        precio=500+calcularDuracion();
     }
 
     // Setters
