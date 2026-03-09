@@ -2,6 +2,7 @@
 
 package principal;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -9,7 +10,7 @@ import excepciones.EPilotosInsuficientes;
 import excepciones.EValorNulo;
 import util.Valida;
 
-public class Vuelo {
+public class Vuelo implements Serializable{
     private final String id;
     private final String numVuelo;
     private final Aeropuerto origen, destino;

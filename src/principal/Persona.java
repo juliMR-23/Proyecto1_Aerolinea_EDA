@@ -32,7 +32,6 @@ abstract class Persona implements Serializable {
     	validarTelefono(telefono);
     	validarEmail(email); 
     	validarPassword(password);
-    	
 
         this.id = id;
         this.nombre = nombre;

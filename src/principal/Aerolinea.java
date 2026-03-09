@@ -84,7 +84,7 @@ public class Aerolinea implements Serializable{
 	
 	
 	//lo mismo para las otras listas
-	public void addAeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria) throws EIDRepetido {
+	public void addAeropuerto(String id, String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria) throws EIDRepetido, EValorNulo {
 		if(indexAeropuerto(id)!=-1)
 			throw new EIDRepetido("Ya existe otro aeropuerto con este id");
 		
@@ -339,5 +339,4 @@ public class Aerolinea implements Serializable{
 	    b.close();
 	    return a;
 	}
-	
 }

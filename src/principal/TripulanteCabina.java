@@ -1,5 +1,6 @@
 package principal;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -11,7 +12,7 @@ import excepciones.EValorNulo;
 
 
 
-public class TripulanteCabina extends Empleado {
+public class TripulanteCabina extends Empleado implements Serializable{
 	private String[] idiomas;
 	
 	public TripulanteCabina(String id, String nombre, String tipoDocumento, String documento, String telefono, String email,
