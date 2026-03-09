@@ -286,36 +286,42 @@ public class BuscarVuelosViewController implements Initializable {
     }
 
    
-    private Vuelo[] buscarVuelos(String origenTxt, String destinoTxt, LocalDate fecha) throws EPilotosInsuficientes {
+    private Vuelo[] buscarVuelos(String origenTxt, String destinoTxt, LocalDate fecha) {
         try {
+            Aeropuerto aeroO = new Aeropuerto("Olaya Herrera", origenTxt,
+                    "Colombia", "America/Bogota", -75.4231, 6.1644);
+            Aeropuerto aeroD = new Aeropuerto("El Dorado", destinoTxt,
+                    "Colombia", "America/Bogota", -74.1469, 4.7014);
 
-        	Aeropuerto aeroO = new Aeropuerto("Olaya Herrera", origenTxt, "Colombia", "America/Bogota", -75.4231, 6.1644);
+            Avion avion = new Avion("AV-001", "Airbus", "A320", 180, true, 850.0);
 
-        	// Aeropuerto destino (El Dorado, Bogotá)
-        	Aeropuerto aeroD = new Aeropuerto("El Dorado", "Bogotá", "Colombia", "America/Bogota", -74.1469, 4.7014);
+            TripulanteCabina tripDummy = new TripulanteCabina(
+                    "Tripulante Demo", "CC", "5555555", "3155555555",
+                    "demo@trip.com", "Pass123",
+                    4000000.0, new java.util.Date(), true, 2
+            );
+            TripulanteCabina[] trip = new TripulanteCabina[]{ tripDummy };
 
-        	Avion avion = new Avion("AV-001", "Airbus", "A320", 180, true, 850.0);
+            Piloto p1 = new Piloto("Piloto Uno", "CC", "6666661", "3166666661",
+                    "p1@demo.com", "Pass123", 7000000.0, new java.util.Date(), true, 4);
+            Piloto p2 = new Piloto("Piloto Dos", "CC", "6666662", "3166666662",
+                    "p2@demo.com", "Pass123", 7000000.0, new java.util.Date(), true, 4);
+            Piloto[] pilotos = new Piloto[]{ p1, p2 };
 
-        	TripulanteCabina[] trip = new TripulanteCabina[0];
-        	Piloto[] pilots = new Piloto[2];
+            Vuelo[] vuelos = new Vuelo[3];
+            vuelos[0] = new Vuelo(aeroO, aeroD, fecha.atTime(7,  0),  avion, trip, pilotos);
+            vuelos[1] = new Vuelo(aeroO, aeroD, fecha.atTime(12, 30), avion, trip, pilotos);
+            vuelos[2] = new Vuelo(aeroO, aeroD, fecha.atTime(17, 45), avion, trip, pilotos);
 
-        	Vuelo[] vuelos = new Vuelo[3];
-        	vuelos[0] = new Vuelo(aeroO, aeroD, fecha.atTime(7, 0), avion, trip, pilots, 150000.0);
-        	vuelos[1] = new Vuelo(aeroO, aeroD, fecha.atTime(12, 30), avion, trip, pilots, 150000.0);
-        	vuelos[2] = new Vuelo(aeroO, aeroD, fecha.atTime(17, 45), avion, trip, pilots, 150000.0);
+            return vuelos;
 
-        	return vuelos;
-
-
-            
-            // TODO: Juntar con ficheros, no crear artificiales
-
-        } catch (EValorNulo | EValorNegativo e) {
-            System.err.println(">>> ERROR creando vuelos: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR creando vuelos: " + e.getMessage());
             e.printStackTrace();
             return new Vuelo[0];
         }
     }
+
 
     private String abrev(String nombre) {
         if (nombre == null) return "N/A";

@@ -11,6 +11,7 @@ import principal.Cliente;
 
 import java.io.IOException;
 
+import excepciones.EInvalidDocumento;
 import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
@@ -33,7 +34,7 @@ public class RegisterViewController {
 
     // Registrarse
     @FXML
-    public void handleRegistrar(ActionEvent event) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
+    public void handleRegistrar(ActionEvent event) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
         String nombre    = txtNombre.getText().trim();
         String tipoDoc   = txtTipoDocumento.getText().trim();
         String documento = txtDocumento.getText().trim();

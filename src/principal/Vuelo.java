@@ -26,7 +26,7 @@ public class Vuelo implements Serializable{
     private static int cont = 0;
 
     // Constructor
-    public Vuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos, double precio) throws EValorNulo, EPilotosInsuficientes, EValorNegativo{
+    public Vuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes, EValorNegativo{
 
         if (origen == null)
             throw new EValorNulo("El aeropuerto de origen no puede estar vacío");
@@ -38,8 +38,6 @@ public class Vuelo implements Serializable{
             throw new EValorNulo("La tripulación no puede ser nula");
         if (pilotos == null || pilotos.length == 0)
             throw new EValorNulo("Los pilotos no pueden ser nulo");  
-
-        if(precio <= 0) throw new EValorNegativo("El precio no puede ser 0 o negativo");
         
     	this.id = IDAsign.asignar("VU", cont);
         this.origen = origen;
@@ -56,7 +54,7 @@ public class Vuelo implements Serializable{
         	throw new EPilotosInsuficientes();
         
         this.reservas = new Reserva[0];
-        this.precio = precio;
+        this.precio = 500+calcularDuracion();
         
         cont++;
         

@@ -5,19 +5,19 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import excepciones.EIDRepetido;
+import excepciones.EInvalidDocumento;
 import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
-import excepciones.noIdException;
 import util.Valida;
 
 public class Cliente extends Persona implements Serializable {
 
 	private Reserva[] reservas;
 
-	public Cliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail {
+	public Cliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
 		super(nombre, tipoDocumento, documento, telefono, email, password);
 		this.reservas = new Reserva[0];
 	}
@@ -58,26 +58,26 @@ public class Cliente extends Persona implements Serializable {
 		}
 	}
 
-	public void addTiqueteOnReserva(Reserva reserva, String id, String asiento, String nombrePasajero, String numDoc, String tipoDoc) throws EValorNulo, EValorNegativo {
+	public void addTiqueteOnReserva(Reserva reserva, String id, String asiento, String nombrePasajero, String numDoc, String tipoDoc) throws EValorNulo {
 		if (reserva == null)
 			throw new EValorNulo("La reserva no puede ser nula");
 		int i = indexReserva(reserva.getId()); 
-		reservas[i].addTiquete(id, asiento, nombrePasajero, numDoc, tipoDoc);
+		reservas[i].addTiquete(asiento, nombrePasajero, numDoc, tipoDoc);
 	}
 
-	public int indexTiqueteOnReserva(Reserva reserva, String id) throws EValorNulo, noIdException {
+	public int indexTiqueteOnReserva(Reserva reserva, String id) throws EValorNulo{
 		if (reserva == null)
 			throw new EValorNulo("La reserva no puede ser nula");
 		return reserva.indexTiquete(id);
 	}
 
-	public Tiquete searchTiqueteOnReserva(Reserva reserva, String id) throws EValorNulo, noIdException {
+	public Tiquete searchTiqueteOnReserva(Reserva reserva, String id) throws EValorNulo{
 		if (reserva == null)
 			throw new EValorNulo("La reserva no puede ser nula");
 		return reserva.searchTiquete(id);
 	}
 
-	public void deleteTiquete(Reserva reserva, String id) throws EValorNulo, noIdException {
+	public void deleteTiquete(Reserva reserva, String id) throws EValorNulo{
 		if (reserva == null)
 			throw new EValorNulo("La reserva no puede ser nula");
 		reserva.deleteTiquete(id);

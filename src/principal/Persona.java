@@ -2,6 +2,7 @@ package principal;
 
 import java.io.Serializable;
 
+import excepciones.EInvalidDocumento;
 import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
@@ -25,12 +26,12 @@ abstract class Persona implements Serializable {
 
     // CONSTRUCTOR
     public Persona(String nombre, String tipoDocumento, String documento,
-                   String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail{
+                   String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento{
 
     	Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
     	Valida.validarTexto(tipoDocumento, "El tipo de documento no puede ser null ni vacío");
-    	Valida.validarTexto(documento, "El documento no puede ser null ni vacío");
     	
+    	validarDocumento(documento);
     	validarTelefono(telefono);
     	validarEmail(email); 
     	validarPassword(password);
@@ -103,6 +104,14 @@ abstract class Persona implements Serializable {
     public void setPassword(String password) throws EValorNulo, EInvalidPass {
     	validarPassword(password);
     	this.password = password;
+    }
+    
+    private void validarDocumento(String documento) throws EValorNulo, EInvalidDocumento {
+        Valida.validarTexto(documento, "El documento no puede ser null ni vacío");
+        if(!documento.matches("[0-9]+"))
+            throw new EInvalidDocumento("El documento solo puede contener números");
+        if (documento.length()<7 || documento.length()>10)
+            throw new EInvalidDocumento("El documento debe tener entre 7 y 10 dígitos");
     }
     
     private void validarTelefono(String telefono) throws EValorNulo, EInvalidTelefono {

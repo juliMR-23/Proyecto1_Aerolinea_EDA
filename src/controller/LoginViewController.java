@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
+import principal.Administrador;
 import principal.Aeropuerto;
 import principal.Avion;
 import principal.Cliente;
@@ -49,7 +50,6 @@ public class LoginViewController implements Initializable {
         }
 
         try {
-            // TODO: Reemplazar por búsqueda real en Aerolinea cuando integres ficheros
             Object usuario = resolverUsuario(email, password);
 
             if (usuario == null) {
@@ -61,7 +61,16 @@ public class LoginViewController implements Initializable {
             boolean maxim = stage.isMaximized();
             Scene   scene;
 
-            if (usuario instanceof Piloto) {
+            if (usuario instanceof Administrador) {
+                FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/view/MainPageAdminView.fxml")
+                );
+                Parent root = loader.load();
+                MainPageAdminViewController ctrl = loader.getController();
+                ctrl.setAdmin((Administrador) usuario);
+                scene = new Scene(root);
+
+            } else if (usuario instanceof Piloto) {
                 FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/view/MainPagePilotoView.fxml")
                 );
@@ -106,15 +115,20 @@ public class LoginViewController implements Initializable {
         }
     }
 
-    // TODO: Reemplazar por Aerolinea.buscarPersonaPorEmail(email, password) cuando integres ficheros
     private Object resolverUsuario(String email, String password) throws Exception {
-
         Aeropuerto aeroO = new Aeropuerto("Olaya Herrera", "Medellín",
                 "Colombia", "America/Bogota", -75.4231, 6.1644);
         Aeropuerto aeroD = new Aeropuerto("El Dorado", "Bogotá",
                 "Colombia", "America/Bogota", -74.1469, 4.7014);
 
         Avion avion = new Avion("AV-TEST", "Airbus", "A320", 180, true, 850.0);
+
+        if (email.equals("admin@test.com")) {
+            return new Administrador(
+                    "Admin EDA", "CC", "9999999", "3199999999",
+                    email, password
+            );
+        }
 
         if (email.equals("piloto@test.com")) {
             Piloto p = new Piloto(
@@ -126,7 +140,7 @@ public class LoginViewController implements Initializable {
             TripulanteCabina[] trip = new TripulanteCabina[1];
             trip[0] = new TripulanteCabina(
                     "Ana Tripulante", "CC", "2222222", "3111111111",
-                    "tripulante@test.com", password,
+                    "tripulante@test.com", "Pass123",
                     4000000.0, new Date(), true, 3
             );
 
@@ -136,16 +150,12 @@ public class LoginViewController implements Initializable {
 
             LocalDateTime ahora = LocalDateTime.now();
 
-            Vuelo vuelo1 = new Vuelo(
-                    aeroO, aeroD,
+            Vuelo vuelo1 = new Vuelo(aeroO, aeroD,
                     ahora.plusDays(1).withHour(8).withMinute(0),
-                    avion, trip, pilotos, 150000.0
-            );
-            Vuelo vuelo2 = new Vuelo(
-                    aeroD, aeroO,
+                    avion, trip, pilotos);
+            Vuelo vuelo2 = new Vuelo(aeroD, aeroO,
                     ahora.plusDays(3).withHour(15).withMinute(30),
-                    avion, trip, pilotos, 160000.0
-            );
+                    avion, trip, pilotos);
 
             p.asignarVuelo(vuelo1);
             p.asignarVuelo(vuelo2);
@@ -165,7 +175,7 @@ public class LoginViewController implements Initializable {
 
             Piloto pilotoDummy = new Piloto(
                     "Piloto Dummy", "CC", "3333333", "3222222222",
-                    "dummy@piloto.com", password,
+                    "dummy@piloto.com", "Pass123",
                     7000000.0, new Date(), true, 4
             );
             Piloto[] pilotos = new Piloto[2];
@@ -174,16 +184,12 @@ public class LoginViewController implements Initializable {
 
             LocalDateTime ahora = LocalDateTime.now();
 
-            Vuelo vuelo1 = new Vuelo(
-                    aeroO, aeroD,
+            Vuelo vuelo1 = new Vuelo(aeroO, aeroD,
                     ahora.plusDays(2).withHour(9).withMinute(15),
-                    avion, trip, pilotos, 140000.0
-            );
-            Vuelo vuelo2 = new Vuelo(
-                    aeroD, aeroO,
+                    avion, trip, pilotos);
+            Vuelo vuelo2 = new Vuelo(aeroD, aeroO,
                     ahora.plusDays(4).withHour(18).withMinute(45),
-                    avion, trip, pilotos, 155000.0
-            );
+                    avion, trip, pilotos);
 
             t.asignarVuelo(vuelo1);
             t.asignarVuelo(vuelo2);
@@ -204,16 +210,12 @@ public class LoginViewController implements Initializable {
     @FXML
     public void handleRegistrar(ActionEvent event) {
         try {
-            Stage   stage = (Stage) btnRegistrar.getScene().getWindow();
+            Stage stage = (Stage) btnRegistrar.getScene().getWindow();
             boolean maxim = stage.isMaximized();
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/view/RegisterView.fxml")
-            );
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/RegisterView.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                getClass().getResource("/css/app.css").toExternalForm()
-            );
+            scene.getStylesheets().add(getClass().getResource("/css/app.css").toExternalForm());
             stage.setScene(scene);
             stage.setMaximized(maxim);
             stage.show();
@@ -226,16 +228,12 @@ public class LoginViewController implements Initializable {
     @FXML
     public void handleVolver(ActionEvent event) {
         try {
-            Stage   stage = (Stage) btnVolver.getScene().getWindow();
+            Stage stage = (Stage) btnVolver.getScene().getWindow();
             boolean maxim = stage.isMaximized();
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/view/BuscarVuelosView.fxml")
-            );
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/BuscarVuelosView.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                getClass().getResource("/css/app.css").toExternalForm()
-            );
+            scene.getStylesheets().add(getClass().getResource("/css/app.css").toExternalForm());
             stage.setScene(scene);
             stage.setMaximized(maxim);
             stage.show();
