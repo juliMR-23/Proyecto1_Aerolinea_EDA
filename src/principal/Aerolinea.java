@@ -266,7 +266,7 @@ public class Aerolinea implements Serializable{
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
-        Administrador a = new Administrador(id, nombre, tipoDocumento, documento, telefono, email, password);
+        Administrador a = new Administrador(nombre, tipoDocumento, documento, telefono, email, password);
 
         administradores = Arrays.copyOf(administradores, administradores.length + 1);
         administradores[administradores.length - 1] = a;
