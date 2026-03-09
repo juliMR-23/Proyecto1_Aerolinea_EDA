@@ -6,25 +6,29 @@ import java.io.*;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import excepciones.noIdException;
+import util.IDAsign;
 import util.Valida;
 
 public class Reserva implements Serializable {
-	String id;
-	Vuelo vuelo;
-	Cliente cliente;
-	Tiquete[] tiquetes = new Tiquete[0];
-	boolean activa;
+	private String id;
+	private Vuelo vuelo;
+	private Cliente cliente;
+	private Tiquete[] tiquetes = new Tiquete[0];
+	private boolean activa;
+	private static int cont = 0;
 	
-	public Reserva(String id, Vuelo vuelo, Cliente cliente) throws EValorNulo {
+	private static final long serialVersionUID = 1L;
+	
+	public Reserva(Vuelo vuelo, Cliente cliente) throws EValorNulo {
 		
 		if(vuelo == null) {throw new EValorNulo("El vuelo no puede estar vacío");}
 		if(cliente == null) {throw new EValorNulo("El cliente no puede estar vacío");}
 		
-		this.id = id;
+		this.id = IDAsign.asignar("RE",cont);
 		this.cliente = cliente;
 		this.vuelo = vuelo;
 		this.activa = true;
-
+		cont++;
 	}
 
 	public String getId() {return id;}

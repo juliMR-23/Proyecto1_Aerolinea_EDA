@@ -27,7 +27,7 @@ public class Cliente extends Persona implements Serializable {
 			throw new EValorNulo("El vuelo no puede ser nulo");
 		if (indexReserva(id) != -1)
 			throw new EIDRepetido("Ya existe una reserva con ese id");
-		Reserva r = new Reserva(id, vuelo, this);
+		Reserva r = new Reserva(vuelo, this);
 		reservas = Arrays.copyOf(reservas, reservas.length + 1);
 		reservas[reservas.length - 1] = r;
 	}
