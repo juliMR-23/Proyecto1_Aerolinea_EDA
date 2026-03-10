@@ -123,6 +123,17 @@ public class Aerolinea implements Serializable{
 		return aviones;
 	}
 	
+	public Avion[] listAvionesActivos() {
+		Avion[] activos = new Avion[0];
+		for(Avion a: aviones) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
+	
 	
 	//lo mismo para las otras listas
 	public void addAeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
@@ -161,6 +172,17 @@ public class Aerolinea implements Serializable{
     public Aeropuerto[] listAeropuertos() {
         return aeropuertos;
     }
+    
+    public Aeropuerto[] listAeropuertosActivos() {
+    	Aeropuerto[] activos = new Aeropuerto[0];
+		for(Aeropuerto a: aeropuertos) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
 
     public void addCliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) 
             throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
@@ -237,6 +259,18 @@ public class Aerolinea implements Serializable{
     public Cliente[] listClientes() {
         return clientes;
     }
+    
+    public Cliente[] listClientesActivos() {
+    	Cliente[] activos = new Cliente[0];
+		for(Cliente a: clientes) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
+
 
     public void addPiloto(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
 			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
@@ -291,6 +325,18 @@ public class Aerolinea implements Serializable{
     public Empleado[] listEmpleados() {
         return empleados;
     }
+    
+    public Empleado[] listEmpleadosActivos() {
+    	Empleado[] activos = new Empleado[0];
+		for(Empleado a: empleados) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
+
 
     public void addVuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos, double precio) throws EIDRepetido, EValorNulo, EPilotosInsuficientes, EValorNegativo {
  
@@ -329,6 +375,17 @@ public class Aerolinea implements Serializable{
         return vuelos;
     }
     
+    public Vuelo[] listVuelosActivos() {
+    	Vuelo[] activos = new Vuelo[0];
+		for(Vuelo a: vuelos) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
+
 
     public void addAdministrador(String nombre, String tipoDocumento, String documento,
             String telefono, String email, String password)
@@ -410,6 +467,16 @@ public class Aerolinea implements Serializable{
         return administradores;
     }
     
+    public Administrador[] listAdministradoresActivos() {
+    	Administrador[] activos = new Administrador[0];
+		for(Administrador a: administradores) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
     
     
     public boolean existeEmail(String email) {

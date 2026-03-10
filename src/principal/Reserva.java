@@ -58,7 +58,7 @@ public class Reserva implements Serializable {
 	public void setActive(boolean activa) {this.isActive = activa;}
 	public boolean isyet() {return isYet;}
 	public void setYet(boolean activa) {this.isYet = activa;}
-	public Tiquete[] getTiquetes() {return tiquetes;}
+	
 
 	public void addTiquete(String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo{
 		Tiquete t=new Tiquete(asiento, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
@@ -105,9 +105,10 @@ public class Reserva implements Serializable {
 		while (i<tiquetes.length && !tiquetes[i].getId().equalsIgnoreCase(id)) {
 			i++;
 		}
-		if (i==tiquetes.length)
-			return -1;
-		return i;
+		if (i < tiquetes.length)
+			if(tiquetes[i].isActive()) 
+				return i;
+		return -1;
 	}
 	
 	public Tiquete searchTiquete(String id){
@@ -125,6 +126,21 @@ public class Reserva implements Serializable {
             	tiquetes[j] = tiquetes[j+1];
             tiquetes = Arrays.copyOf(tiquetes, tiquetes.length - 1);
         }
+	}
+	
+	
+	
+	public Tiquete[] listTiquetes() {return tiquetes;}
+	
+	public Tiquete[] listTiquetesActivos() {
+		Tiquete[] activos = new Tiquete[0];
+		for(Tiquete a: tiquetes) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
 	}
 	
 	public double calcularPrecioTotal() {

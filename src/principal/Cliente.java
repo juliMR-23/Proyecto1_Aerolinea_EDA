@@ -75,7 +75,8 @@ public class Cliente extends Persona implements Serializable {
 			n++;
 		}
 		if (n < reservas.length)
-			return n;
+			if(reservas[n].isActive()) 
+				return n;
 		return -1;
 	}
 
@@ -95,6 +96,21 @@ public class Cliente extends Persona implements Serializable {
 
 	        reservas = Arrays.copyOf(reservas, reservas.length -1);
 	    }
+	}
+	
+	public Reserva[] listReservas() {
+		return reservas;
+	}
+	
+	public Reserva[] listReservasActivas() {
+		Reserva[] activos = new Reserva[0];
+		for(Reserva a: reservas) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
 	}
 
 	public void addTiqueteOnReserva(Reserva reserva, String asiento, String nombrePasajero, String numDoc, String tipoDoc) throws EValorNulo {
@@ -121,10 +137,6 @@ public class Cliente extends Persona implements Serializable {
 		if (reserva == null)
 			throw new EValorNulo("La reserva no puede ser nula");
 		reserva.deleteTiquete(id);
-	}
-
-	public Reserva[] getReservas() {
-		return reservas;
 	}
 	
 	@Override
