@@ -245,7 +245,8 @@ public class MainPagePilotoViewController implements Initializable {
             Parent root = loader.load();
             BuscarVuelosViewController ctrl = loader.getController();
             ctrl.setAerolinea(aerolinea);
-            Scene scene = new Scene(root);
+            Scene scene = btnCerrarSesion.getScene();
+            scene.setRoot(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
             );

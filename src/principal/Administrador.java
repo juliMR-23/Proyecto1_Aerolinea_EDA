@@ -7,24 +7,19 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import excepciones.EInvalidDocumento;
-import excepciones.EInvalidEmail;
-import excepciones.EInvalidPass;
-import excepciones.EInvalidTelefono;
-import excepciones.EValorNulo;
+import excepciones.*;
 import util.IDAsign;
 
 public class Administrador extends Persona implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
-	public Administrador(String nombre, String tipoDocumento, String documento, String telefono,String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
+	public Administrador(String nombre, String tipoDocumento, String documento, String telefono,String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento, EInvalidName {
 		super(nombre, tipoDocumento, documento, telefono, email, password);
 		
 		this.id=IDAsign.asignar("AD", cont);
 	}
-	
-	@Override
+
 	public void wFicheroPersona(String dir) throws IOException {
 
 		FileOutputStream f = new FileOutputStream(dir);

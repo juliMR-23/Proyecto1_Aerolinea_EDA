@@ -9,12 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import excepciones.EIDRepetido;
-import excepciones.EInvalidDocumento;
-import excepciones.EInvalidEmail;
-import excepciones.EInvalidPass;
-import excepciones.EInvalidTelefono;
-import excepciones.EValorNulo;
+import excepciones.*;
 import util.IDAsign;
 import util.Valida;
 
@@ -23,7 +18,7 @@ public class Cliente extends Persona implements Serializable {
 	private Reserva[] reservas;
 	private static final long serialVersionUID = 1L;
 
-	public Cliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
+	public Cliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento, EInvalidName {
 		super(nombre, tipoDocumento, documento, telefono, email, password);
 		this.reservas = new Reserva[0];
 		this.id=IDAsign.asignar("CL", cont);
@@ -41,19 +36,21 @@ public class Cliente extends Persona implements Serializable {
 	public void guardarReservas() throws IOException, EValorNulo {
         for(int i = 0; i < reservas.length; i++) {
             Reserva r = reservas[i];
-            r.wFicheroReserva("src/ficheros/reservas/reserva"+(i+1)+".res");
+            r.wFicheroReserva("src/ficheros/reservas/reserva"+(i+1)+".res"+id);
         }
     }
 
 	public String[] cargarReservas() throws EValorNulo{ 
         File dir = new File("src/ficheros/reservas/");
         String[] errores = new String[0]; //Añadido
+        
+        reservas = new Reserva[0];
 
         if (dir.exists()) {
             File[] ficheros = dir.listFiles();
             if (ficheros != null) {
                 for(File f: ficheros) {
-                    if(f.isFile() && f.getName().endsWith(".res")) {
+                    if(f.isFile() && f.getName().endsWith(".res"+id)) {
 
                     	try {
                         Reserva reserva = Reserva.rFicheroReserva(f.getPath());
@@ -115,7 +112,7 @@ public class Cliente extends Persona implements Serializable {
 	    }
 	}
 
-	public void addTiqueteOnReserva(Reserva reserva, String asiento, String nombrePasajero, String numDoc, String tipoDoc) throws EValorNulo {
+	public void addTiqueteOnReserva(Reserva reserva, String asiento, String nombrePasajero, String numDoc, String tipoDoc) throws EValorNulo, EInvalidDocumento {
 		if (reserva == null)
 			throw new EValorNulo("La reserva no puede ser nula");
 		int i = indexReserva(reserva.getId()); 
@@ -144,8 +141,7 @@ public class Cliente extends Persona implements Serializable {
 	public Reserva[] getReservas() {
 		return reservas;
 	}
-	
-	@Override
+
 	public void wFicheroPersona(String dir) throws IOException {
 
 		FileOutputStream f = new FileOutputStream(dir);

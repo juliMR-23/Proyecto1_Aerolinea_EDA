@@ -65,7 +65,8 @@ public class RegisterViewController {
             Parent root = loader.load();
             LoginViewController ctrl = loader.getController();
             ctrl.setAerolinea(aerolinea);
-            Scene scene = new Scene(root);
+            Scene scene = btnVolver.getScene();
+            scene.setRoot(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
             );

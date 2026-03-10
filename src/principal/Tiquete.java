@@ -1,6 +1,8 @@
 package principal;
 import java.io.*;
 
+import excepciones.EInvalidDocumento;
+import excepciones.EInvalidName;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import util.IDAsign;
@@ -19,12 +21,12 @@ public class Tiquete implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public Tiquete(String asiento, Vuelo vuelo, String nombrePasajero,
-			String numDocPasajero, String tipoDocPasajero) throws EValorNulo{
+			String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EInvalidDocumento{
 		
 		Valida.validarTexto(asiento, "El asiento no puede ser vacío");
 		Valida.validarTexto(nombrePasajero, "El nombre del pasajero no puede ser vacío");
-		Valida.validarTexto(numDocPasajero, "El número de documento del pasajero no puede ser vacío");
-		Valida.validarTexto(tipoDocPasajero, "El tipo de documento del pasajero no puede ser vacío");
+		validarDocumento(numDocPasajero);
+		validarTipoDoc(tipoDocPasajero);
 		if(vuelo == null) {throw new EValorNulo("El vuelo no puede estar vacío");}
 		
 		this.id = IDAsign.asignar("TI",Aerolinea.getCont());
@@ -81,6 +83,24 @@ public class Tiquete implements Serializable {
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
+	
+	private void validarTipoDoc(String tipoDocumento) throws EValorNulo, EInvalidDocumento {
+
+        Valida.validarTexto(tipoDocumento, "El tipo de documento no puede ser null ni vacío");
+        if (!tipoDocumento.equalsIgnoreCase("CC") &&
+            !tipoDocumento.equalsIgnoreCase("CE") &&
+            !tipoDocumento.equalsIgnoreCase("PAS")) {
+
+            throw new EInvalidDocumento("El tipo de documento debe ser: CC, CE o PAS");
+        }
+    }
+	private void validarDocumento(String documento) throws EValorNulo, EInvalidDocumento {
+        Valida.validarTexto(documento, "El documento no puede ser null ni vacío");
+        if(!documento.matches("[0-9]+"))
+            throw new EInvalidDocumento("El documento solo puede contener números");
+        if (documento.length()<7 || documento.length()>10)
+            throw new EInvalidDocumento("El documento debe tener entre 7 y 10 dígitos");
+    }
 	
 	public void wFicheroTiquete(String dir) throws IOException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.io.*;
 import java.time.LocalDateTime;
 
+import excepciones.EInvalidDocumento;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import util.IDAsign;
@@ -65,7 +66,7 @@ public class Reserva implements Serializable {
 
 	public Tiquete[] getTiquetes() {return tiquetes;}
 
-	public void addTiquete(String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo{
+	public void addTiquete(String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EInvalidDocumento{
 		Tiquete t=new Tiquete(asiento, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
 		tiquetes = Arrays.copyOf(tiquetes, tiquetes.length+1);
 		tiquetes[tiquetes.length-1] = t;
@@ -73,35 +74,37 @@ public class Reserva implements Serializable {
 	public void guardarTiquetes() throws IOException, EValorNulo {
         for(int i = 0; i < tiquetes.length; i++) {
             Tiquete t = tiquetes[i];
-            t.wFicheroTiquete("src/ficheros/tiquetes/tiquete"+(i+1)+".tiq");
+            t.wFicheroTiquete("src/ficheros/tiquetes/tiquete"+(i+1)+".tiq"+id);
         }
     }
 
 	public String[] cargarTiquetes() throws EValorNulo{ 
-        File dir = new File("src/ficheros/tiquetes/");
-        String[] errores = new String[0]; //Añadido
+	    File dir = new File("src/ficheros/tiquetes/");
+	    String[] errores = new String[0];
 
-        if (dir.exists()) {
-            File[] ficheros = dir.listFiles();
-            if (ficheros != null) {
-                for(File f: ficheros) {
-                    if(f.isFile() && f.getName().endsWith(".tiq")) {
+	    tiquetes = new Tiquete[0]; // evita duplicados
 
-                    	try {
-                        Tiquete tiquete = Tiquete.rFicheroTiquete(f.getPath());
-                        tiquetes = Arrays.copyOf(tiquetes, tiquetes.length + 1);
-                        tiquetes[tiquetes.length - 1] = tiquete; 
+	    if (dir.exists()) {
+	        File[] ficheros = dir.listFiles();
+	        if (ficheros != null) {
+	            for(File f: ficheros) {
+	                if(f.isFile() && f.getName().endsWith(".tiq"+id)) {
 
-                        } catch (IOException | ClassNotFoundException e) {
-                        	errores = Arrays.copyOf(errores, errores.length+1);
-                        	errores[errores.length-1] = f.getName() + ": " + e.getMessage();
-                        }
-                    }
-                }
-            }
-        }
-        return errores;
-    }
+	                    try {
+	                        Tiquete tiquete = Tiquete.rFicheroTiquete(f.getPath());
+	                        tiquetes = Arrays.copyOf(tiquetes, tiquetes.length + 1);
+	                        tiquetes[tiquetes.length - 1] = tiquete; 
+
+	                    } catch (IOException | ClassNotFoundException e) {
+	                        errores = Arrays.copyOf(errores, errores.length+1);
+	                        errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+	                    }
+	                }
+	            }
+	        }
+	    }
+	    return errores;
+	}
 	
 	public int indexTiquete(String id) {
 		int i = 0;

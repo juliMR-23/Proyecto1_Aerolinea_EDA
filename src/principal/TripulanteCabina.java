@@ -9,13 +9,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 
-import excepciones.EInvalidDocumento;
-import excepciones.EInvalidEmail;
-import excepciones.EInvalidPass;
-import excepciones.EInvalidTelefono;
-import excepciones.EValorNegativo;
-import excepciones.EValorNulo;
-
+import excepciones.*;
 
 
 public class TripulanteCabina extends Empleado implements Serializable{
@@ -23,8 +17,8 @@ public class TripulanteCabina extends Empleado implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	public TripulanteCabina(String nombre, String tipoDocumento, String documento, String telefono, String email,
-			String password, double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
-		super(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
+			String password, double salarioBase, Date fechaContratacion, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento, EInvalidName {
+		super(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, aniosExperiencia);
 		idiomas=new String[0];
 	}
 
@@ -63,9 +57,8 @@ public class TripulanteCabina extends Empleado implements Serializable{
 	public void setIdiomas(String[] idiomas) {
 		this.idiomas = idiomas;
 	}
-	
-	@Override
-    public void wFicheroPersona(String dir) throws IOException {
+
+    public void wFicheroTripulante(String dir) throws IOException {
 
         FileOutputStream f = new FileOutputStream(dir);
         ObjectOutputStream b = new ObjectOutputStream(f);

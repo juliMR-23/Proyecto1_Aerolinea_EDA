@@ -248,7 +248,8 @@ public class VerReservasViewController implements Initializable {
             BuscarVuelosViewController ctrl = loader.getController();
             ctrl.setAerolinea(aerolinea);
             ctrl.setUsuarioLogueado(clienteLogueado);
-            Scene scene = new Scene(root);
+            Scene scene = btnVolver.getScene();
+            scene.setRoot(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
             );

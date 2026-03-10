@@ -1,13 +1,9 @@
-package principal;
+	package principal;
 
 import java.io.IOException;
 import java.io.Serializable;
 
-import excepciones.EInvalidDocumento;
-import excepciones.EInvalidEmail;
-import excepciones.EInvalidPass;
-import excepciones.EInvalidTelefono;
-import excepciones.EValorNulo;
+import excepciones.*;
 import util.IDAsign;
 import util.Valida;
 
@@ -28,11 +24,11 @@ public abstract class Persona implements Serializable {
 
     // CONSTRUCTOR
     public Persona(String nombre, String tipoDocumento, String documento,
-                   String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento{
+                   String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento, EInvalidName{
 
-    	Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
-    	Valida.validarTexto(tipoDocumento, "El tipo de documento no puede ser null ni vacío");
-    	
+
+    	validarTipoDoc(tipoDocumento);
+        validarNombre(nombre);
     	validarDocumento(documento);
     	validarTelefono(telefono);
     	validarEmail(email); 
@@ -109,6 +105,17 @@ public abstract class Persona implements Serializable {
     	this.password = password;
     }
     
+    private void validarTipoDoc(String tipoDocumento) throws EValorNulo, EInvalidDocumento {
+
+        Valida.validarTexto(tipoDocumento, "El tipo de documento no puede ser null ni vacío");
+        if (!tipoDocumento.equalsIgnoreCase("CC") &&
+            !tipoDocumento.equalsIgnoreCase("CE") &&
+            !tipoDocumento.equalsIgnoreCase("PAS")) {
+
+            throw new EInvalidDocumento("El tipo de documento debe ser: CC, CE o PAS");
+        }
+    }
+    
     private void validarDocumento(String documento) throws EValorNulo, EInvalidDocumento {
         Valida.validarTexto(documento, "El documento no puede ser null ni vacío");
         if(!documento.matches("[0-9]+"))
@@ -140,10 +147,13 @@ public abstract class Persona implements Serializable {
     	if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+"))//regex
             throw new EInvalidPass("La contraseña debe contener mayúsculas, minúsculas y números");
     }
-    
-    public void wFicheroPersona(String dir) throws IOException {
 
+    private void validarNombre(String nombre) throws EValorNulo, EInvalidName {
+        Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
+        if (!nombre.matches("^[a-zA-ZáéíóúüñÑ\\s]+$"))//regex
+            throw new EInvalidName("EL nombre solo puede contener letras");
     }
+
     
     public boolean isActive() {
 		return isActive;
@@ -159,5 +169,8 @@ public abstract class Persona implements Serializable {
 	public static void setCont(int conta) {
 		cont=conta;
 	}
-    
+
+
+
+
 }

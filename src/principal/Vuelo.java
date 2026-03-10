@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import excepciones.EInvalidName;
 import excepciones.EPilotosInsuficientes;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
@@ -36,15 +37,17 @@ public class Vuelo implements Serializable{
     // Constructor
     public Vuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes{
 
+		this.tripulacion = tripulacion;
+		this.pilotos = pilotos;
         if (origen == null)
             throw new EValorNulo("El aeropuerto de origen no puede estar vacío");
         if (destino == null)
             throw new EValorNulo("El aeropuerto de destino no puede estar vacío");
         if (avion == null)
             throw new EValorNulo("El avión no puede estar vacío");
-        if (tripulacion == null || tripulacion.length == 0)
+        if (tripulacion == null)
             throw new EValorNulo("La tripulación no puede ser nula");
-        if (pilotos == null || pilotos.length == 0)
+        if (pilotos == null)
             throw new EValorNulo("Los pilotos no pueden ser nulo");  
         if(!hasPilotosMin())
         	throw new EPilotosInsuficientes();
@@ -53,12 +56,10 @@ public class Vuelo implements Serializable{
         this.origen = origen;
         this.destino = destino;
         this.fechaHoraSalida = fechaHoraSalida;
-        this.fechaHoraLlegada = calcularHoraLlegada();
         this.avion = avion;
+		this.fechaHoraLlegada = calcularHoraLlegada();
         this.estadoVuelo = "Programado";
         this.puertaEmbarque = null;
-        this.tripulacion = tripulacion;
-        this.pilotos = pilotos;
         this.reservas = new Reserva[0];
         this.precio = 500+calcularDuracion();
         this.isActive=true;
@@ -107,7 +108,6 @@ public class Vuelo implements Serializable{
 	// Tripulantes
 	public boolean hasPilotosMin() {
 		int minPilotos = 2;
-		// TODO: Duracion mayor a 8 horas = 3
 		return pilotos.length  >= minPilotos;
 	}
 	
@@ -188,6 +188,8 @@ public class Vuelo implements Serializable{
 		f.close();
 	    return a;
 	}
+
+
 	
 	public int getCont() {
 		return cont;

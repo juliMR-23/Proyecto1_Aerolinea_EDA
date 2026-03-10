@@ -185,7 +185,6 @@ public class CRUDTripulantesViewController implements Initializable {
                 		    txtPassword.getText().trim(),
                 		    Double.parseDouble(txtSalario.getText().trim()),
                 		    new Date(),
-                		    true,
                 		    Integer.parseInt(txtAnios.getText().trim())
                 		);
                 		TripulanteCabina[] todos = aerolinea.listTripulantesActivos();
@@ -278,7 +277,8 @@ public class CRUDTripulantesViewController implements Initializable {
             Parent root = loader.load();
             MainPageAdminViewController ctrl = loader.getController();
             ctrl.setAerolinea(aerolinea);
-            Scene scene = new Scene(root);
+            Scene scene = btnVolver.getScene();
+            scene.setRoot(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
             );

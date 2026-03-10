@@ -11,14 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 
-import excepciones.EIDRepetido;
-import excepciones.EInvalidEmail;
-import excepciones.EInvalidPass;
-import excepciones.EInvalidTelefono;
-import excepciones.EInvalidDocumento;
-import excepciones.EPilotosInsuficientes;
-import excepciones.EValorNegativo;
-import excepciones.EValorNulo;
+import excepciones.*;
 import util.IDAsign;
 import util.Valida;
 
@@ -29,8 +22,8 @@ public class Aerolinea implements Serializable{
 	private Cliente[] clientes;
 	private Empleado[] empleados;
 	private Vuelo[] vuelos;
+    private static int cont;
 	private Administrador[] administradores;
-	private static int cont=0;
 	private static final long serialVersionUID = 1L;
 	
 	
@@ -73,6 +66,7 @@ public class Aerolinea implements Serializable{
         File dir = new File("src/ficheros/aviones/");
         String[] errores = new String[0]; //Añadido
 
+        aviones = new Avion[0];
         if (dir.exists()) {
             File[] ficheros = dir.listFiles();
             if (ficheros != null) {
@@ -155,6 +149,8 @@ public class Aerolinea implements Serializable{
     	File dir = new File("src/ficheros/aeropuertos/"); 
     	String[] errores = new String[0];
     	
+    	aeropuertos= new Aeropuerto[0];
+    	
     	if(dir.exists()) {
     		File[] ficheros = dir.listFiles();
     		if(ficheros != null) {
@@ -218,8 +214,8 @@ public class Aerolinea implements Serializable{
 		return activos;
 	}
 
-    public void addCliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) 
-            throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
+    public void addCliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password)
+            throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento, EInvalidName {
 
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
@@ -242,6 +238,7 @@ public class Aerolinea implements Serializable{
 	public String[] cargarClientes(){ 
         File dir = new File("src/ficheros/clientes/");
         String[] errores = new String[0]; //Añadido
+        clientes = new Cliente[0];
 
         if (dir.exists()) {
             File[] ficheros = dir.listFiles();
@@ -252,11 +249,18 @@ public class Aerolinea implements Serializable{
                     	try {
                         Cliente cliente = Cliente.rFicheroPersona(f.getPath());
                         clientes = Arrays.copyOf(clientes, clientes.length + 1);
-                        clientes[clientes.length - 1] = cliente; 
+                        clientes[clientes.length - 1] = cliente;
+
+                        cliente.cargarReservas();
+                        for(Reserva r : cliente.getReservas()){
+                            r.cargarTiquetes();
+                        }
 
                         } catch (IOException | ClassNotFoundException e) {
                         	errores = Arrays.copyOf(errores, errores.length+1);
                         	errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+                        } catch (EValorNulo e) {
+                            throw new RuntimeException(e);
                         }
                     }
                 }
@@ -305,43 +309,43 @@ public class Aerolinea implements Serializable{
     //Piloto y Tripulante
 
     public void addPiloto(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
-			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
+			double salarioBase, Date fechaContratacion, int aniosExperiencia) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento, EInvalidName {
         
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
-        Piloto p = new Piloto(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
-        if(indexEmpleado(p.getId()) != -1)
+        Piloto p = new Piloto(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, aniosExperiencia);
+        if(indexEmpleado(((Piloto)p).getId()) != -1)
             throw new EIDRepetido("Ya existe otro empleado con este id");
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
-        empleados[empleados.length - 1] = p;
+        empleados[empleados.length - 1] = (Piloto) p;
     }
     public void addTripulanteCabina(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
-			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia)  throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento{
+			double salarioBase, Date fechaContratacion, int aniosExperiencia) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento, EInvalidName {
     	
     	if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
 
-        TripulanteCabina t = new TripulanteCabina(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
-        if(indexEmpleado(t.getId()) != -1)
+        TripulanteCabina t = new TripulanteCabina(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, aniosExperiencia);
+        if(indexEmpleado(((TripulanteCabina)t).getId()) != -1)
             throw new EIDRepetido("Ya existe otro empleado con este id");
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
-        empleados[empleados.length - 1] = t;
+        empleados[empleados.length - 1] = (TripulanteCabina) t;
     }
     
     public void guardarTripulantesCabina() throws IOException, EValorNulo {
     	for(int i=0; i < empleados.length; i++) {
-    		TripulanteCabina tc = (TripulanteCabina) empleados[i];
-    		tc.wFicheroPersona("src/ficheros/empleados/Tripulante"+(i+1)+".tc");;
+            if(empleados[i] instanceof TripulanteCabina tc){
+                tc.wFicheroTripulante("src/ficheros/empleados/Tripulante"+(i+1)+".tc");;
     	}
-    }
+    }}
     
     public void guardarPilotos() throws IOException, EValorNulo {
     	for(int i=0; i < empleados.length; i++) {
-    		Piloto a = (Piloto) empleados[i];
-    		a.wFicheroPersona("src/ficheros/empleados/Piloto"+(i+1)+".pi");;
+            if(empleados[i] instanceof Piloto a){
+                a.wFicheroPersona("src/ficheros/empleados/Piloto"+(i+1)+".pi");;
     	}
-    }
+    }}
     
     public Piloto[] listPilotosActivos() {
         Piloto[] activos = new Piloto[0];
@@ -367,8 +371,10 @@ public class Aerolinea implements Serializable{
     
     
     public String[] cargarEmpleados() { //Cambiar nombre 
-    	File dir = new File("src/ficheros/empleado/"); //cambiar direccion 
+    	File dir = new File("src/ficheros/empleados/"); //cambiar direccion
     	String[] errores = new String[0];
+    	
+    	empleados = new Empleado[0];
     	
     	if(dir.exists()) {
     		File[] ficheros = dir.listFiles();
@@ -465,6 +471,8 @@ public class Aerolinea implements Serializable{
     	File dir = new File("src/ficheros/vuelos"); //cambiar direccion 
     	String[] errores = new String[0];
     	
+    	vuelos = new Vuelo[0];
+    	
     	if(dir.exists()) {
     		File[] ficheros = dir.listFiles();
     		if(ficheros != null) {
@@ -530,7 +538,7 @@ public class Aerolinea implements Serializable{
 
     public void addAdministrador(String nombre, String tipoDocumento, String documento,
             String telefono, String email, String password)
-            throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
+            throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento, EInvalidName {
 
         if(existeEmail(email))
             throw new EInvalidEmail("Ya existe otra persona con este email");
@@ -552,6 +560,7 @@ public class Aerolinea implements Serializable{
 	public String[] cargarAdministradores(){ 
         File dir = new File("src/ficheros/administradores/");
         String[] errores = new String[0]; //Añadido
+        administradores = new Administrador[0];
 
         if (dir.exists()) {
             File[] ficheros = dir.listFiles();

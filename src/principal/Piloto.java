@@ -8,27 +8,22 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 
-import excepciones.EInvalidDocumento;
-import excepciones.EInvalidEmail;
-import excepciones.EInvalidPass;
-import excepciones.EInvalidTelefono;
-import excepciones.EValorNegativo;
-import excepciones.EValorNulo;
+import excepciones.*;
 
 public class Piloto extends Empleado implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
 	public Piloto(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
-			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
-		super(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, activo, aniosExperiencia);
+			double salarioBase, Date fechaContratacion, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento, EInvalidName {
+		super(nombre, tipoDocumento, documento, telefono, email, password, salarioBase, fechaContratacion, aniosExperiencia);
 	}
 	@Override
 	public double calcularSalario() {
 		return super.salarioBase + 200*super.aniosExperiencia + 500;
 	}
 	
-	@Override
+
     public void wFicheroPersona(String dir) throws IOException {
 
         FileOutputStream f = new FileOutputStream(dir);

@@ -16,6 +16,7 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import principal.*;
 import excepciones.*;
+import util.Valida;
 
 import java.net.URL;
 import java.text.NumberFormat;
@@ -59,7 +60,15 @@ public class BuscarVuelosViewController implements Initializable {
             }
         });
 
-        btnBuscar.setOnAction(e -> handleBuscar(e));
+        btnBuscar.setOnAction(e -> {
+            try {
+                handleBuscar(e);
+            } catch (EInvalidName ex) {
+                throw new RuntimeException(ex);
+            } catch (EValorNulo ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
     public void setAerolinea(Aerolinea aerolinea) {
@@ -111,7 +120,8 @@ public class BuscarVuelosViewController implements Initializable {
             VerReservasViewController ctrl = loader.getController();
             ctrl.setCliente(clienteLogueado);
             ctrl.setAerolinea(aerolinea);
-            Scene scene = new Scene(root);
+            Scene scene = btnLogin.getScene();
+            scene.setRoot(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
             );
@@ -123,7 +133,7 @@ public class BuscarVuelosViewController implements Initializable {
         }
     }
 
-    private void handleBuscar(ActionEvent event) {
+    private void handleBuscar(ActionEvent event) throws EInvalidName, EValorNulo {
         String origenTxt  = txtOrigen.getText().trim();
         String destinoTxt = txtDestino.getText().trim();
         LocalDate fecha   = dpFechaIda.getValue();
@@ -158,7 +168,10 @@ public class BuscarVuelosViewController implements Initializable {
         }
     }
 
-    private Vuelo[] buscarVuelos(String origenTxt, String destinoTxt, LocalDate fecha) {
+    private Vuelo[] buscarVuelos(String origenTxt, String destinoTxt, LocalDate fecha) throws EInvalidName, EValorNulo {
+        validarCiudad(origenTxt);
+        validarCiudad(destinoTxt);
+
         Vuelo[] todos     = aerolinea.listVuelosActivos();
         Vuelo[] resultado = new Vuelo[0];
 
@@ -328,5 +341,11 @@ public class BuscarVuelosViewController implements Initializable {
         } catch (Exception e) {
             agregarMensaje("⚠ Error al abrir el login: " + e.getMessage(), "#C0392B");
         }
+    }
+
+    private void validarCiudad(String nombre) throws EValorNulo, EInvalidName {
+        Valida.validarTexto(nombre, "El origen o destino no puede ser null ni vacío");
+        if (!nombre.matches("^[a-zA-Z]+$"))//regex
+            throw new EInvalidName("EL origen o destino solo puede contener letras");
     }
 }

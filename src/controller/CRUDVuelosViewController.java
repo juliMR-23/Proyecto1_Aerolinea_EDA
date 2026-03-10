@@ -292,11 +292,11 @@ public class CRUDVuelosViewController implements Initializable {
                                 List<LocalTime> horas, String frecuencia) throws Exception {
 
         LocalDate hoy     = LocalDate.now();
-        LocalDate finMes  = hoy.withDayOfMonth(hoy.lengthOfMonth());
+        LocalDate finAno = hoy.withDayOfYear(hoy.lengthOfYear());
         LocalDate cursor  = hoy;
         int       paso    = getPasoFrecuencia(frecuencia);
 
-        while (!cursor.isAfter(finMes)) {
+        while (!cursor.isAfter(finAno)) {
             for (LocalTime hora : horas) {
                 LocalDateTime salida = cursor.atTime(hora);
                 if (salida.isAfter(LocalDateTime.now())) {
@@ -471,7 +471,8 @@ public class CRUDVuelosViewController implements Initializable {
             Parent root = loader.load();
             MainPageAdminViewController ctrl = loader.getController();
             ctrl.setAerolinea(aerolinea);
-            Scene scene = new Scene(root);
+            Scene scene = btnVolver.getScene();
+            scene.setRoot(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
             );

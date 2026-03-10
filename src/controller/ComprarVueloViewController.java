@@ -191,6 +191,10 @@ public class ComprarVueloViewController implements Initializable {
 
             // Guardar cliente actualizado en su fichero
             aerolinea.guardarClientes();
+            clienteLogueado.guardarReservas();
+            for(Reserva r: clienteLogueado.getReservas()){
+                r.guardarTiquetes();
+            }
 
             NumberFormat nf = NumberFormat.getInstance(new Locale("es", "CO"));
             mostrarMensaje(
@@ -218,7 +222,8 @@ public class ComprarVueloViewController implements Initializable {
             BuscarVuelosViewController ctrl = loader.getController();
             ctrl.setAerolinea(aerolinea);
             if (clienteLogueado != null) ctrl.setUsuarioLogueado(clienteLogueado);
-            Scene scene = new Scene(root);
+            Scene scene = btnVolver.getScene();
+            scene.setRoot(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
             );

@@ -7,16 +7,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-import excepciones.EValorNegativo;
-import excepciones.EValorNulo;
-import excepciones.ECapacidadVuelosLlena;
-import excepciones.EInvalidDocumento;
-import excepciones.EInvalidEmail;
-import excepciones.EInvalidPass;
-import excepciones.EInvalidTelefono;
-import excepciones.EVueloYaAsignado;
+import excepciones.*;
 import util.IDAsign;
-import excepciones.EVueloNoEncontrado;
 
 public abstract class Empleado extends Persona implements Serializable {
 
@@ -36,7 +28,7 @@ public abstract class Empleado extends Persona implements Serializable {
 
     // CONSTRUCTOR
     public Empleado(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
-    		double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
+    		double salarioBase, Date fechaContratacion, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento, EInvalidName {
     	super(nombre, tipoDocumento, documento, telefono, email, password);
     	if(salarioBase<=0 || aniosExperiencia<=0)
     		throw new EValorNegativo("El salario base debe ser mayor a cero");
@@ -44,7 +36,7 @@ public abstract class Empleado extends Persona implements Serializable {
     		throw new EValorNegativo("Años de experiencia no puede ser negativo");
     	this.salarioBase = salarioBase;
     	this.fechaContratacion = fechaContratacion;
-    	this.activo = activo;
+    	this.activo = true;
     	this.aniosExperiencia = aniosExperiencia;
     	this.vuelosAsignados = new Vuelo[MAX_VUELOS];
     	this.setCantidadVuelos(0);
