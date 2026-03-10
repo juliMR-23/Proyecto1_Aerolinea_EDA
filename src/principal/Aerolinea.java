@@ -54,8 +54,7 @@ public class Aerolinea implements Serializable{
 	
 	public void addAvion(String matricula, String marca, String modelo, int capacidad, double velocidad) throws EIDRepetido, EValorNulo, EValorNegativo {
 		if(indexAvion(matricula)!=-1)
-			throw new EIDRepetido("Ya existe otro avion con este id");//implementar en las demás listas cuando creen todas las clases
-		
+			throw new EIDRepetido("Ya existe otro avion con esta matrícula");
 		Avion a = new Avion(matricula, marca, modelo, capacidad, true, velocidad);
 		aviones = Arrays.copyOf(aviones, aviones.length+1);
 		aviones[aviones.length-1]=a;
@@ -226,11 +225,8 @@ public class Aerolinea implements Serializable{
         return empleados;
     }
 
-    public void addVuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EIDRepetido, EValorNulo, EPilotosInsuficientes {
-        if(indexVuelo(id) != -1)
-            throw new EIDRepetido("Ya existe otro vuelo con este id");
-
-        Vuelo v = new Vuelo(id, origen, destino, fechaHoraSalida, avion, tripulacion, pilotos);
+    public void addVuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EIDRepetido, EValorNulo, EPilotosInsuficientes {
+        Vuelo v = new Vuelo(origen, destino, fechaHoraSalida, avion, tripulacion, pilotos);
         vuelos = Arrays.copyOf(vuelos, vuelos.length + 1);
         vuelos[vuelos.length - 1] = v;
     }
@@ -347,7 +343,7 @@ public class Aerolinea implements Serializable{
 		Aerolinea.cont++;
 	}
 
-	public void wFicheroAerolinea(String dir) throws IOException, EValorNulo {
+	public void copiarFicheroAerolinea(String dir) throws IOException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
@@ -355,7 +351,7 @@ public class Aerolinea implements Serializable{
 		b.close();
 		f.close();
 	}
-	public static Aerolinea rFicheroAerolinea(String dir) throws IOException, ClassNotFoundException, EValorNulo {
+	public static Aerolinea leerFicheroAerolinea(String dir) throws IOException, ClassNotFoundException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 	    FileInputStream f = new FileInputStream(dir);
 	    ObjectInputStream b = new ObjectInputStream(f);

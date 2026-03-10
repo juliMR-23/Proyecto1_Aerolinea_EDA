@@ -1,18 +1,24 @@
-// Codigo sin excepciones
+
 
 package principal;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import excepciones.EPilotosInsuficientes;
+import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
+import util.IDAsign;
 import util.Valida;
 
 public class Vuelo implements Serializable{
     private final String id;
-    private final String numVuelo;
     private final Aeropuerto origen, destino;
     private LocalDateTime fechaHoraSalida, fechaHoraLlegada;
     private Avion avion;
@@ -25,50 +31,54 @@ public class Vuelo implements Serializable{
     private static final long serialVersionUID = 1L;
 
     // Constructor
-    public Vuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes{
-        
-    	Valida.validarTexto(id, "El id no puede estar vacío");
+    public Vuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes{
 
         if (origen == null)
             throw new EValorNulo("El aeropuerto de origen no puede estar vacío");
         if (destino == null)
             throw new EValorNulo("El aeropuerto de destino no puede estar vacío");
         if (avion == null)
-            throw new EValorNulo("El avión no puede estar vacío");
+            throw new EValorNulo("El avión no puede ser nulo");
         if (tripulacion == null || tripulacion.length == 0)
             throw new EValorNulo("La tripulación no puede ser nula");
         if (pilotos == null || pilotos.length == 0)
-            throw new EValorNulo("Los pilotos no pueden ser nulo");  
+            throw new EValorNulo("Los pilotos no pueden ser nulo"); 
         if(!hasPilotosMin())
         	throw new EPilotosInsuficientes();
-    	this.id = id;
-        this.numVuelo = null; //TODO
+        
+    	this.id = IDAsign.asignar("VU", Aerolinea.getCont());
         this.origen = origen;
         this.destino = destino;
         this.fechaHoraSalida = fechaHoraSalida;
-        this.fechaHoraLlegada = null; //TODO
         this.avion = avion;
+        this.fechaHoraLlegada = calcularHoraLlegada();
         this.estadoVuelo = "Programado";
         this.puertaEmbarque = null;
         this.tripulacion = tripulacion;
         this.pilotos = pilotos;
         this.reservas = new Reserva[0];
         precio=500+calcularDuracion();
+        Aerolinea.aumentaCont();
     }
 
-    // Setters
-    public void setAvion(Avion avion){
+ // Setters
+    public void setAvion(Avion avion) throws EValorNulo{
+        if (avion == null)
+            throw new EValorNulo("El avión no puede ser nulo");
         this.avion = avion;
     }
 
-    public void setPuertaEmbarque(String puertaEmbarque){
+    public void setPuertaEmbarque(String puertaEmbarque) throws EValorNulo{
+    	Valida.validarTexto(puertaEmbarque, "La puerta de embarque no puede ser nula o vacía");
         this.puertaEmbarque = puertaEmbarque;
         this.confirmado();
     }
 
-    public void setAtrasado(LocalDateTime NewSalida){
-        this.fechaHoraSalida = NewSalida;
-        this.fechaHoraLlegada = null; //TODO
+    public void setAtrasado(LocalDateTime newSalida) throws EValorNulo{
+    	if (newSalida == null)
+            throw new EValorNulo("La nueva fecha de salida no puede ser nula");
+        this.fechaHoraSalida = newSalida;
+        this.fechaHoraLlegada = calcularHoraLlegada(); 
         this.atrasado();
     }
     public double getPrecio() {
@@ -83,7 +93,6 @@ public class Vuelo implements Serializable{
 
   //Getters
 	public String getId() {return id;}
-	public String getNumVuelo() {return numVuelo;}
 	public Aeropuerto getOrigen() {return origen;}
 	public Aeropuerto getDestino() {return destino;}
 	public LocalDateTime getFechaHoraSalida() {return fechaHoraSalida;}
@@ -98,7 +107,7 @@ public class Vuelo implements Serializable{
 	// Tripulantes
 	public boolean hasPilotosMin() {
 		int minPilotos = 2;
-		// if (ruta.getDuracion() > 8) minPilotos =3;
+		// TODO: Duracion mayor a 8 horas = 3
 		return pilotos.length  >= minPilotos;
 	}
 	
@@ -106,8 +115,9 @@ public class Vuelo implements Serializable{
 		return tripulacion.length >= (avion.getCapacidad() /50);
 	}
 	
-	public void addPiloto(Piloto newCapitan) {
-		if(hasPilotosMin()) throw new IllegalStateException("");
+	//TODO: Cambiar metodo para pilotos en general
+	public void addPiloto(Piloto newCapitan) throws EPilotosInsuficientes {
+		if(hasPilotosMin()) throw new EPilotosInsuficientes();
 		if(pilotos[0] != null) throw new IllegalStateException("");
 		pilotos[0] = newCapitan;
 	}
@@ -151,9 +161,28 @@ public class Vuelo implements Serializable{
 		return (int)((distancia/(avion.getVelocidad()*1.852))*60);
 	}
 	
-	
-	// Reservas y Asientos
+	public LocalDateTime calcularHoraLlegada() {
+		return fechaHoraSalida.plusMinutes(calcularDuracion());
+	}
     
-    
+
+	public void copiarFicheroVuelo(String dir) throws IOException, EValorNulo {
+	    Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	    FileOutputStream f = new FileOutputStream(dir);
+	    ObjectOutputStream b = new ObjectOutputStream(f);
+	    b.writeObject((Vuelo)this);
+	    b.close();
+	    f.close();
+	}
+
+	public static Vuelo leerFicheroVuelo(String dir) throws IOException, ClassNotFoundException, EValorNulo {
+	    Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	    FileInputStream f = new FileInputStream(dir);
+	    ObjectInputStream b = new ObjectInputStream(f);
+	    Vuelo vuelo = (Vuelo) b.readObject();
+	    b.close();
+	    f.close();
+	    return vuelo;
+	}
 }
 

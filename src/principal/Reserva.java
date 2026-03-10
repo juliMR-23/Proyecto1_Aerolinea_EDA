@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.io.*;
 import java.time.LocalDateTime;
 
-import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import util.IDAsign;
 import util.Valida;
