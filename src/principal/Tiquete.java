@@ -14,6 +14,7 @@ public class Tiquete implements Serializable {
 	private String nombrePasajero;
 	private String numDocPasajero;
 	private String tipoDocPasajero;
+	private boolean isActive;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -34,6 +35,7 @@ public class Tiquete implements Serializable {
 		this.nombrePasajero = nombrePasajero;
 		this.numDocPasajero = numDocPasajero;
 		this.tipoDocPasajero = tipoDocPasajero;
+		this.isActive=true;
 		Aerolinea.aumentaCont();
 	}
 	
@@ -90,5 +92,12 @@ public class Tiquete implements Serializable {
 		f.close();
 		return tiquete;
 	}
+	
+	public boolean isActive() {
+		return isActive;
+	}
 
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 }

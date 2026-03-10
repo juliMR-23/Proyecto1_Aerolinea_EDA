@@ -109,15 +109,14 @@ public class Aerolinea implements Serializable{
 			n++;
 		}
 		if(n<aviones.length)
-			return n;
+			if(aviones[n].isActive()) 
+				return n;
 		return -1;//si no lo encuentra retorna -1
 	}
 	public void deleteAvion(String id) {
 	    int i = indexAvion(id);
 	    if (i != -1) {//el avion existe, está en la lista
-	        for (int j = i; j < aviones.length - 1; j++)
-	            aviones[j] = aviones[j + 1];//evita espacios vacíos, mismo orden
-	        aviones = Arrays.copyOf(aviones, aviones.length - 1);//reducir arreglo (elimina última pos)
+	    	aviones[i].setActive(false);
 	    }
 	}
 	public Avion[] listAviones() {
@@ -147,16 +146,15 @@ public class Aerolinea implements Serializable{
             n++;
         }
         if(n < aeropuertos.length)
-            return n;
+        	if(aeropuertos[n].isActive()) 
+				return n;
         return -1;
     }
 
     public void deleteAeropuerto(String id) {
         int i = indexAeropuerto(id);
         if (i != -1) {
-            for (int j = i; j < aeropuertos.length - 1; j++)
-                aeropuertos[j] = aeropuertos[j + 1];
-            aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length - 1);
+            aeropuertos[i].setActive(false);
         }
     }
 
@@ -226,16 +224,14 @@ public class Aerolinea implements Serializable{
             n++;
         }
         if(n < clientes.length)
-            return n;
+        	if(clientes[n].isActive()) 
+				return n;
         return -1;
     }
     public void deleteCliente(String id) {
         int i = indexCliente(id);
         if (i != -1) {
-            for (int j = i; j < clientes.length - 1; j++)
-                clientes[j] = clientes[j + 1];
-
-            clientes = Arrays.copyOf(clientes, clientes.length - 1);
+        	clientes[i].setActive(false);
         }
     }
     public Cliente[] listClientes() {
@@ -280,17 +276,15 @@ public class Aerolinea implements Serializable{
             n++;
         }
         if(n < empleados.length)
-            return n;
+        	if(empleados[n].isActive()) 
+				return n;
         return -1;
     }
 
     public void deleteEmpleado(String id) {
         int i = indexEmpleado(id);
         if (i != -1) {
-            for (int j = i; j < empleados.length-1; j++)
-                empleados[j] = empleados[j + 1];
-            
-            empleados = Arrays.copyOf(empleados, empleados.length - 1);
+        	empleados[i].setActive(false);
         }
     }
 
@@ -319,16 +313,15 @@ public class Aerolinea implements Serializable{
             n++;
         }
         if(n < vuelos.length)
-            return n;
+        	if(vuelos[n].isActive()) 
+				return n;
         return -1;
     }
 
     public void deleteVuelo(String id) {
         int i = indexVuelo(id);
         if (i != -1) {
-            for (int j = i; j < vuelos.length -1; j++)
-                vuelos[j] = vuelos[j + 1];
-            vuelos = Arrays.copyOf(vuelos, vuelos.length - 1);
+        	vuelos[i].setActive(false);
         }
     }
 
@@ -399,7 +392,8 @@ public class Aerolinea implements Serializable{
             n++;
 
         if(n < administradores.length)
-            return n;
+        	if(administradores[n].isActive()) 
+				return n;
 
         return -1;
     }
@@ -408,9 +402,7 @@ public class Aerolinea implements Serializable{
         int i = indexAdministrador(id);
 
         if (i != -1) {
-            for (int j = i; j < administradores.length-1; j++)
-                administradores[j] = administradores[j + 1];
-            administradores = Arrays.copyOf(administradores, administradores.length - 1);
+        	administradores[i].setActive(false);
         }
     }
 

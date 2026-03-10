@@ -14,7 +14,8 @@ public class Reserva implements Serializable {
 	private Vuelo vuelo;
 	private Cliente cliente;
 	private Tiquete[] tiquetes = new Tiquete[0];
-	private boolean activa;
+	private boolean isYet;
+	private boolean isActive;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -26,12 +27,13 @@ public class Reserva implements Serializable {
 		this.id = IDAsign.asignar("RE",Aerolinea.getCont());
 		this.cliente = cliente;
 		this.vuelo = vuelo;
-		this.activa = true;
+		this.isYet = true;
+		this.isActive = true;
 		Aerolinea.aumentaCont();
 	}
-	public void validarActive() {
+	public void validarYet() {
 		if(vuelo.getFechaHoraSalida().isBefore(LocalDateTime.now())) {
-			setActiva(false);
+			setYet(false);
 		};
 	}
 
@@ -52,9 +54,10 @@ public class Reserva implements Serializable {
 	        throw new EValorNulo("El vuelo no puede estar vacío");
 	    this.vuelo = vuelo;
 	}
-	public boolean isActiva() {return activa;}
-	public void setActiva(boolean activa) {this.activa = activa;}
-
+	public boolean isActive() {return isActive;}
+	public void setActive(boolean activa) {this.isActive = activa;}
+	public boolean isyet() {return isYet;}
+	public void setYet(boolean activa) {this.isYet = activa;}
 	public Tiquete[] getTiquetes() {return tiquetes;}
 
 	public void addTiquete(String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo{

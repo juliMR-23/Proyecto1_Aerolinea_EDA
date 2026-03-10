@@ -25,6 +25,7 @@ public class Vuelo implements Serializable{
     private Piloto[] pilotos;
     private Reserva[] reservas;
     private double precio;
+    private boolean isActive;
     private static int cont = 0;
 
     // Constructor
@@ -57,7 +58,7 @@ public class Vuelo implements Serializable{
         this.pilotos = pilotos;
         this.reservas = new Reserva[0];
         this.precio = precio;
-        
+        this.isActive=true;
         cont++;
         
     }
@@ -161,5 +162,12 @@ public class Vuelo implements Serializable{
 		return fechaHoraSalida.plusMinutes(calcularDuracion());
 	}
     
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
     
 }
