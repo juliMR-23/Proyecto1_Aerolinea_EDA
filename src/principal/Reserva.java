@@ -5,6 +5,7 @@ import java.io.*;
 import java.time.LocalDateTime;
 
 import excepciones.EInvalidDocumento;
+import excepciones.EInvalidName;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import util.IDAsign;
@@ -66,7 +67,7 @@ public class Reserva implements Serializable {
 
 	public Tiquete[] getTiquetes() {return tiquetes;}
 
-	public void addTiquete(String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EInvalidDocumento{
+	public void addTiquete(String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EInvalidDocumento, EInvalidName{
 		Tiquete t=new Tiquete(asiento, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
 		tiquetes = Arrays.copyOf(tiquetes, tiquetes.length+1);
 		tiquetes[tiquetes.length-1] = t;

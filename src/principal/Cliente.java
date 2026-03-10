@@ -112,7 +112,7 @@ public class Cliente extends Persona implements Serializable {
 	    }
 	}
 
-	public void addTiqueteOnReserva(Reserva reserva, String asiento, String nombrePasajero, String numDoc, String tipoDoc) throws EValorNulo, EInvalidDocumento {
+	public void addTiqueteOnReserva(Reserva reserva, String asiento, String nombrePasajero, String numDoc, String tipoDoc) throws EValorNulo, EInvalidDocumento, EInvalidName {
 		if (reserva == null)
 			throw new EValorNulo("La reserva no puede ser nula");
 		int i = indexReserva(reserva.getId()); 

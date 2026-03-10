@@ -21,10 +21,10 @@ public class Tiquete implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public Tiquete(String asiento, Vuelo vuelo, String nombrePasajero,
-			String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EInvalidDocumento{
+			String numDocPasajero, String tipoDocPasajero) throws EValorNulo, EInvalidDocumento, EInvalidName{
 		
 		Valida.validarTexto(asiento, "El asiento no puede ser vacío");
-		Valida.validarTexto(nombrePasajero, "El nombre del pasajero no puede ser vacío");
+		validarNombre(nombrePasajero);
 		validarDocumento(numDocPasajero);
 		validarTipoDoc(tipoDocPasajero);
 		if(vuelo == null) {throw new EValorNulo("El vuelo no puede estar vacío");}
@@ -62,18 +62,18 @@ public class Tiquete implements Serializable {
 		this.vuelo = vuelo;
 	}
 	public String getNombrePasajero() {return nombrePasajero;}
-	public void setNombrePasajero(String nombrePasajero) throws EValorNulo {
-		Valida.validarTexto(nombrePasajero, "El nombre del pasajero no puede ser vacío");
+	public void setNombrePasajero(String nombrePasajero) throws EValorNulo, EInvalidName {
+		validarNombre(nombrePasajero);
 		this.nombrePasajero = nombrePasajero;	
 	}
 	public String getNumDocPasajero() {return numDocPasajero;}
-	public void setNumDocPasajero(String numDocPasajero) throws EValorNulo {
-		Valida.validarTexto(numDocPasajero, "El número de documento del pasajero no puede ser vacío");
+	public void setNumDocPasajero(String numDocPasajero) throws EValorNulo, EInvalidDocumento {
+		validarDocumento(numDocPasajero);
 		this.numDocPasajero = numDocPasajero;	
 	}
 	public String getTipoDocPasajero() {return tipoDocPasajero;}
-	public void setTipoDocPasajero(String tipoDocPasajero) throws EValorNulo {
-		Valida.validarTexto(tipoDocPasajero, "El tipo de documento del pasajero no puede ser vacío");
+	public void setTipoDocPasajero(String tipoDocPasajero) throws EValorNulo, EInvalidDocumento {
+		validarTipoDoc(tipoDocPasajero);
 		this.tipoDocPasajero = tipoDocPasajero;	
 	}
 	public boolean isActive() {
@@ -100,6 +100,11 @@ public class Tiquete implements Serializable {
             throw new EInvalidDocumento("El documento solo puede contener números");
         if (documento.length()<7 || documento.length()>10)
             throw new EInvalidDocumento("El documento debe tener entre 7 y 10 dígitos");
+    }
+	private void validarNombre(String nombre) throws EValorNulo, EInvalidName {
+        Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
+        if (!nombre.matches("^[a-zA-ZáéíóúüñÑ\\s]+$"))//regex
+            throw new EInvalidName("EL nombre solo puede contener letras");
     }
 	
 	public void wFicheroTiquete(String dir) throws IOException, EValorNulo {
