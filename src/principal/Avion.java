@@ -92,8 +92,7 @@ public class Avion implements Serializable{
 		f.close();
 		b.close();
 	}
-	public static Avion rFicheroAvion(String dir) throws IOException, ClassNotFoundException, EValorNulo {
-		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	public static Avion rFicheroAvion(String dir) throws IOException, ClassNotFoundException {
 	    FileInputStream f = new FileInputStream(dir);
 	    ObjectInputStream b = new ObjectInputStream(f);
 	    Avion a = (Avion) b.readObject();

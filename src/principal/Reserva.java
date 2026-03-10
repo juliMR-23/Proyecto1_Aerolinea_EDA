@@ -59,9 +59,43 @@ public class Reserva implements Serializable {
 
 	public void addTiquete(String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo{
 		Tiquete t=new Tiquete(asiento, this.vuelo, nombrePasajero, numDocPasajero, tipoDocPasajero);
+		
 		tiquetes = Arrays.copyOf(tiquetes, tiquetes.length+1);
 		tiquetes[tiquetes.length-1] = t;
 	}
+	
+	public void guardarTiquetes() throws IOException {
+        for(int i = 0; i < tiquetes.length; i++) {
+            Tiquete t = tiquetes[i];
+            t.copiarFicheroTiquete("src/ficheros/tiquetes/tiquete"+(i+1)+".tiq");
+        }
+    }
+
+	public String[] cargarTiquetes(){ 
+        File dir = new File("src/ficheros/tiquetes/");
+        String[] errores = new String[0]; //Añadido
+        
+        if (dir.exists()) {
+            File[] ficheros = dir.listFiles();
+            if (ficheros != null) {
+                for(File f: ficheros) {
+                    if(f.isFile() && f.getName().endsWith(".tiq")) {
+                    	
+                    	try {
+                        Tiquete tiquete = Tiquete.leerFicheroTiquete(f.getPath());
+                        tiquetes = Arrays.copyOf(tiquetes, tiquetes.length + 1);
+                        tiquetes[tiquetes.length - 1] = tiquete; 
+                        
+                        } catch (IOException | ClassNotFoundException e) {
+                        	errores = Arrays.copyOf(errores, errores.length+1);
+                        	errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+                        }
+                    }
+                }
+            }
+        }
+        return errores;
+    }
 	
 	public int indexTiquete(String id) {
 		int i = 0;
@@ -98,16 +132,17 @@ public class Reserva implements Serializable {
 		return total;
 	}
 	
-	public void copiarFicheroReserva(String dir) throws IOException, EValorNulo {
-		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	public void copiarFicheroReserva(String dir) throws IOException {
+		
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
 		b.writeObject((Reserva)this);
 		b.close();
 		f.close();
 	}
-	public static Reserva leerFicheroReserva(String dir) throws IOException, ClassNotFoundException, EValorNulo {
-		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	
+	public static Reserva leerFicheroReserva(String dir) throws IOException, ClassNotFoundException {
+		
 		FileInputStream f = new FileInputStream(dir);
 		ObjectInputStream b = new ObjectInputStream(f);
 		Reserva reserva = (Reserva) b.readObject();
@@ -115,4 +150,6 @@ public class Reserva implements Serializable {
 		f.close();
 		return reserva;
 	}
+	
+	
 }

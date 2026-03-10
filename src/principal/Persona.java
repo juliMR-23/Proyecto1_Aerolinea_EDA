@@ -1,5 +1,10 @@
 package principal;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import excepciones.EInvalidDocumento;
@@ -136,5 +141,10 @@ abstract class Persona implements Serializable {
     	if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+"))//regex
             throw new EInvalidPass("La contraseña debe contener mayúsculas, minúsculas y números");
     }
+    
+    public void copiarFicheroPersona(String dir) throws IOException {
+		
+	}
+	
     
 }

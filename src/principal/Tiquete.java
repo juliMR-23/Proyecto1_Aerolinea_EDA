@@ -73,16 +73,16 @@ public class Tiquete implements Serializable {
 		this.tipoDocPasajero = tipoDocPasajero;	
 	}
 	
-	public void copiarFicheroTiquete(String dir) throws IOException, EValorNulo {
-		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	public void copiarFicheroTiquete(String dir) throws IOException {
+		
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
 		b.writeObject((Tiquete)this);
 		b.close();
 		f.close();
 	}
-	public static Tiquete leerFicheroTiquete(String dir) throws IOException, ClassNotFoundException, EValorNulo {
-		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	public static Tiquete leerFicheroTiquete(String dir) throws IOException, ClassNotFoundException {
+
 		FileInputStream f = new FileInputStream(dir);
 		ObjectInputStream b = new ObjectInputStream(f);
 		Tiquete tiquete = (Tiquete) b.readObject();

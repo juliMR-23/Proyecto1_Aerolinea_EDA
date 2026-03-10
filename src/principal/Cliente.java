@@ -1,7 +1,12 @@
 package principal;
 
 import java.util.Arrays;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import excepciones.EIDRepetido;
@@ -29,7 +34,40 @@ public class Cliente extends Persona implements Serializable {
 		Reserva r = new Reserva(vuelo, this);
 		reservas = Arrays.copyOf(reservas, reservas.length + 1);
 		reservas[reservas.length -1] = r;
+        
 	}
+	public void guardarReservas() throws IOException {
+        for(int i = 0; i < reservas.length; i++) {
+            Reserva r = reservas[i];
+            r.copiarFicheroReserva("src/ficheros/reservas/reserva"+(i+1)+".res");
+        }
+    }
+
+	public String[] cargarReservas(){ 
+        File dir = new File("src/ficheros/reservas/");
+        String[] errores = new String[0]; //Añadido
+        
+        if (dir.exists()) {
+            File[] ficheros = dir.listFiles();
+            if (ficheros != null) {
+                for(File f: ficheros) {
+                    if(f.isFile() && f.getName().endsWith(".res")) {
+                    	
+                    	try {
+                        Reserva reserva = Reserva.leerFicheroReserva(f.getPath());
+                        reservas = Arrays.copyOf(reservas, reservas.length + 1);
+                        reservas[reservas.length - 1] = reserva; 
+                        
+                        } catch (IOException | ClassNotFoundException e) {
+                        	errores = Arrays.copyOf(errores, errores.length+1);
+                        	errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+                        }
+                    }
+                }
+            }
+        }
+        return errores;
+    }
 
 	public int indexReserva(String id) {
 		int n = 0;
@@ -88,4 +126,25 @@ public class Cliente extends Persona implements Serializable {
 	public Reserva[] getReservas() {
 		return reservas;
 	}
+	
+	@Override
+	public void copiarFicheroPersona(String dir) throws IOException {
+		
+		FileOutputStream f = new FileOutputStream(dir);
+		ObjectOutputStream b = new ObjectOutputStream(f);
+		b.writeObject((Cliente)this);
+		b.close();
+		f.close();
+	}
+	
+	public static Cliente leerFicheroPersona(String dir) throws IOException, ClassNotFoundException {
+		
+		FileInputStream f = new FileInputStream(dir);
+		ObjectInputStream b = new ObjectInputStream(f);
+		Cliente cliente = (Cliente) b.readObject();
+		b.close();
+		f.close();
+		return cliente;
+	}
+	
 }

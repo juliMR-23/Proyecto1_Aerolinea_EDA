@@ -1,5 +1,6 @@
 package principal;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,6 +61,42 @@ public class Aerolinea implements Serializable{
 		aviones = Arrays.copyOf(aviones, aviones.length+1);
 		aviones[aviones.length-1]=a;
 	}
+	
+	public void guardarAviones() throws IOException {
+        for(int i = 0; i < aviones.length; i++) {
+            Avion a = aviones[i];
+            a.wFicheroAvion("src/ficheros/aviones/avion"+(i+1)+".av");
+        }
+    }
+
+	public String[] cargarAviones(){ 
+        File dir = new File("src/ficheros/aviones/");
+        String[] errores = new String[0]; //Añadido
+        
+        if (dir.exists()) {
+            File[] ficheros = dir.listFiles();
+            if (ficheros != null) {
+                for(File f: ficheros) {
+                    if(f.isFile() && f.getName().endsWith(".av")) {
+                    	
+                    	try {
+                        Avion avion = Avion.rFicheroAvion(f.getPath());
+                        aviones = Arrays.copyOf(aviones, aviones.length + 1);
+                        aviones[aviones.length - 1] = avion; 
+                        
+                        } catch (IOException | ClassNotFoundException e) {
+                        	errores = Arrays.copyOf(errores, errores.length+1);
+                        	errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+                        }
+                    }
+                }
+            }
+        }
+        return errores;
+    }
+
+	
+	
 	public Avion searchAvion(String id) {
 		int i=indexAvion(id);
 		if(i==-1)
@@ -140,6 +177,41 @@ public class Aerolinea implements Serializable{
         clientes = Arrays.copyOf(clientes, clientes.length + 1);
         clientes[clientes.length - 1] = c;
     }
+    
+	
+	public void guardarClientes() throws IOException {
+        for(int i = 0; i < clientes.length; i++) {
+            Cliente c = clientes[i];
+            c.copiarFicheroPersona("src/ficheros/clientes/cliente"+(i+1)+".cl");
+        }
+    }
+
+	public String[] cargarClientes(){ 
+        File dir = new File("src/ficheros/clientes/");
+        String[] errores = new String[0]; //Añadido
+        
+        if (dir.exists()) {
+            File[] ficheros = dir.listFiles();
+            if (ficheros != null) {
+                for(File f: ficheros) {
+                    if(f.isFile() && f.getName().endsWith(".cl")) {
+                    	
+                    	try {
+                        Cliente cliente = Cliente.leerFicheroPersona(f.getPath());
+                        clientes = Arrays.copyOf(clientes, clientes.length + 1);
+                        clientes[clientes.length - 1] = cliente; 
+                        
+                        } catch (IOException | ClassNotFoundException e) {
+                        	errores = Arrays.copyOf(errores, errores.length+1);
+                        	errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+                        }
+                    }
+                }
+            }
+        }
+        return errores;
+    }
+	
 
     public Cliente searchCliente(String id) {
         int i = indexCliente(id);
@@ -226,11 +298,10 @@ public class Aerolinea implements Serializable{
         return empleados;
     }
 
-    public void addVuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EIDRepetido, EValorNulo, EPilotosInsuficientes {
-        if(indexVuelo(id) != -1)
-            throw new EIDRepetido("Ya existe otro vuelo con este id");
+    public void addVuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos, double precio) throws EIDRepetido, EValorNulo, EPilotosInsuficientes, EValorNegativo {
+ 
 
-        Vuelo v = new Vuelo(id, origen, destino, fechaHoraSalida, avion, tripulacion, pilotos);
+        Vuelo v = new Vuelo(origen, destino, fechaHoraSalida, avion, tripulacion, pilotos, precio);
         vuelos = Arrays.copyOf(vuelos, vuelos.length + 1);
         vuelos[vuelos.length - 1] = v;
     }
@@ -278,6 +349,39 @@ public class Aerolinea implements Serializable{
             throw new EIDRepetido("Ya existe otro administrador con este id");
         administradores = Arrays.copyOf(administradores, administradores.length + 1);
         administradores[administradores.length - 1] = a;
+    }
+	
+	public void guardarAdministradores() throws IOException {
+        for(int i = 0; i < administradores.length; i++) {
+            Administrador a = administradores[i];
+            a.copiarFicheroPersona("src/ficheros/administradores/administrador"+(i+1)+".adm");
+        }
+    }
+
+	public String[] cargarAdministradores(){ 
+        File dir = new File("src/ficheros/administradores/");
+        String[] errores = new String[0]; //Añadido
+        
+        if (dir.exists()) {
+            File[] ficheros = dir.listFiles();
+            if (ficheros != null) {
+                for(File f: ficheros) {
+                    if(f.isFile() && f.getName().endsWith(".adm")) {
+                    	
+                    	try {
+                        Administrador administrador = Administrador.leerFicheroPersona(f.getPath());
+                        administradores = Arrays.copyOf(administradores, administradores.length + 1);
+                        administradores[administradores.length - 1] = administrador; 
+                        
+                        } catch (IOException | ClassNotFoundException e) {
+                        	errores = Arrays.copyOf(errores, errores.length+1);
+                        	errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+                        }
+                    }
+                }
+            }
+        }
+        return errores;
     }
 
     public Administrador searchAdministrador(String id) {

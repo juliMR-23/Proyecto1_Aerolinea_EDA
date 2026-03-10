@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0"
+            style="-fx-background-color: #1E2A35;"
+            xmlns="http://javafx.com/javafx/23"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.BuscarVuelosViewController">
+
+    <!-- Panel Central -->
+    <VBox alignment="TOP_CENTER" spacing="36.0"
+          style="-fx-padding: 110 0 40 0;"
+          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+          AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+
+        <!-- Mensaje de Bienvenida -->
+        <VBox alignment="CENTER" spacing="10.0">
+            <Label fx:id="lblBienvenida"
+                   text="Bienvenido a EDArolinea ✈"
+                   styleClass="title-main"/>
+            <Label text="¿A dónde quieres volar hoy?"
+                   styleClass="title-sub"/>
+        </VBox>
+
+        <!-- Buscar -->
+        <HBox alignment="CENTER_LEFT" spacing="0.0"
+              style="-fx-background-color: #FFFFFF;
+                     -fx-background-radius: 16;
+                     -fx-padding: 0 16 0 0;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 20, 0, 0, 5);"
+              maxWidth="1300.0">
+
+            <!-- Origen -->
+            <VBox alignment="CENTER_LEFT" spacing="6.0"
+                  style="-fx-padding: 18 32 18 32;
+                         -fx-border-color: transparent #E0E0E0 transparent transparent;
+                         -fx-border-width: 0 1 0 0;"
+                  prefWidth="340.0">
+                <Label text="✈  Ciudad de origen"
+                       style="-fx-font-size: 12px; -fx-text-fill: #666666; -fx-font-weight: bold;"/>
+                <MFXTextField fx:id="txtOrigen"
+                              promptText="Ej: Bogotá"
+                              prefHeight="40.0" prefWidth="270.0"
+                              style="-fx-font-size: 20px; -fx-text-fill: #1E2A35;
+                                     -fx-background-color: transparent;
+                                     -fx-border-color: transparent;
+                                     -fx-prompt-text-fill: #BBBBBB;"/>
+            </VBox>
+
+            <!-- Destino -->
+            <VBox alignment="CENTER_LEFT" spacing="6.0"
+                  style="-fx-padding: 18 32 18 32;
+                         -fx-border-color: transparent #E0E0E0 transparent transparent;
+                         -fx-border-width: 0 1 0 0;"
+                  prefWidth="340.0">
+                <Label text="✈  Ciudad de destino"
+                       style="-fx-font-size: 12px; -fx-text-fill: #666666; -fx-font-weight: bold;"/>
+                <MFXTextField fx:id="txtDestino"
+                              promptText="Ej: Medellín"
+                              prefHeight="40.0" prefWidth="270.0"
+                              style="-fx-font-size: 20px; -fx-text-fill: #1E2A35;
+                                     -fx-background-color: transparent;
+                                     -fx-border-color: transparent;
+                                     -fx-prompt-text-fill: #BBBBBB;"/>
+            </VBox>
+
+            <!-- Fecha -->
+            <VBox alignment="CENTER_LEFT" spacing="6.0"
+                  style="-fx-padding: 18 32 18 32;
+                         -fx-border-color: transparent #E0E0E0 transparent transparent;
+                         -fx-border-width: 0 1 0 0;"
+                  prefWidth="280.0">
+                <Label text="📅  Fecha de ida"
+                       style="-fx-font-size: 12px; -fx-text-fill: #666666; -fx-font-weight: bold;"/>
+                <DatePicker fx:id="dpFechaIda"
+                            prefHeight="40.0" prefWidth="210.0"
+                            style="-fx-font-size: 18px;
+                                   -fx-background-color: transparent;
+                                   -fx-border-color: transparent;"/>
+            </VBox>
+
+            <!-- Cantidad de Pasajeros -->
+            <VBox alignment="CENTER_LEFT" spacing="6.0"
+                  style="-fx-padding: 18 32 18 32;"
+                  prefWidth="200.0">
+                <Label text="👤  Pasajeros"
+                       style="-fx-font-size: 12px; -fx-text-fill: #666666; -fx-font-weight: bold;"/>
+                <MFXComboBox fx:id="cbPasajeros"
+                             prefHeight="40.0" prefWidth="120.0"
+                             style="-fx-font-size: 20px;
+                                    -fx-background-color: transparent;
+                                    -fx-border-color: transparent;"/>
+            </VBox>
+
+            <!-- Botón Buscar -->
+            <Button fx:id="btnBuscar"
+                    text="Buscar"
+                    prefWidth="140.0" prefHeight="64.0"
+                    style="-fx-background-color: #1E2A35;
+                           -fx-text-fill: white;
+                           -fx-font-size: 20px;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 12;
+                           -fx-cursor: hand;
+                           -fx-border-color: transparent;"/>
+        </HBox>
+
+        <!-- Vuelos Disponibles -->
+        <ScrollPane fx:id="scrollResultados"
+                    fitToWidth="true"
+                    style="-fx-background: transparent;
+                           -fx-background-color: transparent;
+                           -fx-border-color: transparent;"
+                    maxWidth="1300.0"
+                    VBox.vgrow="ALWAYS">
+            <VBox fx:id="vboxResultados"
+                  spacing="16.0"
+                  style="-fx-padding: 4 0 24 0;"/>
+        </ScrollPane>
+
+    </VBox>
+
+    <!-- Logo, Login y Mis Reservas -->
+    <Label text="✈  EDArolinea"
+           style="-fx-text-fill: #C9A84C; -fx-font-size: 26px; -fx-font-weight: bold;"
+           AnchorPane.topAnchor="36.0" AnchorPane.leftAnchor="48.0"/>
+
+   <HBox alignment="CENTER_RIGHT" spacing="12.0"
+      AnchorPane.topAnchor="14.0" AnchorPane.rightAnchor="20.0">
+
+    <Button fx:id="btnMisReservas"
+            text="📋  Mis Reservas"
+            onAction="#handleMisReservas"
+            visible="false"
+            managed="false"
+            prefWidth="180.0" prefHeight="48.0"
+            style="-fx-background-color: #C9A84C;
+                   -fx-text-fill: #1E2A35;
+                   -fx-font-size: 15px;
+                   -fx-font-weight: bold;
+                   -fx-background-radius: 10;
+                   -fx-cursor: hand;
+                   -fx-border-color: transparent;"/>
+
+    <Button fx:id="btnLogin"
+            text="Iniciar Sesión  →"
+            onAction="#handleLoginLogout"
+            prefWidth="180.0" prefHeight="48.0"
+            style="-fx-background-color: #C9A84C;
+                   -fx-text-fill: #1E2A35;
+                   -fx-font-size: 15px;
+                   -fx-font-weight: bold;
+                   -fx-background-radius: 10;
+                   -fx-cursor: hand;
+                   -fx-border-color: transparent;"/>
+</HBox>
+
+
+
+</AnchorPane>
