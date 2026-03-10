@@ -20,6 +20,7 @@ public class Avion implements Serializable{
 	private boolean disponible;
 	//velocidad Ground Speed en NUDOS
 	private double velocidad;
+	private static final long serialVersionUID = 1L;
 	
 	public Avion(String matricula, String marca, String modelo, int capacidad, boolean disponible, double velocidad) throws EValorNulo, EValorNegativo {
 		Valida.validarTexto(matricula, "La matrícula no puede estar vacía");
@@ -27,6 +28,8 @@ public class Avion implements Serializable{
 		Valida.validarTexto(modelo, "El modelo no puede estar vacío");
 		if(capacidad<=0)
 	    	throw new EValorNegativo("La capacidad debe ser mayor a cero");
+		if(velocidad<=0)
+	    	throw new EValorNegativo("La velocidad debe ser mayor a cero");
 	    
 		this.matricula = matricula;
 		this.marca = marca;
@@ -62,7 +65,7 @@ public class Avion implements Serializable{
     }
     public void setCapacidad(int capacidad) throws EValorNegativo {
         if (capacidad <= 0)
-            throw new EValorNegativo("La capacidad no puede ser menor a cero");
+            throw new EValorNegativo("La capacidad debe ser mayor a cero");
         this.capacidad = capacidad;
     }
 	public boolean isDisponible() {
@@ -70,6 +73,16 @@ public class Avion implements Serializable{
 	}
 	public void setDisponible(boolean disponible) {
 		this.disponible = disponible;
+	}
+	
+	public double getVelocidad() {
+		return velocidad;
+	}
+
+	public void setVelocidad(double velocidad) throws EValorNegativo {
+		if (velocidad <= 0)
+            throw new EValorNegativo("La velocidad debe ser mayor a cero");
+		this.velocidad = velocidad;
 	}
 	
 	public void wFicheroAvion(String dir) throws IOException {
@@ -87,14 +100,6 @@ public class Avion implements Serializable{
 	    f.close();
 	    b.close();
 	    return a;
-	}
-
-	public double getVelocidad() {
-		return velocidad;
-	}
-
-	public void setVelocidad(double velocidad) {
-		this.velocidad = velocidad;
 	}
 	
 }

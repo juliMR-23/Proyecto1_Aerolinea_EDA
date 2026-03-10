@@ -32,6 +32,7 @@ abstract class Empleado extends Persona implements Serializable {
     protected static final int MAX_VUELOS = 10;
     protected double horasVueloAcumuladas;
 
+
     // CONSTRUCTOR
     public Empleado(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
     		double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
