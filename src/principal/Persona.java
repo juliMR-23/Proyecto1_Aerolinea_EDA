@@ -27,7 +27,8 @@ abstract class Persona implements Serializable {
     protected String telefono;
     protected String email;
     protected String password;
-    private boolean isActive;
+    protected boolean isActive;
+    protected static int cont;
 
     // CONSTRUCTOR
     public Persona(String nombre, String tipoDocumento, String documento,
@@ -41,7 +42,7 @@ abstract class Persona implements Serializable {
     	validarEmail(email); 
     	validarPassword(password);
     	
-    	this.id=IDAsign.asignar("PE",Aerolinea.getCont());
+    	this.id=IDAsign.asignar("PE",cont);
         this.nombre = nombre;
         this.tipoDocumento = tipoDocumento;
         this.documento = documento;
@@ -49,7 +50,7 @@ abstract class Persona implements Serializable {
         this.email = email;
         this.password = password;
         this.isActive=true;
-        Aerolinea.aumentaCont();
+        cont++;
     }
 
     // GETTERS
@@ -155,5 +156,13 @@ abstract class Persona implements Serializable {
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
+	
+	public int getCont() {
+		return cont;
+	}
+	public static void setCont(int conta) {
+		cont=conta;
+	}
+
     
 }

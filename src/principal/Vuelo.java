@@ -169,5 +169,12 @@ public class Vuelo implements Serializable{
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
+	
+	public int getCont() {
+		return cont;
+	}
+	public static void setCont(int conta) {
+		cont=conta;
+	}
     
 }

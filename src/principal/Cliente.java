@@ -15,6 +15,7 @@ import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
 import excepciones.EValorNulo;
+import util.IDAsign;
 import util.Valida;
 
 public class Cliente extends Persona implements Serializable {
@@ -25,6 +26,7 @@ public class Cliente extends Persona implements Serializable {
 	public Cliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
 		super(nombre, tipoDocumento, documento, telefono, email, password);
 		this.reservas = new Reserva[0];
+		this.id=IDAsign.asignar("CL",cont);
 	}
 
 	public void addReserva(Vuelo vuelo) throws EValorNulo{

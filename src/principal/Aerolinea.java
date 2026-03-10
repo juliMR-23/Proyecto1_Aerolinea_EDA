@@ -527,4 +527,11 @@ public class Aerolinea implements Serializable{
 		f.close();
 	    return a;
 	}
+	
+	public void contInicio() {
+		Aeropuerto.setCont(aeropuertos.length);
+		Persona.setCont(empleados.length+clientes.length+administradores.length);
+		Vuelo.setCont(vuelos.length);
+		
+	}
 }

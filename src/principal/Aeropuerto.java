@@ -17,6 +17,7 @@ public class Aeropuerto implements Serializable{
 	private double latitud;
 	private static final long serialVersionUID = 1L;
 	private boolean isActive;
+	private static int cont;
 
 
 	public Aeropuerto(String nombre, String ciudad, String pais, String zonaHoraria, double longitud, double latitud) throws EValorNulo {
@@ -25,7 +26,7 @@ public class Aeropuerto implements Serializable{
 		Valida.validarTexto(pais, "El país no puede estar vacío");
 		Valida.validarTexto(zonaHoraria, "La zona horaria no puede estar vacía");
 		
-		this.id = IDAsign.asignar("AE", Aerolinea.getCont());
+		this.id = IDAsign.asignar("AE", cont);
 		this.nombre = nombre;
 		this.ciudad = ciudad;
 		this.pais = pais;
@@ -33,7 +34,7 @@ public class Aeropuerto implements Serializable{
 		this.longitud = longitud;
 		this.latitud = latitud;
 		this.isActive=true;
-		Aerolinea.aumentaCont();
+		cont++;
 	}
 
 	public String getId() {
@@ -89,5 +90,13 @@ public class Aeropuerto implements Serializable{
 	public void setLatitud(double latitud) {
 		this.latitud = latitud;
 	}
+	
+	public int getCont() {
+		return cont;
+	}
+	public static void setCont(int conta) {
+		cont=conta;
+	}
+
 	
 }

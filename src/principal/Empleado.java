@@ -15,6 +15,7 @@ import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
 import excepciones.EVueloYaAsignado;
+import util.IDAsign;
 import excepciones.EVueloNoEncontrado;
 
 abstract class Empleado extends Persona implements Serializable {
@@ -41,6 +42,7 @@ abstract class Empleado extends Persona implements Serializable {
     		throw new EValorNegativo("El salario base debe ser mayor a cero");
     	if(aniosExperiencia<0)
     		throw new EValorNegativo("Años de experiencia no puede ser negativo");
+    	this.id=IDAsign.asignar("EM",cont);
     	this.salarioBase = salarioBase;
     	this.fechaContratacion = fechaContratacion;
     	this.activo = activo;
