@@ -29,6 +29,7 @@ public class Aerolinea implements Serializable{
 	private Empleado[] empleados;
 	private Vuelo[] vuelos;
 	private Administrador[] administradores;
+	private static int cont=0;
 	private static final long serialVersionUID = 1L;
 	
 	
@@ -89,8 +90,8 @@ public class Aerolinea implements Serializable{
 	
 	//lo mismo para las otras listas
 	public void addAeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
-		
-		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, codigoIATA, zonaHoraria, longitud, latitud);
+
+		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, zonaHoraria, longitud, latitud);
 		aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
         aeropuertos[aeropuertos.length - 1] = a;
     }
@@ -335,10 +336,15 @@ public class Aerolinea implements Serializable{
     }
     
     
-	public void inicializarConst() {
-		Aeropuerto.setCont(IDAsign.numFromId(aeropuertos[aeropuertos.length-1].getId())+1);
-		Persona.setCont(Math.max(IDAsign.numFromId(administradores[administradores.length-1].getId()),Math.max(IDAsign.numFromId(clientes[clientes.length-1].getId()), IDAsign.numFromId(empleados[empleados.length-1].getId())))+1);
-		//Tiquete.setCont(IDAsign.numFromId(aeropuertos[aeropuertos.length-1].getId())+1);
+
+	public static int getCont() {
+		return cont;
+	}
+	public static void setCont(int cont) {
+		Aerolinea.cont = cont;
+	}
+	public static void aumentaCont() {
+		Aerolinea.cont++;
 	}
 
 	public void wFicheroAerolinea(String dir) throws IOException, EValorNulo {
@@ -346,16 +352,16 @@ public class Aerolinea implements Serializable{
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
 		b.writeObject((Aerolinea)this);
-		f.close();
 		b.close();
+		f.close();
 	}
 	public static Aerolinea rFicheroAerolinea(String dir) throws IOException, ClassNotFoundException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 	    FileInputStream f = new FileInputStream(dir);
 	    ObjectInputStream b = new ObjectInputStream(f);
 	    Aerolinea a = (Aerolinea) b.readObject();
-	    f.close();
 	    b.close();
+		f.close();
 	    return a;
 	}
 }

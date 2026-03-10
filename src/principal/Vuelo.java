@@ -16,7 +16,7 @@ public class Vuelo implements Serializable{
     private final Aeropuerto origen, destino;
     private LocalDateTime fechaHoraSalida, fechaHoraLlegada;
     private Avion avion;
-    private String estadoVuelo; //enum
+    private String estadoVuelo;
     private String puertaEmbarque;
     private TripulanteCabina[] tripulacion;
     private Piloto[] pilotos;

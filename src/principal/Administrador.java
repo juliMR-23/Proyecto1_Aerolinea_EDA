@@ -16,6 +16,5 @@ public class Administrador extends Persona implements Serializable{
 		super(nombre, tipoDocumento, documento, telefono, email, password);
 	}
 	
-	//métodos especiales del admin
 
 }

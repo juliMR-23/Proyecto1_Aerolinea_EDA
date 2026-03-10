@@ -22,7 +22,6 @@ abstract class Persona implements Serializable {
     protected String telefono;
     protected String email;
     protected String password;
-    protected static int cont = 0;
 
     // CONSTRUCTOR
     public Persona(String nombre, String tipoDocumento, String documento,
@@ -36,14 +35,14 @@ abstract class Persona implements Serializable {
     	validarEmail(email); 
     	validarPassword(password);
     	
-    	this.id=IDAsign.asignar("PE",cont);
+    	this.id=IDAsign.asignar("PE",Aerolinea.getCont());
         this.nombre = nombre;
         this.tipoDocumento = tipoDocumento;
         this.documento = documento;
         this.telefono = telefono;
         this.email = email;
         this.password = password;
-        cont++;
+        Aerolinea.aumentaCont();
     }
 
     // GETTERS
@@ -137,13 +136,5 @@ abstract class Persona implements Serializable {
     	if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+"))//regex
             throw new EInvalidPass("La contraseña debe contener mayúsculas, minúsculas y números");
     }
-    
-    public static int getCont() {
-		return cont;
-	}
-
-	public static void setCont(int cont) {
-		Cliente.cont = cont;
-	}
     
 }

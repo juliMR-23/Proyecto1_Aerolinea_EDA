@@ -22,15 +22,13 @@ public class Cliente extends Persona implements Serializable {
 		this.reservas = new Reserva[0];
 	}
 
-	public void addReserva(String id, Vuelo vuelo) throws EValorNulo, EIDRepetido {
-		Valida.validarTexto(id, "El id de la reserva no puede ser nulo ni vacío");
+	public void addReserva(Vuelo vuelo) throws EValorNulo{
 		if (vuelo == null)
 			throw new EValorNulo("El vuelo no puede ser nulo");
-		if (indexReserva(id) != -1)
-			throw new EIDRepetido("Ya existe una reserva con ese id");
+		
 		Reserva r = new Reserva(vuelo, this);
 		reservas = Arrays.copyOf(reservas, reservas.length + 1);
-		reservas[reservas.length - 1] = r;
+		reservas[reservas.length -1] = r;
 	}
 
 	public int indexReserva(String id) {
@@ -51,18 +49,22 @@ public class Cliente extends Persona implements Serializable {
 	}
 
 	public void deleteReserva(String id) {
-		int i = indexReserva(id);
-		if (i != -1){
-			reservas[i] = reservas[reservas.length - 1];
-			reservas = Arrays.copyOf(reservas, reservas.length - 1);
-		}
+	    int i = indexReserva(id);
+
+	    if (i != -1) {
+	        for (int j= i; j < reservas.length-1; j++)
+	            reservas[j] = reservas[j+1];
+
+	        reservas = Arrays.copyOf(reservas, reservas.length -1);
+	    }
 	}
 
-	public void addTiqueteOnReserva(Reserva reserva, String id, String asiento, String nombrePasajero, String numDoc, String tipoDoc) throws EValorNulo {
+	public void addTiqueteOnReserva(Reserva reserva, String asiento, String nombrePasajero, String numDoc, String tipoDoc) throws EValorNulo {
 		if (reserva == null)
 			throw new EValorNulo("La reserva no puede ser nula");
 		int i = indexReserva(reserva.getId()); 
-		reservas[i].addTiquete(asiento, nombrePasajero, numDoc, tipoDoc);
+		if(i!=-1)
+			reservas[i].addTiquete(asiento, nombrePasajero, numDoc, tipoDoc);
 	}
 
 	public int indexTiqueteOnReserva(Reserva reserva, String id) throws EValorNulo{
