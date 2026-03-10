@@ -1,7 +1,11 @@
 package principal;
 
 import java.util.Arrays;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import excepciones.EIDRepetido;
@@ -87,5 +91,24 @@ public class Cliente extends Persona implements Serializable {
 
 	public Reserva[] getReservas() {
 		return reservas;
+	}
+	
+	public void copiarFicheroCliente(String dir) throws IOException, EValorNulo {
+	    Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	    FileOutputStream f = new FileOutputStream(dir);
+	    ObjectOutputStream b = new ObjectOutputStream(f);
+	    b.writeObject((Cliente)this);
+	    b.close();
+	    f.close();
+	}
+
+	public static Cliente leerFicheroCliente(String dir) throws IOException, ClassNotFoundException, EValorNulo {
+	    Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	    FileInputStream f = new FileInputStream(dir);
+	    ObjectInputStream b = new ObjectInputStream(f);
+	    Cliente cliente = (Cliente) b.readObject();
+	    b.close();
+	    f.close();
+	    return cliente;
 	}
 }

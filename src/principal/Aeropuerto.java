@@ -1,5 +1,10 @@
 package principal;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import excepciones.EValorNulo;
@@ -72,4 +77,22 @@ public class Aeropuerto implements Serializable{
 		return latitud;
 	}
 	
+	public void copiarFicheroAeropuerto(String dir) throws IOException, EValorNulo {
+	    Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	    FileOutputStream f = new FileOutputStream(dir);
+	    ObjectOutputStream b = new ObjectOutputStream(f);
+	    b.writeObject((Aeropuerto)this);
+	    b.close();
+	    f.close();
+	}
+
+	public static Aeropuerto leerFicheroAeropuerto(String dir) throws IOException, ClassNotFoundException, EValorNulo {
+	    Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	    FileInputStream f = new FileInputStream(dir);
+	    ObjectInputStream b = new ObjectInputStream(f);
+	    Aeropuerto aeropuerto = (Aeropuerto) b.readObject();
+	    b.close();
+	    f.close();
+	    return aeropuerto;
+	}
 }
