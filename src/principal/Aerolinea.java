@@ -18,6 +18,7 @@ import excepciones.EInvalidDocumento;
 import excepciones.EPilotosInsuficientes;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
+import util.IDAsign;
 import util.Valida;
 
 public class Aerolinea implements Serializable{
@@ -29,6 +30,7 @@ public class Aerolinea implements Serializable{
 	private Vuelo[] vuelos;
 	private Administrador[] administradores;
 	private static int cont=0;
+	private static final long serialVersionUID = 1L;
 	
 	
 	public Aerolinea(String nombre) throws EValorNulo {
@@ -88,13 +90,12 @@ public class Aerolinea implements Serializable{
 	
 	//lo mismo para las otras listas
 	public void addAeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
-		
+
 		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, zonaHoraria, longitud, latitud);
-		if(indexAeropuerto(a.getId())!=-1)
-			throw new EIDRepetido("Ya existe otro aeropuerto con este id");
 		aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
         aeropuertos[aeropuertos.length - 1] = a;
     }
+	
 
     public Aeropuerto searchAeropuerto(String id) {
         int i = indexAeropuerto(id);
@@ -326,25 +327,41 @@ public class Aerolinea implements Serializable{
         if(i<empleados.length)
         	return true;
         
+        i = 0;
+        while (i < administradores.length && !administradores[i].getEmail().equalsIgnoreCase(email)) i++;
+        if(i<administradores.length)
+        	return true;
+        
         return false;
     }
     
+    
+
+	public static int getCont() {
+		return cont;
+	}
+	public static void setCont(int cont) {
+		Aerolinea.cont = cont;
+	}
+	public static void aumentaCont() {
+		Aerolinea.cont++;
+	}
 
 	public void wFicheroAerolinea(String dir) throws IOException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
 		b.writeObject((Aerolinea)this);
-		f.close();
 		b.close();
+		f.close();
 	}
 	public static Aerolinea rFicheroAerolinea(String dir) throws IOException, ClassNotFoundException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 	    FileInputStream f = new FileInputStream(dir);
 	    ObjectInputStream b = new ObjectInputStream(f);
 	    Aerolinea a = (Aerolinea) b.readObject();
-	    f.close();
 	    b.close();
+		f.close();
 	    return a;
 	}
 }

@@ -8,4 +8,9 @@ public class IDAsign {
 		}
 		return prefix + String.valueOf(count);
 	}
+	
+	public static int numFromId(String id) {
+		String num = id.substring(2);
+		return Integer.parseInt(num);
+	}
 }

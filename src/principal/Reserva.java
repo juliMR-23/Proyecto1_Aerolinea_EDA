@@ -15,7 +15,6 @@ public class Reserva implements Serializable {
 	private Cliente cliente;
 	private Tiquete[] tiquetes = new Tiquete[0];
 	private boolean activa;
-	private static int cont = 0;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -24,11 +23,11 @@ public class Reserva implements Serializable {
 		if(vuelo == null) {throw new EValorNulo("El vuelo no puede estar vacío");}
 		if(cliente == null) {throw new EValorNulo("El cliente no puede estar vacío");}
 		
-		this.id = IDAsign.asignar("RE",cont);
+		this.id = IDAsign.asignar("RE",Aerolinea.getCont());
 		this.cliente = cliente;
 		this.vuelo = vuelo;
 		this.activa = true;
-		cont++;
+		Aerolinea.aumentaCont();
 	}
 	public void validarActive() {
 		if(vuelo.getFechaHoraSalida().isBefore(LocalDateTime.now())) {
@@ -37,14 +36,25 @@ public class Reserva implements Serializable {
 	}
 
 	public String getId() {return id;}
-	public void setId(String id) {this.id = id;}
+	public void setId(String id) throws EValorNulo {
+	    Valida.validarTexto(id, "El id no puede estar vacío");
+	    this.id = id;
+	}
 	public Cliente getCliente() {return cliente;}
-	public void setCliente(Cliente cliente) {this.cliente = cliente;}
+	public void setCliente(Cliente cliente) throws EValorNulo {
+	    if(cliente == null)
+	        throw new EValorNulo("El cliente no puede estar vacío");
+	    this.cliente = cliente;
+	}
 	public Vuelo getVuelo() {return vuelo;}
-	public void setVuelo(Vuelo vuelo) {this.vuelo = vuelo;}
+	public void setVuelo(Vuelo vuelo) throws EValorNulo {
+	    if(vuelo == null)
+	        throw new EValorNulo("El vuelo no puede estar vacío");
+	    this.vuelo = vuelo;
+	}
 	public boolean isActiva() {return activa;}
 	public void setActiva(boolean activa) {this.activa = activa;}
-	public void setTiquetes(Tiquete[] tiquetes) {this.tiquetes = tiquetes;}
+
 	public Tiquete[] getTiquetes() {return tiquetes;}
 
 	public void addTiquete(String asiento, String nombrePasajero, String numDocPasajero, String tipoDocPasajero) throws EValorNulo{
@@ -75,7 +85,7 @@ public class Reserva implements Serializable {
 		int i = indexTiquete(id);
         if (i != -1) {
             for (int j = i; j < tiquetes.length- 1; j++)
-            	tiquetes[j] = tiquetes[j + 1];
+            	tiquetes[j] = tiquetes[j+1];
             tiquetes = Arrays.copyOf(tiquetes, tiquetes.length - 1);
         }
 	}
@@ -93,16 +103,16 @@ public class Reserva implements Serializable {
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
 		b.writeObject((Reserva)this);
-		f.close();
 		b.close();
+		f.close();
 	}
 	public static Reserva leerFicheroReserva(String dir) throws IOException, ClassNotFoundException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 		FileInputStream f = new FileInputStream(dir);
 		ObjectInputStream b = new ObjectInputStream(f);
 		Reserva reserva = (Reserva) b.readObject();
-		f.close();
 		b.close();
+		f.close();
 		return reserva;
 	}
 }
