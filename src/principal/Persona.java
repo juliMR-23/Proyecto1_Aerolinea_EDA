@@ -75,18 +75,18 @@ public abstract class Persona implements Serializable {
     }
 
     // SETTERS
-    public void setNombre(String nombre) throws EValorNulo {
-    	Valida.validarTexto(nombre, "El nombre no puede ser null ni vacío");
+    public void setNombre(String nombre) throws EValorNulo, EInvalidName {
+    	validarNombre(nombre);
         this.nombre = nombre;
     }
 
-    public void setTipoDocumento(String tipoDocumento) throws EValorNulo {
-    	Valida.validarTexto(tipoDocumento, "El tipo de documento no puede ser null ni vacío");
+    public void setTipoDocumento(String tipoDocumento) throws EValorNulo, EInvalidDocumento {
+    	validarTipoDoc(tipoDocumento);
     	this.tipoDocumento = tipoDocumento;
     }
 
-    public void setDocumento(String documento) throws EValorNulo {
-    	Valida.validarTexto(documento, "El documento no puede ser null ni vacío");
+    public void setDocumento(String documento) throws EValorNulo, EInvalidDocumento {
+    	validarDocumento(documento);
     	this.documento = documento;
     }
 
