@@ -14,7 +14,8 @@ public class Reserva implements Serializable {
 	private Vuelo vuelo;
 	private Cliente cliente;
 	private Tiquete[] tiquetes = new Tiquete[0];
-	private boolean activa;
+	private boolean isActive;
+	private boolean isYet;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -26,12 +27,17 @@ public class Reserva implements Serializable {
 		this.id = IDAsign.asignar("RE",Aerolinea.getCont());
 		this.cliente = cliente;
 		this.vuelo = vuelo;
-		this.activa = true;
+		this.isYet = true;
+		this.isActive = true;
 		Aerolinea.aumentaCont();
+		
+		if(vuelo.getFechaHoraSalida().isBefore(LocalDateTime.now())) {
+			setYet(false);
+		};
 	}
 	public void validarActive() {
 		if(vuelo.getFechaHoraSalida().isBefore(LocalDateTime.now())) {
-			setActiva(false);
+			setActive(false);
 		};
 	}
 
@@ -52,8 +58,10 @@ public class Reserva implements Serializable {
 	        throw new EValorNulo("El vuelo no puede estar vacío");
 	    this.vuelo = vuelo;
 	}
-	public boolean isActiva() {return activa;}
-	public void setActiva(boolean activa) {this.activa = activa;}
+	public boolean isActive() {return isActive;}
+	public void setActive(boolean activa) {this.isActive = activa;}
+	public boolean isyet() {return isYet;}
+	public void setYet(boolean activa) {this.isYet = activa;}
 
 	public Tiquete[] getTiquetes() {return tiquetes;}
 
@@ -62,15 +70,48 @@ public class Reserva implements Serializable {
 		tiquetes = Arrays.copyOf(tiquetes, tiquetes.length+1);
 		tiquetes[tiquetes.length-1] = t;
 	}
+	public void guardarTiquetes() throws IOException, EValorNulo {
+        for(int i = 0; i < tiquetes.length; i++) {
+            Tiquete t = tiquetes[i];
+            t.wFicheroTiquete("src/ficheros/tiquetes/tiquete"+(i+1)+".tiq");
+        }
+    }
+
+	public String[] cargarTiquetes() throws EValorNulo{ 
+        File dir = new File("src/ficheros/tiquetes/");
+        String[] errores = new String[0]; //Añadido
+
+        if (dir.exists()) {
+            File[] ficheros = dir.listFiles();
+            if (ficheros != null) {
+                for(File f: ficheros) {
+                    if(f.isFile() && f.getName().endsWith(".tiq")) {
+
+                    	try {
+                        Tiquete tiquete = Tiquete.rFicheroTiquete(f.getPath());
+                        tiquetes = Arrays.copyOf(tiquetes, tiquetes.length + 1);
+                        tiquetes[tiquetes.length - 1] = tiquete; 
+
+                        } catch (IOException | ClassNotFoundException e) {
+                        	errores = Arrays.copyOf(errores, errores.length+1);
+                        	errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+                        }
+                    }
+                }
+            }
+        }
+        return errores;
+    }
 	
 	public int indexTiquete(String id) {
 		int i = 0;
 		while (i<tiquetes.length && !tiquetes[i].getId().equalsIgnoreCase(id)) {
 			i++;
 		}
-		if (i==tiquetes.length)
-			return -1;
-		return i;
+		if (i < tiquetes.length)
+			if(tiquetes[i].isActive()) 
+				return i;
+		return -1;
 	}
 	
 	public Tiquete searchTiquete(String id){
@@ -90,6 +131,19 @@ public class Reserva implements Serializable {
         }
 	}
 	
+	public Tiquete[] listTiquetes() {return tiquetes;}
+
+	public Tiquete[] listTiquetesActivos() {
+		Tiquete[] activos = new Tiquete[0];
+		for(Tiquete a: tiquetes) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
+	
 	public double calcularPrecioTotal() {
 		double total = 0;
 		for(Tiquete t:tiquetes) {
@@ -98,7 +152,7 @@ public class Reserva implements Serializable {
 		return total;
 	}
 	
-	public void copiarFicheroReserva(String dir) throws IOException, EValorNulo {
+	public void wFicheroReserva(String dir) throws IOException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
@@ -106,7 +160,7 @@ public class Reserva implements Serializable {
 		b.close();
 		f.close();
 	}
-	public static Reserva leerFicheroReserva(String dir) throws IOException, ClassNotFoundException, EValorNulo {
+	public static Reserva rFicheroReserva(String dir) throws IOException, ClassNotFoundException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 		FileInputStream f = new FileInputStream(dir);
 		ObjectInputStream b = new ObjectInputStream(f);

@@ -23,6 +23,7 @@ abstract class Persona implements Serializable {
     protected String telefono;
     protected String email;
     protected String password;
+    protected boolean isActive;
 
     // CONSTRUCTOR
     public Persona(String nombre, String tipoDocumento, String documento,
@@ -43,6 +44,7 @@ abstract class Persona implements Serializable {
         this.telefono = telefono;
         this.email = email;
         this.password = password;
+        this.isActive=true;
         Aerolinea.aumentaCont();
     }
 
@@ -141,5 +143,13 @@ abstract class Persona implements Serializable {
     public void wFicheroPersona(String dir) throws IOException {
 
     }
+    
+    public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
     
 }

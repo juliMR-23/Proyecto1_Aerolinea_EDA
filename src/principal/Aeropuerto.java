@@ -21,6 +21,7 @@ public class Aeropuerto implements Serializable{
 	private double longitud;
 	private double latitud;
 	private static final long serialVersionUID = 1L;
+	private boolean isActive;
 
 
 	public Aeropuerto(String nombre, String ciudad, String pais, String zonaHoraria, double longitud, double latitud) throws EValorNulo {
@@ -36,6 +37,7 @@ public class Aeropuerto implements Serializable{
 		this.zonaHoraria = zonaHoraria;
 		this.longitud = longitud;
 		this.latitud = latitud;
+		this.isActive=true;
 		Aerolinea.aumentaCont();
 	}
 
@@ -75,6 +77,14 @@ public class Aeropuerto implements Serializable{
 
 	public double getLatitud() {
 		return latitud;
+	}
+	
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 	public void wFicheroAeropuerto(String dir) throws IOException {

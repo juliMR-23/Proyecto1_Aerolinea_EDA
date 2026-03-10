@@ -30,6 +30,7 @@ public class Vuelo implements Serializable{
     private Piloto[] pilotos;
     private Reserva[] reservas;
     private double precio;
+    private boolean isActive;
     private static int cont = 0;
 
     // Constructor
@@ -60,7 +61,7 @@ public class Vuelo implements Serializable{
         this.pilotos = pilotos;
         this.reservas = new Reserva[0];
         this.precio = 500+calcularDuracion();
-        
+        this.isActive=true;
         cont++;
         
     }
@@ -115,11 +116,11 @@ public class Vuelo implements Serializable{
 	}
 	
 	//TODO: Cambiar metodo para pilotos en general
-	public void addPiloto(Piloto newCapitan) throws EPilotosInsuficientes, EValorNulo {
-		if(hasPilotosMin()) throw new EPilotosInsuficientes();
-		if(pilotos[0] != null) throw new EValorNulo("No se pueden pasar valores nulos");
-		pilotos[0] = newCapitan;
-	}
+		public void addPiloto(Piloto newCapitan) throws EPilotosInsuficientes, EValorNulo {
+			if(hasPilotosMin()) throw new EPilotosInsuficientes();
+			if(pilotos[0] != null) throw new EValorNulo("No se pueden pasar valores nulos");
+			pilotos[0] = newCapitan;
+		}
 	
 	public void remPiloto(int i) throws EPilotosInsuficientes {
 	    if (!hasPilotosMin()) throw new EPilotosInsuficientes();
@@ -134,15 +135,15 @@ public class Vuelo implements Serializable{
 	    pilotos = nuevo;
 	}
 	
-	public void addTripulante(TripulanteCabina newTripulante) {
-		if(hasPilotosMin()) throw new IllegalStateException("");
+	public void addTripulante(TripulanteCabina newTripulante) throws EPilotosInsuficientes {
+		if(hasPilotosMin()) throw new EPilotosInsuficientes();
 		
 		tripulacion = Arrays.copyOf(tripulacion, tripulacion.length+1);
 		tripulacion[tripulacion.length-1] = newTripulante;
 	}
 	
-	public void remTripulante(int i) {
-	    if (!hasTripulacionMin()) throw new IllegalStateException("");
+	public void remTripulante(int i) throws EPilotosInsuficientes {
+	    if (!hasTripulacionMin()) throw new EPilotosInsuficientes();
 	    
 	    TripulanteCabina[] nuevo = new TripulanteCabina[tripulacion.length - 1];
 	    int j = 0;
@@ -162,6 +163,14 @@ public class Vuelo implements Serializable{
 	
 	private LocalDateTime calcularHoraLlegada() {
 		return fechaHoraSalida.plusMinutes(calcularDuracion());
+	}
+	
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}
     
 	public void wFicheroVuelo(String dir) throws IOException {

@@ -61,6 +61,41 @@ public class Aerolinea implements Serializable{
 		aviones = Arrays.copyOf(aviones, aviones.length+1);
 		aviones[aviones.length-1]=a;
 	}
+	
+	public void guardarAviones() throws IOException {
+        for(int i = 0; i < aviones.length; i++) {
+            Avion a = aviones[i];
+            a.wFicheroAvion("src/ficheros/aviones/avion"+(i+1)+".av");
+        }
+    }
+
+	public String[] cargarAviones() throws EValorNulo{ 
+        File dir = new File("src/ficheros/aviones/");
+        String[] errores = new String[0]; //Añadido
+
+        if (dir.exists()) {
+            File[] ficheros = dir.listFiles();
+            if (ficheros != null) {
+                for(File f: ficheros) {
+                    if(f.isFile() && f.getName().endsWith(".av")) {
+
+                    	try {
+                        Avion avion = Avion.rFicheroAvion(f.getPath());
+                        aviones = Arrays.copyOf(aviones, aviones.length + 1);
+                        aviones[aviones.length - 1] = avion; 
+
+                        } catch (IOException | ClassNotFoundException e) {
+                        	errores = Arrays.copyOf(errores, errores.length+1);
+                        	errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+                        }
+                    }
+                }
+            }
+        }
+        return errores;
+    }
+	
+	
 	public Avion searchAvion(String id) {
 		int i=indexAvion(id);
 		if(i==-1)
@@ -73,7 +108,8 @@ public class Aerolinea implements Serializable{
 			n++;
 		}
 		if(n<aviones.length)
-			return n;
+			if(aviones[n].isActive()) 
+				return n;
 		return -1;//si no lo encuentra retorna -1
 	}
 	public void deleteAvion(String id) {
@@ -86,6 +122,16 @@ public class Aerolinea implements Serializable{
 	}
 	public Avion[] listAviones() {
 		return aviones;
+	}
+	public Avion[] listAvionesActivos() {
+		Avion[] activos = new Avion[0];
+		for(Avion a: aviones) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
 	}
 	
 	
@@ -145,22 +191,32 @@ public class Aerolinea implements Serializable{
             n++;
         }
         if(n < aeropuertos.length)
-            return n;
+        	if(aeropuertos[n].isActive()) 
+				return n;
         return -1;
     }
 
     public void deleteAeropuerto(String id) {
         int i = indexAeropuerto(id);
         if (i != -1) {
-            for (int j = i; j < aeropuertos.length - 1; j++)
-                aeropuertos[j] = aeropuertos[j + 1];
-            aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length - 1);
+            aeropuertos[i].setActive(false);
         }
     }
 
     public Aeropuerto[] listAeropuertos() {
         return aeropuertos;
     }
+    
+    public Aeropuerto[] listAeropuertosActivos() {
+    	Aeropuerto[] activos = new Aeropuerto[0];
+		for(Aeropuerto a: aeropuertos) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
 
     public void addCliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) 
             throws EIDRepetido, EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
@@ -174,6 +230,39 @@ public class Aerolinea implements Serializable{
             throw new EIDRepetido("Ya existe otro cliente con este id");
         clientes = Arrays.copyOf(clientes, clientes.length + 1);
         clientes[clientes.length - 1] = c;
+    }
+    
+    public void guardarClientes() throws IOException {
+        for(int i = 0; i < clientes.length; i++) {
+            Cliente c = clientes[i];
+            c.wFicheroPersona("src/ficheros/clientes/cliente"+(i+1)+".cl");
+        }
+    }
+
+	public String[] cargarClientes(){ 
+        File dir = new File("src/ficheros/clientes/");
+        String[] errores = new String[0]; //Añadido
+
+        if (dir.exists()) {
+            File[] ficheros = dir.listFiles();
+            if (ficheros != null) {
+                for(File f: ficheros) {
+                    if(f.isFile() && f.getName().endsWith(".cl")) {
+
+                    	try {
+                        Cliente cliente = Cliente.rFicheroPersona(f.getPath());
+                        clientes = Arrays.copyOf(clientes, clientes.length + 1);
+                        clientes[clientes.length - 1] = cliente; 
+
+                        } catch (IOException | ClassNotFoundException e) {
+                        	errores = Arrays.copyOf(errores, errores.length+1);
+                        	errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+                        }
+                    }
+                }
+            }
+        }
+        return errores;
     }
 
     public Cliente searchCliente(String id) {
@@ -195,15 +284,23 @@ public class Aerolinea implements Serializable{
     public void deleteCliente(String id) {
         int i = indexCliente(id);
         if (i != -1) {
-            for (int j = i; j < clientes.length - 1; j++)
-                clientes[j] = clientes[j + 1];
-
-            clientes = Arrays.copyOf(clientes, clientes.length - 1);
+        	clientes[i].setActive(false);
         }
     }
     public Cliente[] listClientes() {
         return clientes;
     }
+
+    public Cliente[] listClientesActivos() {
+    	Cliente[] activos = new Cliente[0];
+		for(Cliente a: clientes) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
     
     //Piloto y Tripulante
 
@@ -298,17 +395,15 @@ public class Aerolinea implements Serializable{
             n++;
         }
         if(n < empleados.length)
-            return n;
+        	if(empleados[n].isActive()) 
+				return n;
         return -1;
     }
 
     public void deleteEmpleado(String id) {
         int i = indexEmpleado(id);
         if (i != -1) {
-            for (int j = i; j < empleados.length-1; j++)
-                empleados[j] = empleados[j + 1];
-            
-            empleados = Arrays.copyOf(empleados, empleados.length - 1);
+        	empleados[i].setActive(false);
         }
     }
 
@@ -316,9 +411,21 @@ public class Aerolinea implements Serializable{
         return empleados;
     }
     
+    public Empleado[] listEmpleadosActivos() {
+    	Empleado[] activos = new Empleado[0];
+		for(Empleado a: empleados) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
+    
     // Vuelos
 
-    public void addVuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EIDRepetido, EValorNulo, EPilotosInsuficientes {
+    public void addVuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos, double precio) throws EIDRepetido, EValorNulo, EPilotosInsuficientes, EValorNegativo {
+
 
         Vuelo v = new Vuelo(origen, destino, fechaHoraSalida, avion, tripulacion, pilotos);
         vuelos = Arrays.copyOf(vuelos, vuelos.length + 1);
@@ -371,22 +478,32 @@ public class Aerolinea implements Serializable{
             n++;
         }
         if(n < vuelos.length)
-            return n;
+        	if(vuelos[n].isActive()) 
+				return n;
         return -1;
     }
 
     public void deleteVuelo(String id) {
         int i = indexVuelo(id);
         if (i != -1) {
-            for (int j = i; j < vuelos.length -1; j++)
-                vuelos[j] = vuelos[j + 1];
-            vuelos = Arrays.copyOf(vuelos, vuelos.length - 1);
+        	vuelos[i].setActive(false);
         }
     }
 
     public Vuelo[] listVuelos() {
         return vuelos;
     }
+    
+    public Vuelo[] listVuelosActivos() {
+    	Vuelo[] activos = new Vuelo[0];
+		for(Vuelo a: vuelos) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
     
 
     public void addAdministrador(String nombre, String tipoDocumento, String documento,
@@ -402,6 +519,39 @@ public class Aerolinea implements Serializable{
         administradores = Arrays.copyOf(administradores, administradores.length + 1);
         administradores[administradores.length - 1] = a;
     }
+    
+    public void guardarAdministradores() throws IOException {
+        for(int i = 0; i < administradores.length; i++) {
+            Administrador a = administradores[i];
+            a.wFicheroPersona("src/ficheros/administradores/administrador"+(i+1)+".adm");
+        }
+    }
+
+	public String[] cargarAdministradores(){ 
+        File dir = new File("src/ficheros/administradores/");
+        String[] errores = new String[0]; //Añadido
+
+        if (dir.exists()) {
+            File[] ficheros = dir.listFiles();
+            if (ficheros != null) {
+                for(File f: ficheros) {
+                    if(f.isFile() && f.getName().endsWith(".adm")) {
+
+                    	try {
+                        Administrador administrador = Administrador.rFicheroPersona(f.getPath());
+                        administradores = Arrays.copyOf(administradores, administradores.length + 1);
+                        administradores[administradores.length - 1] = administrador; 
+
+                        } catch (IOException | ClassNotFoundException e) {
+                        	errores = Arrays.copyOf(errores, errores.length+1);
+                        	errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+                        }
+                    }
+                }
+            }
+        }
+        return errores;
+    }
 
     public Administrador searchAdministrador(String id) {
         int i = indexAdministrador(id);
@@ -413,12 +563,12 @@ public class Aerolinea implements Serializable{
 
     public int indexAdministrador(String id) {
         int n = 0;
-
         while(n < administradores.length && !administradores[n].getId().equalsIgnoreCase(id))
             n++;
 
         if(n < administradores.length)
-            return n;
+        	if(administradores[n].isActive()) 
+				return n;
 
         return -1;
     }
@@ -427,15 +577,24 @@ public class Aerolinea implements Serializable{
         int i = indexAdministrador(id);
 
         if (i != -1) {
-            for (int j = i; j < administradores.length-1; j++)
-                administradores[j] = administradores[j + 1];
-            administradores = Arrays.copyOf(administradores, administradores.length - 1);
+        	administradores[i].setActive(false);
         }
     }
 
     public Administrador[] listAdministradores() {
         return administradores;
     }
+    
+    public Administrador[] listAdministradoresActivos() {
+    	Administrador[] activos = new Administrador[0];
+		for(Administrador a: administradores) {
+			if (a.isActive()) {
+				activos=Arrays.copyOf(activos,activos.length+1);
+				activos[activos.length-1]=a;
+			}
+		}
+		return activos;
+	}
     
     
     
@@ -486,5 +645,15 @@ public class Aerolinea implements Serializable{
 	    b.close();
 		f.close();
 	    return a;
+	}
+
+	public String[] cargarTodo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void guardarTodo() {
+		// TODO Auto-generated method stub
+		
 	}
 }

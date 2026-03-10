@@ -14,6 +14,7 @@ public class Tiquete implements Serializable {
 	private String nombrePasajero;
 	private String numDocPasajero;
 	private String tipoDocPasajero;
+	private boolean isActive;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -34,6 +35,7 @@ public class Tiquete implements Serializable {
 		this.nombrePasajero = nombrePasajero;
 		this.numDocPasajero = numDocPasajero;
 		this.tipoDocPasajero = tipoDocPasajero;
+		this.isActive=true;
 		Aerolinea.aumentaCont();
 	}
 	
@@ -72,8 +74,15 @@ public class Tiquete implements Serializable {
 		Valida.validarTexto(tipoDocPasajero, "El tipo de documento del pasajero no puede ser vacío");
 		this.tipoDocPasajero = tipoDocPasajero;	
 	}
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 	
-	public void copiarFicheroTiquete(String dir) throws IOException, EValorNulo {
+	public void wFicheroTiquete(String dir) throws IOException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
@@ -81,7 +90,7 @@ public class Tiquete implements Serializable {
 		b.close();
 		f.close();
 	}
-	public static Tiquete leerFicheroTiquete(String dir) throws IOException, ClassNotFoundException, EValorNulo {
+	public static Tiquete rFicheroTiquete(String dir) throws IOException, ClassNotFoundException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 		FileInputStream f = new FileInputStream(dir);
 		ObjectInputStream b = new ObjectInputStream(f);

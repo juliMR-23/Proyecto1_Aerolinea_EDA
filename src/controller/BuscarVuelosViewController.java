@@ -355,4 +355,14 @@ public class BuscarVuelosViewController implements Initializable {
             e.printStackTrace();
         }
     }
+
+	public void setAerolinea(Aerolinea miAerolinea) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setAerolinea(Aerolinea miAerolinea) {
+		// TODO Auto-generated method stub
+		
+	}
 }
