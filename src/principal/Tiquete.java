@@ -70,6 +70,12 @@ public class Tiquete implements Serializable {
 		b.close();
 		return tiquete;
 	}
-	
+	public static int getCont() {
+		return cont;
+	}
+
+	public static void setCont(int cont) {
+		Tiquete.cont = cont;
+	}
 
 }

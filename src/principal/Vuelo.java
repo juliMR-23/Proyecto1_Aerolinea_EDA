@@ -22,6 +22,7 @@ public class Vuelo implements Serializable{
     private Piloto[] pilotos;
     private Reserva[] reservas;
     private double precio;
+    private static final long serialVersionUID = 1L;
 
     // Constructor
     public Vuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes{
@@ -149,6 +150,7 @@ public class Vuelo implements Serializable{
 		distancia = Math.toRadians(distancia)*6371;
 		return (int)((distancia/(avion.getVelocidad()*1.852))*60);
 	}
+	
 	
 	// Reservas y Asientos
     

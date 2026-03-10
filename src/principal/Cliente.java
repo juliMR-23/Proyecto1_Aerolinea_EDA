@@ -9,13 +9,13 @@ import excepciones.EInvalidDocumento;
 import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
-import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import util.Valida;
 
 public class Cliente extends Persona implements Serializable {
 
 	private Reserva[] reservas;
+	private static final long serialVersionUID = 1L;
 
 	public Cliente(String nombre, String tipoDocumento, String documento, String telefono, String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
 		super(nombre, tipoDocumento, documento, telefono, email, password);

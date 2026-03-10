@@ -138,4 +138,12 @@ abstract class Persona implements Serializable {
             throw new EInvalidPass("La contraseña debe contener mayúsculas, minúsculas y números");
     }
     
+    public static int getCont() {
+		return cont;
+	}
+
+	public static void setCont(int cont) {
+		Cliente.cont = cont;
+	}
+    
 }
