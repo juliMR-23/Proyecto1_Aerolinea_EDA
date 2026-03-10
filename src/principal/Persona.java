@@ -1,5 +1,6 @@
 package principal;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import excepciones.EInvalidDocumento;
@@ -135,6 +136,10 @@ abstract class Persona implements Serializable {
     		throw new EInvalidPass("La contraseña debe tener al menos 6 caracteres");
     	if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+"))//regex
             throw new EInvalidPass("La contraseña debe contener mayúsculas, minúsculas y números");
+    }
+    
+    public void wFicheroPersona(String dir) throws IOException {
+
     }
     
 }

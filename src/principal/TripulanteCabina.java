@@ -1,5 +1,10 @@
 package principal;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
@@ -58,5 +63,25 @@ public class TripulanteCabina extends Empleado implements Serializable{
 	public void setIdiomas(String[] idiomas) {
 		this.idiomas = idiomas;
 	}
+	
+	@Override
+    public void wFicheroPersona(String dir) throws IOException {
+
+        FileOutputStream f = new FileOutputStream(dir);
+        ObjectOutputStream b = new ObjectOutputStream(f);
+        b.writeObject((TripulanteCabina)this);
+        b.close();
+        f.close();
+    }
+
+    public static TripulanteCabina rFicheroPersona(String dir) throws IOException, ClassNotFoundException {
+
+        FileInputStream f = new FileInputStream(dir);
+        ObjectInputStream b = new ObjectInputStream(f);
+        TripulanteCabina tp = (TripulanteCabina) b.readObject();
+        b.close();
+        f.close();
+        return tp;
+    }
 	
 }

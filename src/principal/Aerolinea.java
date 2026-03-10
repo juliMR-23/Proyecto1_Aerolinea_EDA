@@ -1,5 +1,6 @@
 package principal;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -89,11 +90,45 @@ public class Aerolinea implements Serializable{
 	
 	
 	//lo mismo para las otras listas
-	public void addAeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
+	public void addAeropuerto(String nombre, String ciudad, String pais, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
 
 		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, zonaHoraria, longitud, latitud);
 		aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
         aeropuertos[aeropuertos.length - 1] = a;
+    }
+
+    
+    public void guardarAeropuerto() throws IOException, EValorNulo {
+    	for(int i=0; i < aeropuertos.length; i++) {
+    		Aeropuerto a = aeropuertos[i];
+    		a.wFicheroAeropuerto("src/ficheros/aeropuertos/Aeropuerto"+(i+1)+".ae");;
+    	}
+    }
+    
+    public String[] cargarAeropuerto() { 
+    	File dir = new File("src/ficheros/aeropuertos/"); 
+    	String[] errores = new String[0];
+    	
+    	if(dir.exists()) {
+    		File[] ficheros = dir.listFiles();
+    		if(ficheros != null) {
+    			for(File f: ficheros) {
+    				if(f.isFile() && f.getName().endsWith(".ae")) { 
+    					try {
+    						Aeropuerto a = Aeropuerto.rFicheroAeropuerto(f.getPath());
+    						aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length+1);
+    						aeropuertos[aeropuertos.length-1] = a;
+    						
+    					} catch (IOException | ClassNotFoundException e) {
+    						errores = Arrays.copyOf(errores, errores.length+1);
+    						errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+     					}
+    			}
+    		}
+    		
+    	}
+    }
+		return errores;
     }
 	
 
@@ -169,6 +204,8 @@ public class Aerolinea implements Serializable{
     public Cliente[] listClientes() {
         return clientes;
     }
+    
+    //Piloto y Tripulante
 
     public void addPiloto(String nombre, String tipoDocumento, String documento, String telefono, String email, String password,
 			double salarioBase, Date fechaContratacion, boolean activo, int aniosExperiencia) throws EIDRepetido, EValorNulo, EValorNegativo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
@@ -193,6 +230,59 @@ public class Aerolinea implements Serializable{
             throw new EIDRepetido("Ya existe otro empleado con este id");
         empleados = Arrays.copyOf(empleados, empleados.length + 1);
         empleados[empleados.length - 1] = t;
+    }
+    
+    public void guardarTripulantesCabina() throws IOException, EValorNulo {
+    	for(int i=0; i < empleados.length; i++) {
+    		TripulanteCabina tc = (TripulanteCabina) empleados[i];
+    		tc.wFicheroPersona("src/ficheros/empleados/Tripulante"+(i+1)+".tc");;
+    	}
+    }
+    
+    public void guardarPilotos() throws IOException, EValorNulo {
+    	for(int i=0; i < empleados.length; i++) {
+    		Piloto a = (Piloto) empleados[i];
+    		a.wFicheroPersona("src/ficheros/empleados/Piloto"+(i+1)+".pi");;
+    	}
+    }
+    
+    
+    public String[] cargarEmpleados() { //Cambiar nombre 
+    	File dir = new File("src/ficheros/empleado/"); //cambiar direccion 
+    	String[] errores = new String[0];
+    	
+    	if(dir.exists()) {
+    		File[] ficheros = dir.listFiles();
+    		if(ficheros != null) {
+    			for(File f: ficheros) {
+    				if(f.isFile() && f.getName().endsWith(".tc")) { //Cambiar extension
+    					try {
+    						TripulanteCabina tc = TripulanteCabina.rFicheroPersona(f.getPath());
+    						empleados = Arrays.copyOf(empleados, empleados.length+1);
+    						empleados[empleados.length-1] = tc;
+    						
+    					} catch (IOException | ClassNotFoundException e) {
+    						errores = Arrays.copyOf(errores, errores.length+1);
+    						errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+     					}
+    			}
+    				
+    				if(f.isFile() && f.getName().endsWith(".pi")) {
+    					try {
+    						Piloto p = Piloto.rFicheroPersona(f.getPath());
+    						empleados = Arrays.copyOf(empleados, empleados.length+1);
+    						empleados[empleados.length-1] = p;
+    						
+    					} catch (IOException | ClassNotFoundException e) {
+    						errores = Arrays.copyOf(errores, errores.length+1);
+    						errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+     					}
+    				}
+    		}
+    		
+    	}
+    }
+		return errores;
     }
 
     public Empleado searchEmpleado(String id) {
@@ -225,14 +315,47 @@ public class Aerolinea implements Serializable{
     public Empleado[] listEmpleados() {
         return empleados;
     }
+    
+    // Vuelos
 
-    public void addVuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EIDRepetido, EValorNulo, EPilotosInsuficientes {
-        if(indexVuelo(id) != -1)
-            throw new EIDRepetido("Ya existe otro vuelo con este id");
+    public void addVuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EIDRepetido, EValorNulo, EPilotosInsuficientes {
 
-        Vuelo v = new Vuelo(id, origen, destino, fechaHoraSalida, avion, tripulacion, pilotos);
+        Vuelo v = new Vuelo(origen, destino, fechaHoraSalida, avion, tripulacion, pilotos);
         vuelos = Arrays.copyOf(vuelos, vuelos.length + 1);
         vuelos[vuelos.length - 1] = v;
+    }
+    
+    public void guardarVuelo() throws IOException, EValorNulo {
+    	for(int i=0; i < vuelos.length; i++) {
+    		Vuelo v = vuelos[i];
+    		v.wFicheroVuelo("src/ficheros/vuelos/Vuelo"+(i+1)+".vu");;
+    	}
+    }
+    
+    public String[] cargarVuelos() { //Cambiar nombre 
+    	File dir = new File("src/ficheros/vuelos"); //cambiar direccion 
+    	String[] errores = new String[0];
+    	
+    	if(dir.exists()) {
+    		File[] ficheros = dir.listFiles();
+    		if(ficheros != null) {
+    			for(File f: ficheros) {
+    				if(f.isFile() && f.getName().endsWith(".vu")) { //Cambiar extension
+    					try {
+    						Vuelo v = Vuelo.rFicheroVuelo(f.getPath());
+    						vuelos = Arrays.copyOf(vuelos, vuelos.length+1);
+    						vuelos[vuelos.length-1] = v;
+    						
+    					} catch (IOException | ClassNotFoundException e) {
+    						errores = Arrays.copyOf(errores, errores.length+1);
+    						errores[errores.length-1] = f.getName() + ": " + e.getMessage();
+     					}
+    			}
+    		}
+    		
+    	}
+    }
+		return errores;
     }
 
     public Vuelo searchVuelo(String id) {

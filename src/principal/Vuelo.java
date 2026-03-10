@@ -2,6 +2,11 @@
 
 package principal;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -28,9 +33,7 @@ public class Vuelo implements Serializable{
     private static int cont = 0;
 
     // Constructor
-    public Vuelo(String id, Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos, double precio) throws EValorNulo, EPilotosInsuficientes, EValorNegativo{
-        
-    	Valida.validarTexto(id, "El id no puede estar vacío");
+    public Vuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes{
 
         if (origen == null)
             throw new EValorNulo("El aeropuerto de origen no puede estar vacío");
@@ -44,7 +47,6 @@ public class Vuelo implements Serializable{
             throw new EValorNulo("Los pilotos no pueden ser nulo");  
         if(!hasPilotosMin())
         	throw new EPilotosInsuficientes();
-        if(precio <= 0) throw new EValorNegativo("El precio no puede ser 0 o negativo");
         
     	this.id = IDAsign.asignar("VU", cont);
         this.origen = origen;
@@ -57,7 +59,7 @@ public class Vuelo implements Serializable{
         this.tripulacion = tripulacion;
         this.pilotos = pilotos;
         this.reservas = new Reserva[0];
-        this.precio = precio;
+        this.precio = 500+calcularDuracion();
         
         cont++;
         
@@ -158,9 +160,24 @@ public class Vuelo implements Serializable{
 		return (int)((distancia/(avion.getVelocidad()*1.852))*72+30);
 	}
 	
-	public LocalDateTime calcularHoraLlegada() {
+	private LocalDateTime calcularHoraLlegada() {
 		return fechaHoraSalida.plusMinutes(calcularDuracion());
 	}
     
+	public void wFicheroVuelo(String dir) throws IOException {
+		FileOutputStream f = new FileOutputStream(dir);
+		ObjectOutputStream b = new ObjectOutputStream(f);
+		b.writeObject((Vuelo)this);
+		b.close();
+		f.close();
+	}
+	public static Vuelo rFicheroVuelo(String dir) throws IOException, ClassNotFoundException {
+	    FileInputStream f = new FileInputStream(dir);
+	    ObjectInputStream b = new ObjectInputStream(f);
+	    Vuelo a = (Vuelo) b.readObject();
+	    b.close();
+		f.close();
+	    return a;
+	}
     
 }

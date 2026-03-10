@@ -1,5 +1,10 @@
 package principal;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import excepciones.EValorNulo;
@@ -70,6 +75,22 @@ public class Aeropuerto implements Serializable{
 
 	public double getLatitud() {
 		return latitud;
+	}
+	
+	public void wFicheroAeropuerto(String dir) throws IOException {
+		FileOutputStream f = new FileOutputStream(dir);
+		ObjectOutputStream b = new ObjectOutputStream(f);
+		b.writeObject((Aeropuerto)this);
+		b.close();
+		f.close();
+	}
+	public static Aeropuerto rFicheroAeropuerto(String dir) throws IOException, ClassNotFoundException {
+	    FileInputStream f = new FileInputStream(dir);
+	    ObjectInputStream b = new ObjectInputStream(f);
+	    Aeropuerto a = (Aeropuerto) b.readObject();
+	    b.close();
+		f.close();
+	    return a;
 	}
 	
 }
