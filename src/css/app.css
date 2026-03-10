@@ -1,0 +1,125 @@
+@font-face {
+    -fx-font-family: 'Quantico';
+    src: url('/fonts/Quantico-Bold.ttf');
+}
+
+.root {
+    -fx-font-family: 'Quantico';
+	-fx-background-color: #1E2A35;
+}
+
+
+/* ===== Branding izquierdo ===== */
+
+.logo-icon {
+    -fx-text-fill: #C9A84C;     /* Dorado */
+    -fx-font-size: 80px;
+}
+
+.logo-title {
+    -fx-text-fill: #ECF0F1;     /* Blanco */
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+
+.logo-subtitle {
+    -fx-text-fill: #C9A84C;
+    -fx-font-size: 14px;
+}
+
+/* ===== Títulos del formulario ===== */
+
+.title-main {
+    -fx-text-fill: #ECF0F1;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.title-sub {
+    -fx-text-fill: #C9A84C;
+    -fx-font-size: 14px;
+}
+
+/* ===== Campos de texto MaterialFX ===== */
+
+.field-main {
+    -fx-padding: 0;
+}
+
+/* Contenedor MaterialFX */
+.field-main .mfx-text-field,
+.field-main .mfx-password-field {
+    -fx-background-color: #1E2A35;      
+    -fx-background-radius: 8;
+    -fx-border-color: #C9A84C33;        
+    -fx-border-radius: 8;
+
+    -mfx-line-color: #C9A84C;           
+    -mfx-unfocus-line-color: #7F8C8D;  
+    -mfx-caret-color: #C9A84C;
+
+    -fx-text-fill: #ECF0F1;
+    -fx-prompt-text-fill: #F5F5F5AA;
+	
+	-fx-font-size: 24px;
+}
+
+
+.field-main .text-field,
+.field-main .password-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ECF0F1;
+    -fx-prompt-text-fill: #F5F5F5AA;
+    -fx-border-color: transparent;
+    -fx-highlight-fill: rgba(201,168,76,0.35);
+}
+
+
+.field-main:focused .mfx-text-field,
+.field-main:focused .mfx-password-field {
+    -fx-border-color: #C9A84C;
+    -mfx-line-color: #C9A84C;
+}
+
+/* ===== Mensaje de error ===== */
+
+.text-error {
+    -fx-text-fill: #C0392B; /* Rojo */
+    -fx-font-size: 13px;
+}
+
+/* ===== Botones ===== */
+
+
+.btn-primary {
+    -fx-background-color: #C9A84C;
+    -fx-text-fill: #0D1B2A;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #b8963e;
+}
+
+
+.btn-outline {
+    -fx-background-color: transparent;
+    -fx-text-fill: #C9A84C;
+    -fx-border-color: #C9A84C;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.btn-outline:hover {
+    -fx-background-color: rgba(201,168,76,0.12);
+}
+
+.field-main .text-field,
+.field-main .password-field {
+    -fx-font-size: 18px;
+}

@@ -1,1 +1,0 @@
-Este es el readme, incluyan aquí anotaciones que consideren necesarias, dudas, cosas que hayan asumido del diagrama, etc

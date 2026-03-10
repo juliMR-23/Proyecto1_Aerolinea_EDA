@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0"
+            style="-fx-background-color: #1E2A35;"
+            xmlns="http://javafx.com/javafx/23"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.LoginViewController">
+
+    <!-- Panel izquierdo branding -->
+    <VBox alignment="CENTER" spacing="18.0"
+          prefWidth="520.0"
+          style="-fx-background-color: #0D1B2A;"
+          AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0"
+          AnchorPane.bottomAnchor="0.0">
+        <Label text="✈" styleClass="logo-icon"/>
+        <Label text="EDArolinea" styleClass="logo-title"/>
+        <Label text="Donde la prioridad eres tú" styleClass="logo-subtitle"/>
+    </VBox>
+
+    <!-- Panel derecho formulario -->
+    <VBox alignment="CENTER" spacing="24.0"
+          style="-fx-background-color: #2C3E50;
+                 -fx-background-radius: 20;
+                 -fx-padding: 60;"
+          prefWidth="700.0"
+          AnchorPane.leftAnchor="660.0" AnchorPane.rightAnchor="560.0"
+          AnchorPane.topAnchor="100.0" AnchorPane.bottomAnchor="100.0">
+
+        <Label text="Iniciar Sesión" styleClass="title-main"/>
+        <Label text="Bienvenido de vuelta" styleClass="title-sub"/>
+
+        <MFXTextField fx:id="txtEmail"
+                      promptText="Correo"
+                      prefWidth="480.0" prefHeight="68.0"
+                      styleClass="field-main"/>
+
+        <MFXPasswordField fx:id="txtPassword"
+                          promptText="Contraseña"
+                          prefWidth="480.0" prefHeight="68.0"
+                          styleClass="field-main"/>
+
+        <Label fx:id="lblError"
+               text=""
+               styleClass="text-error"
+               wrapText="true"/>
+
+        <Button fx:id="btnLogin"
+                text="Ingresar"
+                onAction="#handleLogin"
+                prefWidth="480.0" prefHeight="64.0"
+                style="-fx-background-color: #C9A84C;
+                       -fx-text-fill: #1E2A35;
+                       -fx-font-size: 18px;
+                       -fx-font-weight: bold;
+                       -fx-background-radius: 10;
+                       -fx-cursor: hand;
+                       -fx-border-color: transparent;"/>
+
+        <Button fx:id="btnRegistrar"
+                text="Regístrate"
+                onAction="#handleRegistrar"
+                prefWidth="480.0" prefHeight="56.0"
+                style="-fx-background-color: transparent;
+                       -fx-text-fill: #C9A84C;
+                       -fx-font-size: 16px;
+                       -fx-font-weight: bold;
+                       -fx-border-color: #C9A84C;
+                       -fx-border-radius: 10;
+                       -fx-background-radius: 10;
+                       -fx-cursor: hand;"/>
+
+        <!-- Botón Volver abajo del formulario -->
+        <Button fx:id="btnVolver"
+                text="← Volver"
+                onAction="#handleVolver"
+                prefWidth="480.0" prefHeight="48.0"
+                style="-fx-background-color: transparent;
+                       -fx-text-fill: #7F8C8D;
+                       -fx-font-size: 15px;
+                       -fx-border-color: transparent;
+                       -fx-cursor: hand;"/>
+    </VBox>
+
+</AnchorPane>

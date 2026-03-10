@@ -18,6 +18,13 @@ import util.IDAsign;
 import util.Valida;
 
 public class Vuelo implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	private final String id;
+    private final Aeropuerto origen, destino;
+    private LocalDateTime fechaHoraSalida, fechaHoraLlegada;
+    private Avion avion;
+    private String estadoVuelo; 
     private final String id;
     private final Aeropuerto origen, destino;
     private LocalDateTime fechaHoraSalida, fechaHoraLlegada;
@@ -116,14 +123,14 @@ public class Vuelo implements Serializable{
 	}
 	
 	//TODO: Cambiar metodo para pilotos en general
-	public void addPiloto(Piloto newCapitan) throws EPilotosInsuficientes {
+	public void addPiloto(Piloto newCapitan) throws EPilotosInsuficientes, EValorNulo {
 		if(hasPilotosMin()) throw new EPilotosInsuficientes();
-		if(pilotos[0] != null) throw new IllegalStateException("");
+		if(pilotos[0] != null) throw new EValorNulo("No se pueden pasar valores nulos");
 		pilotos[0] = newCapitan;
 	}
 	
-	public void remPiloto(int i) {
-	    if (!hasPilotosMin()) throw new IllegalStateException("");
+	public void remPiloto(int i) throws EPilotosInsuficientes {
+	    if (!hasPilotosMin()) throw new EPilotosInsuficientes();
 	    
 	    Piloto[] nuevo = new Piloto[pilotos.length - 1];
 	    int j = 0;
@@ -158,7 +165,7 @@ public class Vuelo implements Serializable{
 	public int calcularDuracion() {
 		double distancia = Math.sqrt(Math.pow((origen.getLatitud()-destino.getLatitud()),2)+Math.pow((origen.getLongitud()-destino.getLongitud()),2));
 		distancia = Math.toRadians(distancia)*6371;
-		return (int)((distancia/(avion.getVelocidad()*1.852))*60);
+		return (int)((distancia/(avion.getVelocidad()*1.852))*72+30);
 	}
 	
 	public LocalDateTime calcularHoraLlegada() {
