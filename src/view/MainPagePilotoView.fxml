@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0"
+            style="-fx-background-color: #1E2A35;"
+            xmlns="http://javafx.com/javafx/23"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.MainPagePilotoViewController">
+
+    <ScrollPane fitToWidth="true"
+                style="-fx-background: transparent;
+                       -fx-background-color: transparent;
+                       -fx-border-color: transparent;"
+                AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+
+        <VBox alignment="TOP_CENTER" spacing="36.0"
+              style="-fx-padding: 100 160 60 160;">
+
+            <!-- Titulo -->
+            <VBox alignment="CENTER" spacing="8.0">
+                <Label text="Panel del Piloto"
+                       style="-fx-font-size: 36px; -fx-font-weight: bold;
+                              -fx-text-fill: #ECF0F1;"/>
+                <Label fx:id="lblSubtitulo" text=""
+                       style="-fx-font-size: 16px; -fx-text-fill: #C9A84C;"/>
+            </VBox>
+
+            <!-- Tarjetas de estadisticas -->
+            <HBox alignment="CENTER" spacing="24.0" maxWidth="1400.0">
+
+                <!-- Total vuelos este mes -->
+                <VBox alignment="CENTER" spacing="8.0" prefWidth="280.0"
+                      style="-fx-background-color: #FFFFFF;
+                             -fx-background-radius: 16;
+                             -fx-padding: 32 24 32 24;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0, 3, 3);">
+                    <Label text="✈"
+                           style="-fx-font-size: 36px; -fx-text-fill: #C9A84C;"/>
+                    <Label fx:id="lblTotalVuelosMes" text="0"
+                           style="-fx-font-size: 48px; -fx-font-weight: bold;
+                                  -fx-text-fill: #1E2A35;"/>
+                    <Label text="Vuelos este mes"
+                           style="-fx-font-size: 13px; -fx-text-fill: #888888;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
+
+                <!-- Horas acumuladas -->
+                <VBox alignment="CENTER" spacing="8.0" prefWidth="280.0"
+                      style="-fx-background-color: #FFFFFF;
+                             -fx-background-radius: 16;
+                             -fx-padding: 32 24 32 24;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0, 3, 3);">
+                    <Label text="🕐"
+                           style="-fx-font-size: 36px; -fx-text-fill: #C9A84C;"/>
+                    <Label fx:id="lblHorasAcumuladas" text="0h"
+                           style="-fx-font-size: 48px; -fx-font-weight: bold;
+                                  -fx-text-fill: #1E2A35;"/>
+                    <Label text="Horas de vuelo acumuladas"
+                           style="-fx-font-size: 13px; -fx-text-fill: #888888;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
+
+                <!-- Años de experiencia -->
+                <VBox alignment="CENTER" spacing="8.0" prefWidth="280.0"
+                      style="-fx-background-color: #FFFFFF;
+                             -fx-background-radius: 16;
+                             -fx-padding: 32 24 32 24;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0, 3, 3);">
+                    <Label text="🏅"
+                           style="-fx-font-size: 36px; -fx-text-fill: #C9A84C;"/>
+                    <Label fx:id="lblAniosExp" text="0"
+                           style="-fx-font-size: 48px; -fx-font-weight: bold;
+                                  -fx-text-fill: #1E2A35;"/>
+                    <Label text="Años de experiencia"
+                           style="-fx-font-size: 13px; -fx-text-fill: #888888;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
+
+                <!-- Salario calculado -->
+                <VBox alignment="CENTER" spacing="8.0" prefWidth="280.0"
+                      style="-fx-background-color: #FFFFFF;
+                             -fx-background-radius: 16;
+                             -fx-padding: 32 24 32 24;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0, 3, 3);">
+                    <Label text="💳"
+                           style="-fx-font-size: 36px; -fx-text-fill: #C9A84C;"/>
+                    <Label fx:id="lblSalario" text="COP 0"
+                           style="-fx-font-size: 28px; -fx-font-weight: bold;
+                                  -fx-text-fill: #1E2A35;"/>
+                    <Label text="Salario del mes"
+                           style="-fx-font-size: 13px; -fx-text-fill: #888888;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
+
+            </HBox>
+
+            <!-- Botón Próximo Vuelo -->
+            <HBox alignment="CENTER" maxWidth="1400.0">
+                <Button fx:id="btnProximoVuelo"
+                        text="Ver mi próximo vuelo  →"
+                        onAction="#handleVerProximoVuelo"
+                        prefWidth="340.0" prefHeight="64.0"
+                        style="-fx-background-color: #C9A84C;
+                               -fx-text-fill: #0D1B2A;
+                               -fx-font-size: 18px;
+                               -fx-font-weight: bold;
+                               -fx-background-radius: 12;
+                               -fx-cursor: hand;
+                               -fx-border-color: transparent;"/>
+            </HBox>
+
+            <!-- Informe mensual -->
+            <VBox spacing="14.0" maxWidth="1400.0">
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <Label text="📋  Informe del mes"
+                           style="-fx-font-size: 20px; -fx-font-weight: bold;
+                                  -fx-text-fill: #C9A84C;"/>
+                    <Label fx:id="lblMesAnio" text=""
+                           style="-fx-font-size: 14px; -fx-text-fill: #7F8C8D;"/>
+                </HBox>
+                <VBox fx:id="vboxInformeMensual" spacing="14.0"/>
+            </VBox>
+
+            <!-- Volver -->
+            <Button fx:id="btnCerrarSesion"
+                    text="Cerrar sesión"
+                    onAction="#handleCerrarSesion"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #7F8C8D;
+                           -fx-font-size: 15px;
+                           -fx-border-color: transparent;
+                           -fx-cursor: hand;"/>
+        </VBox>
+    </ScrollPane>
+
+    <Label text="✈  EDArolinea"
+           style="-fx-text-fill: #C9A84C; -fx-font-size: 24px; -fx-font-weight: bold;"
+           AnchorPane.topAnchor="28.0" AnchorPane.leftAnchor="48.0"/>
+
+</AnchorPane>

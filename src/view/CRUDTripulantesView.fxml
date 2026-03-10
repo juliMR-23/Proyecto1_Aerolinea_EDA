@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="900.0" prefWidth="1400.0"
+            style="-fx-background-color: #1E2A35;"
+            xmlns="http://javafx.com/javafx/23"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.CRUDTripulantesViewController">
+
+    <VBox spacing="24.0"
+          AnchorPane.topAnchor="40.0" AnchorPane.leftAnchor="40.0"
+          AnchorPane.rightAnchor="40.0" AnchorPane.bottomAnchor="40.0">
+
+        <HBox alignment="CENTER_LEFT" spacing="16.0">
+            <Label text="Gestión de Tripulantes de Cabina"
+                   style="-fx-text-fill: #ECF0F1; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnNuevo"
+                    text="Nuevo tripulante"
+                    onAction="#handleNuevoTripulante"
+                    style="-fx-background-color: #C9A84C;
+                           -fx-text-fill: #1E2A35;
+                           -fx-font-size: 15px;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 10;
+                           -fx-cursor: hand;
+                           -fx-border-color: transparent;"/>
+            <Button fx:id="btnVolver"
+                    text="← Volver"
+                    onAction="#handleVolver"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #7F8C8D;
+                           -fx-font-size: 14px;
+                           -fx-border-color: transparent;
+                           -fx-cursor: hand;"/>
+        </HBox>
+
+        <TableView fx:id="tblTripulantes" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId"              text="ID"               prefWidth="120.0"/>
+                <TableColumn fx:id="colNombre"          text="Nombre"           prefWidth="220.0"/>
+                <TableColumn fx:id="colDocumento"       text="Documento"        prefWidth="160.0"/>
+                <TableColumn fx:id="colEmail"           text="Email"            prefWidth="240.0"/>
+                <TableColumn fx:id="colSalario"         text="Salario"          prefWidth="160.0"/>
+                <TableColumn fx:id="colHorasAcumuladas" text="Horas acumuladas" prefWidth="160.0"/>
+                <TableColumn fx:id="colIdiomas"         text="Idiomas"          prefWidth="120.0"/>
+                <TableColumn fx:id="colAcciones"        text="Acciones"         prefWidth="140.0"/>
+            </columns>
+        </TableView>
+
+        <Label fx:id="lblEstado"
+               style="-fx-text-fill: #7F8C8D; -fx-font-size: 14px;"/>
+
+    </VBox>
+
+</AnchorPane>
