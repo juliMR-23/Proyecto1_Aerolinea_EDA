@@ -28,6 +28,7 @@ public class Aerolinea implements Serializable{
 	private Empleado[] empleados;
 	private Vuelo[] vuelos;
 	private Administrador[] administradores;
+	private static int cont=0;
 	
 	
 	public Aerolinea(String nombre) throws EValorNulo {
@@ -88,7 +89,7 @@ public class Aerolinea implements Serializable{
 	//lo mismo para las otras listas
 	public void addAeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
 		
-		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, codigoIATA, zonaHoraria, longitud, latitud);
+		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, zonaHoraria, longitud, latitud);
 		if(indexAeropuerto(a.getId())!=-1)
 			throw new EIDRepetido("Ya existe otro aeropuerto con este id");
 		aeropuertos = Arrays.copyOf(aeropuertos, aeropuertos.length + 1);
