@@ -25,17 +25,11 @@ public class Vuelo implements Serializable{
     private LocalDateTime fechaHoraSalida, fechaHoraLlegada;
     private Avion avion;
     private String estadoVuelo; 
-    private final String id;
-    private final Aeropuerto origen, destino;
-    private LocalDateTime fechaHoraSalida, fechaHoraLlegada;
-    private Avion avion;
-    private String estadoVuelo;
     private String puertaEmbarque;
     private TripulanteCabina[] tripulacion;
     private Piloto[] pilotos;
     private Reserva[] reservas;
     private double precio;
-    private static final long serialVersionUID = 1L;
 
     // Constructor
     public Vuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes{
@@ -123,23 +117,37 @@ public class Vuelo implements Serializable{
 	}
 	
 	//TODO: Cambiar metodo para pilotos en general
-	public void addPiloto(Piloto newCapitan) throws EPilotosInsuficientes, EValorNulo {
-		if(hasPilotosMin()) throw new EPilotosInsuficientes();
-		if(pilotos[0] != null) throw new EValorNulo("No se pueden pasar valores nulos");
-		pilotos[0] = newCapitan;
-	}
+	public void addPiloto(Piloto nuevoPiloto) throws EValorNulo, EPilotosInsuficientes {
+        if (nuevoPiloto == null)
+            throw new EValorNulo("El piloto no puede ser nulo");
+        if(indexPiloto(nuevoPiloto.getId())==-1){
+        	pilotos = Arrays.copyOf(pilotos, pilotos.length + 1);
+            pilotos[pilotos.length - 1] = nuevoPiloto;
+        }
+    }
+	public int indexPiloto(String id) {
+        int n = 0;
+        while(n < pilotos.length && !pilotos[n].getId().equalsIgnoreCase(id)) {
+            n++;
+        }
+        if(n < pilotos.length)
+            return n;
+        return -1;
+    }
+
 	
-	public void remPiloto(int i) throws EPilotosInsuficientes {
+	public void deletePiloto(String id) throws EPilotosInsuficientes {
 	    if (!hasPilotosMin()) throw new EPilotosInsuficientes();
-	    
-	    Piloto[] nuevo = new Piloto[pilotos.length - 1];
-	    int j = 0;
-	    for (int k = 0; k < pilotos.length; k++) {
-	        if (k != i) {
-	            nuevo[j++] = pilotos[k];
+	    if(pilotos.length-1>2) {
+	    	int i = indexPiloto(id);
+	        if (i != -1) {
+	            for (int j = i; j < pilotos.length-1; j++)
+	                pilotos[j] = pilotos[j + 1];
+	            
+	            pilotos = Arrays.copyOf(pilotos, pilotos.length -1);
 	        }
 	    }
-	    pilotos = nuevo;
+	    
 	}
 	
 	public void addTripulante(TripulanteCabina newTripulante) {
