@@ -15,7 +15,7 @@ import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
 import excepciones.EInvalidDocumento;
-import excepciones.EPilotosInsuficientes;
+import excepciones.EEmpleadosInsuficientes;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
 import util.IDAsign;
@@ -225,7 +225,7 @@ public class Aerolinea implements Serializable{
         return empleados;
     }
 
-    public void addVuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EIDRepetido, EValorNulo, EPilotosInsuficientes {
+    public void addVuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EIDRepetido, EValorNulo, EEmpleadosInsuficientes {
         Vuelo v = new Vuelo(origen, destino, fechaHoraSalida, avion, tripulacion, pilotos);
         vuelos = Arrays.copyOf(vuelos, vuelos.length + 1);
         vuelos[vuelos.length - 1] = v;

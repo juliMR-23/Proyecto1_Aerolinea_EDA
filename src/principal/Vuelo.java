@@ -11,8 +11,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import excepciones.EPilotosInsuficientes;
-import excepciones.EValorNegativo;
+import excepciones.EEmpleadosInsuficientes;
 import excepciones.EValorNulo;
 import util.IDAsign;
 import util.Valida;
@@ -32,7 +31,7 @@ public class Vuelo implements Serializable{
     private double precio;
 
     // Constructor
-    public Vuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EPilotosInsuficientes{
+    public Vuelo(Aeropuerto origen, Aeropuerto destino, LocalDateTime fechaHoraSalida, Avion avion,TripulanteCabina[] tripulacion, Piloto[] pilotos) throws EValorNulo, EEmpleadosInsuficientes{
 
         if (origen == null)
             throw new EValorNulo("El aeropuerto de origen no puede estar vacío");
@@ -45,7 +44,10 @@ public class Vuelo implements Serializable{
         if (pilotos == null || pilotos.length == 0)
             throw new EValorNulo("Los pilotos no pueden ser nulo"); 
         if(!hasPilotosMin())
-        	throw new EPilotosInsuficientes();
+        	throw new EEmpleadosInsuficientes("pilotos");
+        if (!hasTripulacionMin())
+	        throw new EEmpleadosInsuficientes("tripulantes de cabina");
+
         
     	this.id = IDAsign.asignar("VU", Aerolinea.getCont());
         this.origen = origen;
@@ -116,8 +118,8 @@ public class Vuelo implements Serializable{
 		return tripulacion.length >= (avion.getCapacidad() /50);
 	}
 	
-	//TODO: Cambiar metodo para pilotos en general
-	public void addPiloto(Piloto nuevoPiloto) throws EValorNulo, EPilotosInsuficientes {
+	
+	public void addPiloto(Piloto nuevoPiloto) throws EValorNulo{
         if (nuevoPiloto == null)
             throw new EValorNulo("El piloto no puede ser nulo");
         if(indexPiloto(nuevoPiloto.getId())==-1){
@@ -136,9 +138,9 @@ public class Vuelo implements Serializable{
     }
 
 	
-	public void deletePiloto(String id) throws EPilotosInsuficientes {
-	    if (!hasPilotosMin()) throw new EPilotosInsuficientes();
-	    if(pilotos.length-1>2) {
+	public void deletePiloto(String id) throws EEmpleadosInsuficientes {
+	    if (!hasPilotosMin()) throw new EEmpleadosInsuficientes("pilotos");
+	    if(pilotos.length-1>=2) {
 	    	int i = indexPiloto(id);
 	        if (i != -1) {
 	            for (int j = i; j < pilotos.length-1; j++)
@@ -146,28 +148,40 @@ public class Vuelo implements Serializable{
 	            
 	            pilotos = Arrays.copyOf(pilotos, pilotos.length -1);
 	        }
-	    }
-	    
+	    } 
 	}
-	
-	public void addTripulante(TripulanteCabina newTripulante) {
-		if(hasPilotosMin()) throw new IllegalStateException("");
-		
-		tripulacion = Arrays.copyOf(tripulacion, tripulacion.length+1);
-		tripulacion[tripulacion.length-1] = newTripulante;
-	}
-	
-	public void remTripulante(int i) {
-	    if (!hasTripulacionMin()) throw new IllegalStateException("");
-	    
-	    TripulanteCabina[] nuevo = new TripulanteCabina[tripulacion.length - 1];
-	    int j = 0;
-	    for (int k = 0; k < tripulacion.length; k++) {
-	        if (k != i) {
-	            nuevo[j++] = tripulacion[k];
-	        }
+	// Buscar índice de un tripulante por ID
+	public int indexTripulante(String id) {
+	    int n = 0;
+	    while (n < tripulacion.length && !tripulacion[n].getId().equalsIgnoreCase(id)) {
+	        n++;
 	    }
-	    tripulacion = nuevo;
+	    if (n < tripulacion.length)
+	        return n;
+	    return -1;
+	}
+
+	public void addTripulante(TripulanteCabina nuevoTripulante) throws EValorNulo {
+	    if (nuevoTripulante == null)
+	        throw new EValorNulo("El tripulante no puede ser nulo");
+
+	    if (indexTripulante(nuevoTripulante.getId())== -1) {
+	        tripulacion = Arrays.copyOf(tripulacion, tripulacion.length + 1);
+	        tripulacion[tripulacion.length - 1] = nuevoTripulante;
+	    }
+	}
+
+
+	public void deleteTripulante(String id) throws EEmpleadosInsuficientes {
+	    if (!hasTripulacionMin())
+	        throw new EEmpleadosInsuficientes("tripulantes de cabina");
+
+	    int i = indexTripulante(id);
+	    if (i != -1) {
+	        for (int j = i; j < tripulacion.length - 1; j++)
+	            tripulacion[j] = tripulacion[j + 1];
+	        tripulacion = Arrays.copyOf(tripulacion, tripulacion.length - 1);
+	    }
 	}
 	
 	public int calcularDuracion() {
