@@ -11,7 +11,7 @@ import excepciones.EValorNulo;
 import util.IDAsign;
 import util.Valida;
 
-abstract class Persona implements Serializable {
+public abstract class Persona implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,6 +24,7 @@ abstract class Persona implements Serializable {
     protected String email;
     protected String password;
     protected boolean isActive;
+    protected static int cont;
 
     // CONSTRUCTOR
     public Persona(String nombre, String tipoDocumento, String documento,
@@ -37,7 +38,7 @@ abstract class Persona implements Serializable {
     	validarEmail(email); 
     	validarPassword(password);
     	
-    	this.id=IDAsign.asignar("PE",Aerolinea.getCont());
+    	this.id=IDAsign.asignar("PE",cont);
         this.nombre = nombre;
         this.tipoDocumento = tipoDocumento;
         this.documento = documento;
@@ -45,7 +46,7 @@ abstract class Persona implements Serializable {
         this.email = email;
         this.password = password;
         this.isActive=true;
-        Aerolinea.aumentaCont();
+        cont++;
     }
 
     // GETTERS
@@ -150,6 +151,13 @@ abstract class Persona implements Serializable {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+	
+	public int getCont() {
+		return cont;
+	}
+	public static void setCont(int conta) {
+		cont=conta;
 	}
     
 }

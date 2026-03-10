@@ -188,5 +188,12 @@ public class Vuelo implements Serializable{
 		f.close();
 	    return a;
 	}
+	
+	public int getCont() {
+		return cont;
+	}
+	public static void setCont(int conta) {
+		cont=conta;
+	}
     
 }

@@ -12,6 +12,7 @@ import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
 import excepciones.EValorNulo;
+import util.IDAsign;
 
 public class Administrador extends Persona implements Serializable{
 	
@@ -19,6 +20,8 @@ public class Administrador extends Persona implements Serializable{
 
 	public Administrador(String nombre, String tipoDocumento, String documento, String telefono,String email, String password) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
 		super(nombre, tipoDocumento, documento, telefono, email, password);
+		
+		this.id=IDAsign.asignar("AD", cont);
 	}
 	
 	@Override

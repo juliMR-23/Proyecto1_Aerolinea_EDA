@@ -15,9 +15,10 @@ import excepciones.EInvalidEmail;
 import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
 import excepciones.EVueloYaAsignado;
+import util.IDAsign;
 import excepciones.EVueloNoEncontrado;
 
-abstract class Empleado extends Persona implements Serializable {
+public abstract class Empleado extends Persona implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,7 +29,7 @@ abstract class Empleado extends Persona implements Serializable {
     protected int aniosExperiencia;
     protected Vuelo[] vuelosAsignados;
     protected Aerolinea aerolinea;
-    protected int cantidadVuelos;
+    private int cantidadVuelos;
     protected static final int MAX_VUELOS = 10;
     protected double horasVueloAcumuladas;
 
@@ -46,8 +47,9 @@ abstract class Empleado extends Persona implements Serializable {
     	this.activo = activo;
     	this.aniosExperiencia = aniosExperiencia;
     	this.vuelosAsignados = new Vuelo[MAX_VUELOS];
-    	this.cantidadVuelos = 0;
+    	this.setCantidadVuelos(0);
     	this.horasVueloAcumuladas = 0.0;
+    	this.id=IDAsign.asignar("EM",cont);
     }
 
     // METODOS
@@ -69,20 +71,20 @@ abstract class Empleado extends Persona implements Serializable {
             throw new EValorNulo("El vuelo no puede ser null");
         }
 
-        if (this.cantidadVuelos >= this.vuelosAsignados.length) {
+        if (this.getCantidadVuelos() >= this.vuelosAsignados.length) {
             throw new ECapacidadVuelosLlena("No hay espacio para más vuelos para este empleado");
         }
 
         // verificar que no exista ya ese id
-        for (int i = 0; i < this.cantidadVuelos; i++) {
+        for (int i = 0; i < this.getCantidadVuelos(); i++) {
             if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
                 throw new EVueloYaAsignado(
                         "El vuelo con id " + vuelo.getId() + " ya está asignado a este empleado");
             }
         }
 
-        this.vuelosAsignados[this.cantidadVuelos] = vuelo;
-        this.cantidadVuelos++;
+        this.vuelosAsignados[this.getCantidadVuelos()] = vuelo;
+        this.setCantidadVuelos(this.getCantidadVuelos() + 1);
     }
 
     // Metodo para buscar entre los vuelos asignados al empleado
@@ -94,7 +96,7 @@ abstract class Empleado extends Persona implements Serializable {
 
         int contador = 0;
 
-        for (int i = 0; i < this.cantidadVuelos; i++) {
+        for (int i = 0; i < this.getCantidadVuelos(); i++) {
             if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
                 contador++;
             }
@@ -108,7 +110,7 @@ abstract class Empleado extends Persona implements Serializable {
         Vuelo[] encontrados = new Vuelo[contador];
         int index = 0;
 
-        for (int i = 0; i < this.cantidadVuelos; i++) {
+        for (int i = 0; i < this.getCantidadVuelos(); i++) {
             if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
                 encontrados[index] = this.vuelosAsignados[i];
                 index++;
@@ -125,16 +127,16 @@ abstract class Empleado extends Persona implements Serializable {
             throw new EValorNulo("El vuelo no puede ser null");
         }
 
-        for (int i = 0; i < this.cantidadVuelos; i++) {
+        for (int i = 0; i < this.getCantidadVuelos(); i++) {
             if (this.vuelosAsignados[i].getId() == vuelo.getId()) {
 
                 // mover elementos hacia la izquierda
-                for (int j = i; j < cantidadVuelos - 1; j++) {
+                for (int j = i; j < getCantidadVuelos() - 1; j++) {
                     this.vuelosAsignados[j] = this.vuelosAsignados[j + 1];
                 }
 
-                this.vuelosAsignados[cantidadVuelos - 1] = null;
-                this.cantidadVuelos--;
+                this.vuelosAsignados[getCantidadVuelos() - 1] = null;
+                this.setCantidadVuelos(this.getCantidadVuelos() - 1);
 
                 return;
             }
@@ -207,4 +209,16 @@ abstract class Empleado extends Persona implements Serializable {
             throw new EValorNegativo("Las horas de vuelo acumuladas no pueden ser negativas");
         }
     }
+	
+	public Vuelo[] getVuelosAsignados() {
+	    return vuelosAsignados;
+	}
+
+	public int getCantidadVuelos() {
+	    return cantidadVuelos;
+	}
+	
+	public void setCantidadVuelos(int cantidad) {
+		this.cantidadVuelos = cantidad;
+	}
 }

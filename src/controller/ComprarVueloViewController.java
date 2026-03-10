@@ -36,12 +36,12 @@ public class ComprarVueloViewController implements Initializable {
     @FXML private Button btnConfirmar;
     @FXML private Button btnVolver;
 
-    private static final DateTimeFormatter HORA_FMT   = DateTimeFormatter.ofPattern("HH:mm");
-    private static final double            PRECIO_BASE = 250000.0;
+    private static final DateTimeFormatter HORA_FMT = DateTimeFormatter.ofPattern("HH:mm");
 
-    private Vuelo   vuelo;
-    private Cliente clienteLogueado;
-    private int     numeroPasajeros;
+    private Vuelo     vuelo;
+    private Cliente   clienteLogueado;
+    private Aerolinea aerolinea;
+    private int       numeroPasajeros;
 
     private TextField[] camposNombre;
     private TextField[] camposTipoDoc;
@@ -49,6 +49,10 @@ public class ComprarVueloViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {}
+
+    public void setAerolinea(Aerolinea aerolinea) {
+        this.aerolinea = aerolinea;
+    }
 
     public void setDatos(Vuelo vuelo, int numeroPasajeros, Cliente clienteLogueado) {
         this.vuelo           = vuelo;
@@ -65,7 +69,6 @@ public class ComprarVueloViewController implements Initializable {
     }
 
     private void poblarResumenVuelo() {
-    	//TODO: Datos reales
         LocalDateTime salida  = vuelo.getFechaHoraSalida();
         LocalDateTime llegada = vuelo.getFechaHoraLlegada() != null
                 ? vuelo.getFechaHoraLlegada()
@@ -85,7 +88,7 @@ public class ComprarVueloViewController implements Initializable {
         );
 
         NumberFormat nf = NumberFormat.getInstance(new Locale("es", "CO"));
-        lblPrecioPorTiquete.setText("COP " + nf.format((long) PRECIO_BASE));
+        lblPrecioPorTiquete.setText("COP " + nf.format((long) vuelo.getPrecio()));
     }
 
     private void generarFormulariosPasajeros() {
@@ -102,16 +105,16 @@ public class ComprarVueloViewController implements Initializable {
             Label titulo = new Label(i == 0 ? "Pasajero 1 (tú)" : "Pasajero " + (i + 1));
             titulo.setStyle("-fx-text-fill: #C9A84C; -fx-font-size: 16px; -fx-font-weight: bold;");
 
-            VBox boxNombre  = crearCampo("Nombre completo",           360);
-            VBox boxTipo    = crearCampo("Tipo doc. (CC / CE / PAS)", 200);
-            VBox boxNum     = crearCampo("Número de documento",        240);
+            VBox boxNombre = crearCampo("Nombre completo",            360);
+            VBox boxTipo   = crearCampo("Tipo doc. (CC / CE / PAS)", 200);
+            VBox boxNum    = crearCampo("Número de documento",        240);
 
             TextField tfNombre = (TextField) boxNombre.getChildren().get(1);
             TextField tfTipo   = (TextField) boxTipo.getChildren().get(1);
             TextField tfNum    = (TextField) boxNum.getChildren().get(1);
 
             if (i == 0 && clienteLogueado != null) {
-                tfNombre.setText(clienteLogueado.getNombre()); //TODO: Pasar nombre, no correo
+                tfNombre.setText(clienteLogueado.getNombre());
                 tfTipo.setText(clienteLogueado.getTipoDocumento());
                 tfNum.setText(clienteLogueado.getDocumento());
             }
@@ -148,13 +151,12 @@ public class ComprarVueloViewController implements Initializable {
     }
 
     private void actualizarTotal() {
-        NumberFormat nf = NumberFormat.getInstance(new Locale("es", "CO")); //TODO: Organizar formato
-        lblTotal.setText("COP " + nf.format((long)(PRECIO_BASE * numeroPasajeros)));
+        NumberFormat nf = NumberFormat.getInstance(new Locale("es", "CO"));
+        lblTotal.setText("COP " + nf.format((long)(vuelo.getPrecio() * numeroPasajeros)));
     }
 
     @FXML
     public void handleConfirmar(ActionEvent event) {
-        // TODO: Excepciones para validar datos
         for (int i = 0; i < numeroPasajeros; i++) {
             if (camposNombre[i].getText().trim().isEmpty() ||
                 camposTipoDoc[i].getText().trim().isEmpty() ||
@@ -169,10 +171,8 @@ public class ComprarVueloViewController implements Initializable {
         }
 
         try {
-            // TODO: Ficheros
-            String idReserva = "RES-" + System.currentTimeMillis();
-            clienteLogueado.addReserva(idReserva, vuelo);
-            Reserva reserva = clienteLogueado.searchReserva(idReserva);
+            clienteLogueado.addReserva(vuelo);
+            Reserva reserva = clienteLogueado.getReservas()[clienteLogueado.getReservas().length - 1];
 
             String[] ocupados      = getAsientosOcupados();
             String[] todosAsientos = generarAsientos(vuelo.getAvion().getCapacidad());
@@ -186,26 +186,23 @@ public class ComprarVueloViewController implements Initializable {
                 ocupados = Arrays.copyOf(ocupados, ocupados.length + 1);
                 ocupados[ocupados.length - 1] = asiento;
 
-                String idTiquete = "TIQ-" + System.currentTimeMillis() + "-" + i;
-
-                // Reserva reserva, String id, String asiento, String nombrePasajero, String numDoc, String tipoDoc
-                clienteLogueado.addTiqueteOnReserva(
-                    reserva, idTiquete, asiento,
-                    nombre, numDoc, tipoDoc);
+                clienteLogueado.addTiqueteOnReserva(reserva, asiento, nombre, numDoc, tipoDoc);
             }
+
+            // Guardar cliente actualizado en su fichero
+            aerolinea.guardarClientes();
 
             NumberFormat nf = NumberFormat.getInstance(new Locale("es", "CO"));
             mostrarMensaje(
-                "✔ Compra confirmada. Reserva: " + idReserva +
+                "✔ Compra confirmada. Reserva: " + reserva.getId() +
                 "  |  " + numeroPasajeros + " tiquete(s)  |  Total: COP " +
-                nf.format((long)(PRECIO_BASE * numeroPasajeros)),
+                nf.format((long)(vuelo.getPrecio() * numeroPasajeros)),
                 "#27AE60"
             );
             btnConfirmar.setDisable(true);
 
         } catch (Exception e) {
-            mostrarMensaje("Error al confirmar: " + e.getMessage(), "#C0392B");
-            e.printStackTrace();
+            mostrarMensaje("⚠ Error al confirmar: " + e.getMessage(), "#C0392B");
         }
     }
 
@@ -219,6 +216,7 @@ public class ComprarVueloViewController implements Initializable {
             );
             Parent root = loader.load();
             BuscarVuelosViewController ctrl = loader.getController();
+            ctrl.setAerolinea(aerolinea);
             if (clienteLogueado != null) ctrl.setUsuarioLogueado(clienteLogueado);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
@@ -228,11 +226,10 @@ public class ComprarVueloViewController implements Initializable {
             stage.setMaximized(maxim);
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            mostrarMensaje("⚠ Error al volver: " + e.getMessage(), "#C0392B");
         }
     }
 
-    //TODO: Revisar si se pone en clase aparte
     private String[] getAsientosOcupados() {
         Reserva[] reservas = vuelo.getReservas();
         int total = 0;
@@ -248,8 +245,8 @@ public class ComprarVueloViewController implements Initializable {
     }
 
     private String[] generarAsientos(int capacidad) {
-        char[] cols   = {'A','B','C','D','E','F'};
-        int    filas  = (int) Math.ceil(capacidad / 6.0);
+        char[] cols  = {'A','B','C','D','E','F'};
+        int    filas = (int) Math.ceil(capacidad / 6.0);
         String[] lista = new String[filas * cols.length];
         int idx = 0;
         for (int f = 1; f <= filas; f++)
@@ -266,7 +263,7 @@ public class ComprarVueloViewController implements Initializable {
             }
             if (libre) return asiento;
         }
-        throw new IllegalStateException("No hay asientos disponibles."); //TODO: Excepcion personalizada
+        throw new IllegalStateException("No hay asientos disponibles.");
     }
 
     private String abrev(String nombre) {

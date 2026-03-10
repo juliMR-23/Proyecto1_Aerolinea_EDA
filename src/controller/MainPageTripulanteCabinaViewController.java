@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import principal.Aerolinea;
 import principal.TripulanteCabina;
 import principal.Vuelo;
 
@@ -34,15 +35,20 @@ public class MainPageTripulanteCabinaViewController implements Initializable {
     @FXML private VBox   vboxInformeMensual;
     @FXML private Button btnCerrarSesion;
 
-    private static final DateTimeFormatter DT_FMT =
+    private static final DateTimeFormatter DT_FMT  =
             DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm");
     private static final DateTimeFormatter MES_FMT =
-    		 DateTimeFormatter.ofPattern("MMMM yyyy", Locale.of("es", "CO"));
+            DateTimeFormatter.ofPattern("MMMM yyyy", Locale.of("es", "CO"));
 
     private TripulanteCabina tripulanteLogueado;
+    private Aerolinea        aerolinea;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {}
+
+    public void setAerolinea(Aerolinea aerolinea) {
+        this.aerolinea = aerolinea;
+    }
 
     public void setTripulante(TripulanteCabina tripulante) {
         this.tripulanteLogueado = tripulante;
@@ -119,18 +125,14 @@ public class MainPageTripulanteCabinaViewController implements Initializable {
         // Ruta
         VBox boxRuta = new VBox(4);
         boxRuta.setPrefWidth(360);
-
         Label lblRuta = new Label(
-        	    vuelo.getOrigen().getCiudad() + " (" + abrev(vuelo.getOrigen().getNombre()) + ")" +
-        	    "  →  " +
-        	    vuelo.getDestino().getCiudad() + " (" + abrev(vuelo.getDestino().getNombre()) + ")"
-        	);
-        	lblRuta.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #C9A84C;");
-
-
+            vuelo.getOrigen().getCiudad() + " (" + abrev(vuelo.getOrigen().getNombre()) + ")" +
+            "  →  " +
+            vuelo.getDestino().getCiudad() + " (" + abrev(vuelo.getDestino().getNombre()) + ")"
+        );
+        lblRuta.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #C9A84C;");
         Label lblId = new Label("Vuelo ID: " + vuelo.getId());
         lblId.setStyle("-fx-font-size: 12px; -fx-text-fill: #7F8C8D;");
-
         boxRuta.getChildren().addAll(lblRuta, lblId);
 
         // Fecha salida
@@ -170,13 +172,10 @@ public class MainPageTripulanteCabinaViewController implements Initializable {
     private VBox infoCol(String titulo, String valor, String colorValor) {
         VBox box = new VBox(4);
         box.setPrefWidth(220);
-
         Label lbl = new Label(titulo);
         lbl.setStyle("-fx-font-size: 12px; -fx-text-fill: #888888; -fx-font-weight: bold;");
-
         Label val = new Label(valor);
         val.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: " + colorValor + ";");
-
         box.getChildren().addAll(lbl, val);
         return box;
     }
@@ -219,6 +218,8 @@ public class MainPageTripulanteCabinaViewController implements Initializable {
                 getClass().getResource("/view/BuscarVuelosView.fxml")
             );
             Parent root = loader.load();
+            BuscarVuelosViewController ctrl = loader.getController();
+            ctrl.setAerolinea(aerolinea);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
@@ -227,15 +228,15 @@ public class MainPageTripulanteCabinaViewController implements Initializable {
             stage.setMaximized(maxim);
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            lblSubtitulo.setText("⚠ Error al cerrar sesión: " + e.getMessage());
+            lblSubtitulo.setStyle("-fx-text-fill: #C0392B;");
         }
     }
-    
+
     private String abrev(String nombre) {
         if (nombre == null) return "N/A";
         return nombre.length() >= 3
                 ? nombre.substring(0, 3).toUpperCase()
                 : nombre.toUpperCase();
     }
-
 }

@@ -14,25 +14,30 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
+import javafx.util.Callback;
 import principal.Aerolinea;
-import principal.Cliente;
+import principal.TripulanteCabina;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class CRUDClientesViewController implements Initializable {
+public class CRUDTripulantesViewController implements Initializable {
 
-    @FXML private TableView<Cliente>          tblClientes;
-    @FXML private TableColumn<Cliente,String> colId;
-    @FXML private TableColumn<Cliente,String> colNombre;
-    @FXML private TableColumn<Cliente,String> colDocumento;
-    @FXML private TableColumn<Cliente,String> colTelefono;
-    @FXML private TableColumn<Cliente,String> colEmail;
-    @FXML private TableColumn<Cliente,Void>   colAcciones;
-    @FXML private Label                       lblEstado;
-    @FXML private Button                      btnNuevo;
-    @FXML private Button                      btnVolver;
+    @FXML private TableView<TripulanteCabina>          tblTripulantes;
+    @FXML private TableColumn<TripulanteCabina,String>  colId;
+    @FXML private TableColumn<TripulanteCabina,String>  colNombre;
+    @FXML private TableColumn<TripulanteCabina,String>  colDocumento;
+    @FXML private TableColumn<TripulanteCabina,String>  colEmail;
+    @FXML private TableColumn<TripulanteCabina,Double>  colSalario;
+    @FXML private TableColumn<TripulanteCabina,Double>  colHorasAcumuladas;
+    @FXML private TableColumn<TripulanteCabina,Integer> colIdiomas;
+    @FXML private TableColumn<TripulanteCabina,Void>    colAcciones;
+    @FXML private Label                                 lblEstado;
+    @FXML private Button                                btnNuevo;
+    @FXML private Button                                btnVolver;
 
     private Aerolinea aerolinea;
 
@@ -41,8 +46,16 @@ public class CRUDClientesViewController implements Initializable {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colDocumento.setCellValueFactory(new PropertyValueFactory<>("documento"));
-        colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+        colSalario.setCellValueFactory(new PropertyValueFactory<>("salarioBase"));
+        colHorasAcumuladas.setCellValueFactory(new PropertyValueFactory<>("horasVueloAcumuladas"));
+
+        // Columna idiomas muestra cantidad
+        colIdiomas.setCellValueFactory(cd ->
+            new javafx.beans.property.SimpleIntegerProperty(
+                cd.getValue().listIdiomas().length
+            ).asObject()
+        );
 
         agregarColumnaAcciones();
     }
@@ -56,9 +69,9 @@ public class CRUDClientesViewController implements Initializable {
     // Tabla
     // -------------------------------------------------------
     private void recargarTabla() {
-        Cliente[] arr = aerolinea.listClientesActivos();
-        tblClientes.setItems(FXCollections.observableArrayList(arr));
-        lblEstado.setText("Total clientes: " + arr.length);
+        TripulanteCabina[] arr = aerolinea.listTripulantesActivos();
+        tblTripulantes.setItems(FXCollections.observableArrayList(arr));
+        lblEstado.setText("Total tripulantes: " + arr.length);
     }
 
     private void agregarColumnaAcciones() {
@@ -73,8 +86,8 @@ public class CRUDClientesViewController implements Initializable {
                     "-fx-padding: 4 14 4 14; -fx-border-color: transparent;"
                 );
                 btnEditar.setOnAction(e -> {
-                    Cliente c = getTableView().getItems().get(getIndex());
-                    abrirDialogo(c);
+                    TripulanteCabina t = getTableView().getItems().get(getIndex());
+                    abrirDialogo(t);
                 });
             }
 
@@ -96,31 +109,43 @@ public class CRUDClientesViewController implements Initializable {
     // CRUD
     // -------------------------------------------------------
     @FXML
-    public void handleNuevoCliente(ActionEvent event) {
+    public void handleNuevoTripulante(ActionEvent event) {
         abrirDialogo(null);
     }
 
-    private void abrirDialogo(Cliente cliente) {
+    private void abrirDialogo(TripulanteCabina tripulante) {
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle(cliente == null ? "Nuevo cliente" : "Editar cliente");
+        dialog.setTitle(tripulante == null ? "Nuevo tripulante" : "Editar tripulante");
         dialog.initModality(Modality.APPLICATION_MODAL);
 
         Label     lblNombre   = new Label("Nombre:");
-        TextField txtNombre   = new TextField(cliente != null ? cliente.getNombre() : "");
+        TextField txtNombre   = new TextField(tripulante != null ? tripulante.getNombre() : "");
 
         Label     lblTipoDoc  = new Label("Tipo documento:");
-        TextField txtTipoDoc  = new TextField(cliente != null ? cliente.getTipoDocumento() : "");
+        TextField txtTipoDoc  = new TextField(tripulante != null ? tripulante.getTipoDocumento() : "");
 
         Label     lblDoc      = new Label("Documento:");
-        TextField txtDoc      = new TextField(cliente != null ? cliente.getDocumento() : "");
-        // Documento no editable en edición, es identificador del cliente
-        if (cliente != null) txtDoc.setDisable(true);
+        TextField txtDoc      = new TextField(tripulante != null ? tripulante.getDocumento() : "");
+        if (tripulante != null) txtDoc.setDisable(true);
 
         Label     lblTelefono = new Label("Teléfono:");
-        TextField txtTelefono = new TextField(cliente != null ? cliente.getTelefono() : "");
+        TextField txtTelefono = new TextField(tripulante != null ? tripulante.getTelefono() : "");
 
         Label     lblEmail    = new Label("Email:");
-        TextField txtEmail    = new TextField(cliente != null ? cliente.getEmail() : "");
+        TextField txtEmail    = new TextField(tripulante != null ? tripulante.getEmail() : "");
+
+        Label     lblSalario  = new Label("Salario base:");
+        TextField txtSalario  = new TextField(tripulante != null ? String.valueOf(tripulante.getSalarioBase()) : "");
+
+        Label     lblAnios    = new Label("Años experiencia:");
+        TextField txtAnios    = new TextField(tripulante != null ? String.valueOf(tripulante.getAniosExperiencia()) : "");
+
+        // Idiomas — separados por coma
+        Label     lblIdiomas  = new Label("Idiomas (separados por coma):");
+        String    idiomasStr  = tripulante != null
+                ? String.join(", ", tripulante.listIdiomas())
+                : "";
+        TextField txtIdiomas  = new TextField(idiomasStr);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -131,13 +156,15 @@ public class CRUDClientesViewController implements Initializable {
         grid.add(lblDoc,      0, 2); grid.add(txtDoc,      1, 2);
         grid.add(lblTelefono, 0, 3); grid.add(txtTelefono, 1, 3);
         grid.add(lblEmail,    0, 4); grid.add(txtEmail,    1, 4);
+        grid.add(lblSalario,  0, 5); grid.add(txtSalario,  1, 5);
+        grid.add(lblAnios,    0, 6); grid.add(txtAnios,    1, 6);
+        grid.add(lblIdiomas,  0, 7); grid.add(txtIdiomas,  1, 7);
 
-        // Contraseña solo en creación, el admin no puede editarla
-        if (cliente == null) {
+        if (tripulante == null) {
             Label     lblPassword = new Label("Contraseña:");
             TextField txtPassword = new TextField();
-            grid.add(lblPassword, 0, 5);
-            grid.add(txtPassword, 1, 5);
+            grid.add(lblPassword, 0, 8);
+            grid.add(txtPassword, 1, 8);
 
             dialog.getDialogPane().setContent(grid);
             ButtonType btGuardar  = new ButtonType("Guardar",  ButtonBar.ButtonData.OK_DONE);
@@ -149,17 +176,26 @@ public class CRUDClientesViewController implements Initializable {
 
             if (result.get() == btGuardar) {
                 try {
-                    aerolinea.addCliente(
-                        txtNombre.getText().trim(),
-                        txtTipoDoc.getText().trim(),
-                        txtDoc.getText().trim(),
-                        txtTelefono.getText().trim(),
-                        txtEmail.getText().trim(),
-                        txtPassword.getText().trim()
-                    );
-                    aerolinea.guardarClientes();
+                	aerolinea.addTripulanteCabina(
+                		    txtNombre.getText().trim(),
+                		    txtTipoDoc.getText().trim(),
+                		    txtDoc.getText().trim(),
+                		    txtTelefono.getText().trim(),
+                		    txtEmail.getText().trim(),
+                		    txtPassword.getText().trim(),
+                		    Double.parseDouble(txtSalario.getText().trim()),
+                		    new Date(),
+                		    true,
+                		    Integer.parseInt(txtAnios.getText().trim())
+                		);
+                		TripulanteCabina[] todos = aerolinea.listTripulantesActivos();
+                		TripulanteCabina nuevo = todos[todos.length - 1];
+                		agregarIdiomas(nuevo, txtIdiomas.getText());
+                    aerolinea.guardarTripulantesCabina();
                     recargarTabla();
-                    estado("✔ Cliente creado correctamente.");
+                    estado("✔ Tripulante creado correctamente.");
+                } catch (NumberFormatException ex) {
+                    mostrarError("Salario y años de experiencia deben ser numéricos.");
                 } catch (Exception ex) {
                     mostrarError(ex.getMessage());
                 }
@@ -177,35 +213,54 @@ public class CRUDClientesViewController implements Initializable {
 
             if (result.get() == btGuardar) {
                 try {
-                    cliente.setNombre(txtNombre.getText().trim());
-                    cliente.setTipoDocumento(txtTipoDoc.getText().trim());
-                    cliente.setTelefono(txtTelefono.getText().trim());
-                    cliente.setEmail(txtEmail.getText().trim());
-                    aerolinea.guardarClientes();
+                    tripulante.setNombre(txtNombre.getText().trim());
+                    tripulante.setTipoDocumento(txtTipoDoc.getText().trim());
+                    tripulante.setTelefono(txtTelefono.getText().trim());
+                    tripulante.setEmail(txtEmail.getText().trim());
+                    tripulante.setSalarioBase(Double.parseDouble(txtSalario.getText().trim()));
+                    tripulante.setAniosExperiencia(Integer.parseInt(txtAnios.getText().trim()));
+
+                    // Reemplazar idiomas completamente
+                    tripulante.setIdiomas(new String[0]);
+                    agregarIdiomas(tripulante, txtIdiomas.getText());
+
+                    aerolinea.guardarTripulantesCabina();
                     recargarTabla();
-                    estado("✔ Cliente actualizado.");
+                    estado("✔ Tripulante actualizado.");
+                } catch (NumberFormatException ex) {
+                    mostrarError("Salario y años de experiencia deben ser numéricos.");
                 } catch (Exception ex) {
                     mostrarError(ex.getMessage());
                 }
 
             } else if (result.get() == btEliminar) {
                 Alert conf = new Alert(Alert.AlertType.CONFIRMATION);
-                conf.setTitle("Eliminar cliente");
-                conf.setHeaderText("¿Eliminar cliente " + cliente.getNombre() + "?");
-                conf.setContentText("Esta acción eliminará también sus reservas asociadas.");
+                conf.setTitle("Eliminar tripulante");
+                conf.setHeaderText("¿Eliminar tripulante " + tripulante.getNombre() + "?");
+                conf.setContentText("Esta acción puede afectar vuelos asignados a este tripulante.");
 
                 Optional<ButtonType> r2 = conf.showAndWait();
                 if (r2.isPresent() && r2.get() == ButtonType.OK) {
                     try {
-                        aerolinea.deleteCliente(cliente.getId());
-                        aerolinea.guardarClientes();
+                        aerolinea.deleteEmpleado(tripulante.getId());
+                        aerolinea.guardarTripulantesCabina();
                         recargarTabla();
-                        estado("✔ Cliente eliminado.");
+                        estado("✔ Tripulante eliminado.");
                     } catch (Exception ex) {
                         mostrarError(ex.getMessage());
                     }
                 }
             }
+        }
+    }
+
+    private void agregarIdiomas(TripulanteCabina t, String texto) throws Exception {
+        if (texto == null || texto.isBlank()) return;
+        String[] partes = texto.split(",");
+        for (String idioma : partes) {
+            String trimmed = idioma.trim();
+            if (!trimmed.isEmpty())
+                t.addIdioma(trimmed);
         }
     }
 

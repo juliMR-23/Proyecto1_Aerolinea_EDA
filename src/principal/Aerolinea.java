@@ -69,7 +69,7 @@ public class Aerolinea implements Serializable{
         }
     }
 
-	public String[] cargarAviones() throws EValorNulo{ 
+	public String[] cargarAviones(){ 
         File dir = new File("src/ficheros/aviones/");
         String[] errores = new String[0]; //Añadido
 
@@ -341,6 +341,28 @@ public class Aerolinea implements Serializable{
     		Piloto a = (Piloto) empleados[i];
     		a.wFicheroPersona("src/ficheros/empleados/Piloto"+(i+1)+".pi");;
     	}
+    }
+    
+    public Piloto[] listPilotosActivos() {
+        Piloto[] activos = new Piloto[0];
+        for (Empleado e : empleados) {
+            if (e instanceof Piloto && e.isActivo()) {
+                activos = Arrays.copyOf(activos, activos.length + 1);
+                activos[activos.length - 1] = (Piloto) e;
+            }
+        }
+        return activos;
+    }
+    
+    public TripulanteCabina[] listTripulantesActivos() {
+        TripulanteCabina[] activos = new TripulanteCabina[0];
+        for (Empleado e : empleados) {
+            if (e instanceof TripulanteCabina && e.isActivo()) {
+                activos = Arrays.copyOf(activos, activos.length + 1);
+                activos[activos.length - 1] = (TripulanteCabina) e;
+            }
+        }
+        return activos;
     }
     
     
@@ -646,14 +668,40 @@ public class Aerolinea implements Serializable{
 		f.close();
 	    return a;
 	}
-
-	public String[] cargarTodo() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public void contInicio() {
+		Aeropuerto.setCont(aeropuertos.length);
+		Persona.setCont(empleados.length+clientes.length+administradores.length);
+		Vuelo.setCont(vuelos.length);
+		
 	}
 
-	public void guardarTodo() {
-		// TODO Auto-generated method stub
-		
+	public String[] cargarTodo() throws EValorNulo {
+	    String[] errores = new String[0];
+
+	    for (String e : cargarAeropuerto())      errores = add(errores, e);
+	    for (String e : cargarAviones())         errores = add(errores, e);
+	    for (String e : cargarClientes())        errores = add(errores, e);
+	    for (String e : cargarEmpleados())       errores = add(errores, e);
+	    for (String e : cargarVuelos())          errores = add(errores, e);
+	    for (String e : cargarAdministradores()) errores = add(errores, e);
+
+	    return errores;
+	}
+
+	public void guardarTodo() throws IOException, EValorNulo {
+	    guardarAeropuerto();
+	    guardarAviones();
+	    guardarClientes();
+	    guardarPilotos();
+	    guardarTripulantesCabina();
+	    guardarVuelo();
+	    guardarAdministradores();
+	}
+
+	private String[] add(String[] arr, String val) {
+	    arr = Arrays.copyOf(arr, arr.length + 1);
+	    arr[arr.length - 1] = val;
+	    return arr;
 	}
 }

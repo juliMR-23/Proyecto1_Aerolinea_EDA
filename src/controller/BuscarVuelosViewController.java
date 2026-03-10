@@ -21,6 +21,7 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -36,10 +37,10 @@ public class BuscarVuelosViewController implements Initializable {
     @FXML private Button               btnMisReservas;
     @FXML private VBox                 vboxResultados;
 
-    private static final DateTimeFormatter HORA_FMT   = DateTimeFormatter.ofPattern("HH:mm");
-    private static final double            PRECIO_BASE = 250000.0;
+    private static final DateTimeFormatter HORA_FMT = DateTimeFormatter.ofPattern("HH:mm");
 
     private Cliente clienteLogueado = null;
+    private Aerolinea aerolinea     = null;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -58,18 +59,16 @@ public class BuscarVuelosViewController implements Initializable {
             }
         });
 
-        btnBuscar.setOnAction(arg0 -> {
-			try {
-				handleBuscar(arg0);
-			} catch (EPilotosInsuficientes e) {
-				e.printStackTrace();
-			}
-		});
+        btnBuscar.setOnAction(e -> handleBuscar(e));
+    }
+
+    public void setAerolinea(Aerolinea aerolinea) {
+        this.aerolinea = aerolinea;
     }
 
     public void setUsuarioLogueado(Cliente cliente) {
         this.clienteLogueado = cliente;
-        lblBienvenida.setText("Bienvenido, " + cliente.getNombre() + "  ✈"); 
+        lblBienvenida.setText("Bienvenido, " + cliente.getNombre() + "  ✈");
         btnLogin.setText("Cerrar Sesión  ✕");
         btnLogin.setStyle(
             "-fx-background-color: #C0392B; -fx-text-fill: white;" +
@@ -83,10 +82,10 @@ public class BuscarVuelosViewController implements Initializable {
     @FXML
     public void handleLoginLogout(ActionEvent event) {
         if (clienteLogueado == null) {
-            navegarLogin(); 
+            navegarLogin();
         } else {
             clienteLogueado = null;
-            lblBienvenida.setText("Bienvenido a EDArolinea ✈");
+            lblBienvenida.setText("Bienvenido a EDAerolinea ✈");
             btnLogin.setText("Iniciar Sesión  →");
             btnLogin.setStyle(
                 "-fx-background-color: #C9A84C; -fx-text-fill: #1E2A35;" +
@@ -99,7 +98,6 @@ public class BuscarVuelosViewController implements Initializable {
         }
     }
 
-    
     @FXML
     public void handleMisReservas(ActionEvent event) {
         if (clienteLogueado == null) return;
@@ -112,6 +110,7 @@ public class BuscarVuelosViewController implements Initializable {
             Parent root = loader.load();
             VerReservasViewController ctrl = loader.getController();
             ctrl.setCliente(clienteLogueado);
+            ctrl.setAerolinea(aerolinea);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
@@ -120,13 +119,11 @@ public class BuscarVuelosViewController implements Initializable {
             stage.setMaximized(maxim);
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            agregarMensaje("⚠ Error al abrir reservas: " + e.getMessage(), "#C0392B");
         }
     }
-    
 
-    private void handleBuscar(ActionEvent event) throws EPilotosInsuficientes {
-    	//TODO: Implementar clases y excepciones
+    private void handleBuscar(ActionEvent event) {
         String origenTxt  = txtOrigen.getText().trim();
         String destinoTxt = txtDestino.getText().trim();
         LocalDate fecha   = dpFechaIda.getValue();
@@ -139,7 +136,7 @@ public class BuscarVuelosViewController implements Initializable {
             return;
         }
         if (fecha == null) {
-            agregarMensaje("⚠ Por favor selecciona la fecha de ida.", "#C0392B"); 
+            agregarMensaje("⚠ Por favor selecciona la fecha de ida.", "#C0392B");
             return;
         }
 
@@ -156,14 +153,27 @@ public class BuscarVuelosViewController implements Initializable {
             agregarMensaje("No se encontraron vuelos para esa ruta.", "#C0392B");
         } else {
             for (Vuelo v : vuelos) {
-                try {
-                    vboxResultados.getChildren().add(crearTarjetaVuelo(v, pasajeros));
-                } catch (Exception e) {
-                    System.err.println("ERROR tarjeta: " + e.getMessage());
-                    e.printStackTrace();
-                }
+                vboxResultados.getChildren().add(crearTarjetaVuelo(v, pasajeros));
             }
         }
+    }
+
+    private Vuelo[] buscarVuelos(String origenTxt, String destinoTxt, LocalDate fecha) {
+        Vuelo[] todos     = aerolinea.listVuelosActivos();
+        Vuelo[] resultado = new Vuelo[0];
+
+        for (Vuelo v : todos) {
+            boolean origenOk  = v.getOrigen().getCiudad().equalsIgnoreCase(origenTxt);
+            boolean destinoOk = v.getDestino().getCiudad().equalsIgnoreCase(destinoTxt);
+            boolean fechaOk   = v.getFechaHoraSalida().toLocalDate().isEqual(fecha);
+
+            if (origenOk && destinoOk && fechaOk) {
+                resultado = Arrays.copyOf(resultado, resultado.length + 1);
+                resultado[resultado.length - 1] = v;
+            }
+        }
+
+        return resultado;
     }
 
     private HBox crearTarjetaVuelo(Vuelo vuelo, int pasajeros) {
@@ -172,7 +182,7 @@ public class BuscarVuelosViewController implements Initializable {
                 ? vuelo.getFechaHoraLlegada()
                 : salida.plusMinutes(75);
 
-        Duration dur    = Duration.between(salida, llegada); //TODO: Sacar de fichero
+        Duration dur    = Duration.between(salida, llegada);
         String durStr   = dur.toHours() + "h " + dur.toMinutesPart() + "m";
         String codO     = abrev(vuelo.getOrigen().getNombre());
         String codD     = abrev(vuelo.getDestino().getNombre());
@@ -241,7 +251,7 @@ public class BuscarVuelosViewController implements Initializable {
         precioBox.setPrefWidth(200);
         Label lblDesde = new Label("Desde");
         lblDesde.setStyle("-fx-font-size: 12px; -fx-text-fill: #888888;");
-        Label lblPrecio = new Label("COP " + nf.format((long) PRECIO_BASE));
+        Label lblPrecio = new Label("COP " + nf.format((long) vuelo.getPrecio()));
         lblPrecio.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1E2A35;");
         precioBox.getChildren().addAll(lblDesde, lblPrecio);
 
@@ -259,7 +269,6 @@ public class BuscarVuelosViewController implements Initializable {
     }
 
     private void handleSeleccionarVuelo(Vuelo vuelo, int pasajeros) {
-    	//TODO: Implementar excepciones
         if (clienteLogueado == null) {
             agregarMensaje("⚠ Debes iniciar sesión para comprar un tiquete.", "#C0392B");
             return;
@@ -273,6 +282,7 @@ public class BuscarVuelosViewController implements Initializable {
             Parent root = loader.load();
             ComprarVueloViewController ctrl = loader.getController();
             ctrl.setDatos(vuelo, pasajeros, clienteLogueado);
+            ctrl.setAerolinea(aerolinea);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
@@ -281,47 +291,9 @@ public class BuscarVuelosViewController implements Initializable {
             stage.setMaximized(maxim);
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            agregarMensaje("⚠ Error al abrir la compra: " + e.getMessage(), "#C0392B");
         }
     }
-
-   
-    private Vuelo[] buscarVuelos(String origenTxt, String destinoTxt, LocalDate fecha) {
-        try {
-            Aeropuerto aeroO = new Aeropuerto("Olaya Herrera", origenTxt,
-                    "Colombia", "America/Bogota", -75.4231, 6.1644);
-            Aeropuerto aeroD = new Aeropuerto("El Dorado", destinoTxt,
-                    "Colombia", "America/Bogota", -74.1469, 4.7014);
-
-            Avion avion = new Avion("AV-001", "Airbus", "A320", 180, true, 850.0);
-
-            TripulanteCabina tripDummy = new TripulanteCabina(
-                    "Tripulante Demo", "CC", "5555555", "3155555555",
-                    "demo@trip.com", "Pass123",
-                    4000000.0, new java.util.Date(), true, 2
-            );
-            TripulanteCabina[] trip = new TripulanteCabina[]{ tripDummy };
-
-            Piloto p1 = new Piloto("Piloto Uno", "CC", "6666661", "3166666661",
-                    "p1@demo.com", "Pass123", 7000000.0, new java.util.Date(), true, 4);
-            Piloto p2 = new Piloto("Piloto Dos", "CC", "6666662", "3166666662",
-                    "p2@demo.com", "Pass123", 7000000.0, new java.util.Date(), true, 4);
-            Piloto[] pilotos = new Piloto[]{ p1, p2 };
-
-            Vuelo[] vuelos = new Vuelo[3];
-            vuelos[0] = new Vuelo(aeroO, aeroD, fecha.atTime(7,  0),  avion, trip, pilotos);
-            vuelos[1] = new Vuelo(aeroO, aeroD, fecha.atTime(12, 30), avion, trip, pilotos);
-            vuelos[2] = new Vuelo(aeroO, aeroD, fecha.atTime(17, 45), avion, trip, pilotos);
-
-            return vuelos;
-
-        } catch (Exception e) {
-            System.err.println("ERROR creando vuelos: " + e.getMessage());
-            e.printStackTrace();
-            return new Vuelo[0];
-        }
-    }
-
 
     private String abrev(String nombre) {
         if (nombre == null) return "N/A";
@@ -344,6 +316,8 @@ public class BuscarVuelosViewController implements Initializable {
                 getClass().getResource("/view/LoginView.fxml")
             );
             Parent root = loader.load();
+            LoginViewController ctrl = loader.getController();
+            ctrl.setAerolinea(aerolinea);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
@@ -352,17 +326,7 @@ public class BuscarVuelosViewController implements Initializable {
             stage.setMaximized(maxim);
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            agregarMensaje("⚠ Error al abrir el login: " + e.getMessage(), "#C0392B");
         }
     }
-
-	public void setAerolinea(Aerolinea miAerolinea) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setAerolinea(Aerolinea miAerolinea) {
-		// TODO Auto-generated method stub
-		
-	}
 }

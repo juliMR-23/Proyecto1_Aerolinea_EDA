@@ -15,34 +15,36 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import principal.Aerolinea;
-import principal.Aeropuerto;
+import principal.Avion;
 
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class CRUDAeropuertosViewController implements Initializable {
+public class CRUDAvionesViewController implements Initializable {
 
-    @FXML private TableView<Aeropuerto>          tblAeropuertos;
-    @FXML private TableColumn<Aeropuerto,String> colId;
-    @FXML private TableColumn<Aeropuerto,String> colNombre;
-    @FXML private TableColumn<Aeropuerto,String> colCiudad;
-    @FXML private TableColumn<Aeropuerto,String> colPais;
-    @FXML private TableColumn<Aeropuerto,String> colZona;
-    @FXML private TableColumn<Aeropuerto,Void>   colAcciones;
-    @FXML private Label                          lblEstado;
-    @FXML private Button                         btnNuevo;
-    @FXML private Button                         btnVolver;
+    @FXML private TableView<Avion>          tblAviones;
+    @FXML private TableColumn<Avion,String>  colMatricula;
+    @FXML private TableColumn<Avion,String>  colMarca;
+    @FXML private TableColumn<Avion,String>  colModelo;
+    @FXML private TableColumn<Avion,Integer> colCapacidad;
+    @FXML private TableColumn<Avion,Double>  colVelocidad;
+    @FXML private TableColumn<Avion,Boolean> colDisponible;
+    @FXML private TableColumn<Avion,Void>    colAcciones;
+    @FXML private Label                      lblEstado;
+    @FXML private Button                     btnNuevo;
+    @FXML private Button                     btnVolver;
 
     private Aerolinea aerolinea;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colCiudad.setCellValueFactory(new PropertyValueFactory<>("ciudad"));
-        colPais.setCellValueFactory(new PropertyValueFactory<>("pais"));
-        colZona.setCellValueFactory(new PropertyValueFactory<>("zonaHoraria"));
+        colMatricula.setCellValueFactory(new PropertyValueFactory<>("matricula"));
+        colMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
+        colModelo.setCellValueFactory(new PropertyValueFactory<>("modelo"));
+        colCapacidad.setCellValueFactory(new PropertyValueFactory<>("capacidad"));
+        colVelocidad.setCellValueFactory(new PropertyValueFactory<>("velocidad"));
+        colDisponible.setCellValueFactory(new PropertyValueFactory<>("disponible"));
 
         agregarColumnaAcciones();
     }
@@ -56,9 +58,9 @@ public class CRUDAeropuertosViewController implements Initializable {
     // Tabla
     // -------------------------------------------------------
     private void recargarTabla() {
-        Aeropuerto[] arr = aerolinea.listAeropuertosActivos();
-        tblAeropuertos.setItems(FXCollections.observableArrayList(arr));
-        lblEstado.setText("Total aeropuertos: " + arr.length);
+        Avion[] arr = aerolinea.listAvionesActivos();
+        tblAviones.setItems(FXCollections.observableArrayList(arr));
+        lblEstado.setText("Total aviones: " + arr.length);
     }
 
     private void agregarColumnaAcciones() {
@@ -73,7 +75,7 @@ public class CRUDAeropuertosViewController implements Initializable {
                     "-fx-padding: 4 14 4 14; -fx-border-color: transparent;"
                 );
                 btnEditar.setOnAction(e -> {
-                    Aeropuerto a = getTableView().getItems().get(getIndex());
+                    Avion a = getTableView().getItems().get(getIndex());
                     abrirDialogo(a);
                 });
             }
@@ -96,51 +98,55 @@ public class CRUDAeropuertosViewController implements Initializable {
     // CRUD
     // -------------------------------------------------------
     @FXML
-    public void handleNuevoAeropuerto(ActionEvent event) {
+    public void handleNuevoAvion(ActionEvent event) {
         abrirDialogo(null);
     }
 
-    private void abrirDialogo(Aeropuerto aeropuerto) {
+    private void abrirDialogo(Avion avion) {
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle(aeropuerto == null ? "Nuevo aeropuerto" : "Editar aeropuerto");
+        dialog.setTitle(avion == null ? "Nuevo avión" : "Editar avión");
         dialog.initModality(Modality.APPLICATION_MODAL);
 
-        Label     lblNombre = new Label("Nombre:");
-        TextField txtNombre = new TextField(aeropuerto != null ? aeropuerto.getNombre() : "");
+        Label     lblMatricula  = new Label("Matrícula:");
+        TextField txtMatricula  = new TextField(avion != null ? avion.getMatricula() : "");
 
-        Label     lblCiudad = new Label("Ciudad:");
-        TextField txtCiudad = new TextField(aeropuerto != null ? aeropuerto.getCiudad() : "");
+        Label     lblMarca      = new Label("Marca:");
+        TextField txtMarca      = new TextField(avion != null ? avion.getMarca() : "");
 
-        Label     lblPais = new Label("País:");
-        TextField txtPais = new TextField(aeropuerto != null ? aeropuerto.getPais() : "");
+        Label     lblModelo     = new Label("Modelo:");
+        TextField txtModelo     = new TextField(avion != null ? avion.getModelo() : "");
 
-        Label     lblZona = new Label("Zona horaria:");
-        TextField txtZona = new TextField(aeropuerto != null ? aeropuerto.getZonaHoraria() : "");
+        Label     lblCapacidad  = new Label("Capacidad:");
+        TextField txtCapacidad  = new TextField(avion != null ? String.valueOf(avion.getCapacidad()) : "");
 
-        Label     lblLon = new Label("Longitud:");
-        TextField txtLon = new TextField(aeropuerto != null ? String.valueOf(aeropuerto.getLongitud()) : "");
+        Label     lblVelocidad  = new Label("Velocidad (kt):");
+        TextField txtVelocidad  = new TextField(avion != null ? String.valueOf(avion.getVelocidad()) : "");
 
-        Label     lblLat = new Label("Latitud:");
-        TextField txtLat = new TextField(aeropuerto != null ? String.valueOf(aeropuerto.getLatitud()) : "");
+        Label          lblDisponible = new Label("Disponible:");
+        CheckBox       chkDisponible = new CheckBox();
+        chkDisponible.setSelected(avion == null || avion.isDisponible());
+
+        // Matrícula no editable si es edición
+        if (avion != null) txtMatricula.setDisable(true);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(8);
         grid.setPadding(new Insets(20));
-        grid.add(lblNombre, 0, 0); grid.add(txtNombre, 1, 0);
-        grid.add(lblCiudad, 0, 1); grid.add(txtCiudad, 1, 1);
-        grid.add(lblPais,   0, 2); grid.add(txtPais,   1, 2);
-        grid.add(lblZona,   0, 3); grid.add(txtZona,   1, 3);
-        grid.add(lblLon,    0, 4); grid.add(txtLon,    1, 4);
-        grid.add(lblLat,    0, 5); grid.add(txtLat,    1, 5);
+        grid.add(lblMatricula,  0, 0); grid.add(txtMatricula,  1, 0);
+        grid.add(lblMarca,      0, 1); grid.add(txtMarca,      1, 1);
+        grid.add(lblModelo,     0, 2); grid.add(txtModelo,     1, 2);
+        grid.add(lblCapacidad,  0, 3); grid.add(txtCapacidad,  1, 3);
+        grid.add(lblVelocidad,  0, 4); grid.add(txtVelocidad,  1, 4);
+        grid.add(lblDisponible, 0, 5); grid.add(chkDisponible, 1, 5);
 
         dialog.getDialogPane().setContent(grid);
 
-        ButtonType btGuardar  = new ButtonType("Guardar",   ButtonBar.ButtonData.OK_DONE);
-        ButtonType btEliminar = new ButtonType("Eliminar",  ButtonBar.ButtonData.LEFT);
-        ButtonType btCancelar = new ButtonType("Cancelar",  ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType btGuardar  = new ButtonType("Guardar",  ButtonBar.ButtonData.OK_DONE);
+        ButtonType btEliminar = new ButtonType("Eliminar", ButtonBar.ButtonData.LEFT);
+        ButtonType btCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        if (aeropuerto == null) {
+        if (avion == null) {
             dialog.getDialogPane().getButtonTypes().addAll(btGuardar, btCancelar);
         } else {
             dialog.getDialogPane().getButtonTypes().addAll(btGuardar, btEliminar, btCancelar);
@@ -151,44 +157,47 @@ public class CRUDAeropuertosViewController implements Initializable {
 
         if (result.get() == btGuardar) {
             try {
-                String nombre = txtNombre.getText().trim();
-                String ciudad = txtCiudad.getText().trim();
-                String pais   = txtPais.getText().trim();
-                String zona   = txtZona.getText().trim();
-                double lon    = Double.parseDouble(txtLon.getText().trim());
-                double lat    = Double.parseDouble(txtLat.getText().trim());
+                String matricula  = txtMatricula.getText().trim();
+                String marca      = txtMarca.getText().trim();
+                String modelo     = txtModelo.getText().trim();
+                int    capacidad  = Integer.parseInt(txtCapacidad.getText().trim());
+                double velocidad  = Double.parseDouble(txtVelocidad.getText().trim());
+                boolean disponible = chkDisponible.isSelected();
 
-                if (aeropuerto == null) {
-                    aerolinea.addAeropuerto(nombre, ciudad, pais, zona, lon, lat);
-                    estado("✔ Aeropuerto creado correctamente.");
+                if (avion == null) {
+                    aerolinea.addAvion(matricula, marca, modelo, capacidad, velocidad);
+                    estado("✔ Avión creado correctamente.");
                 } else {
-                    aeropuerto.setNombre(nombre);
-                    aeropuerto.setZonaHoraria(zona);
-                    estado("✔ Aeropuerto actualizado.");
+                    avion.setMarca(marca);
+                    avion.setModelo(modelo);
+                    avion.setCapacidad(capacidad);
+                    avion.setVelocidad(velocidad);
+                    avion.setDisponible(disponible);
+                    estado("✔ Avión actualizado.");
                 }
 
-                aerolinea.guardarAeropuerto();
+                aerolinea.guardarAviones();
                 recargarTabla();
 
             } catch (NumberFormatException ex) {
-                mostrarError("Longitud y latitud deben ser numéricos.");
+                mostrarError("Capacidad debe ser entero y velocidad debe ser numérico.");
             } catch (Exception ex) {
                 mostrarError(ex.getMessage());
             }
 
-        } else if (result.get() == btEliminar && aeropuerto != null) {
+        } else if (result.get() == btEliminar && avion != null) {
             Alert conf = new Alert(Alert.AlertType.CONFIRMATION);
-            conf.setTitle("Eliminar aeropuerto");
-            conf.setHeaderText("¿Eliminar aeropuerto " + aeropuerto.getNombre() + "?");
+            conf.setTitle("Eliminar avión");
+            conf.setHeaderText("¿Eliminar avión " + avion.getMatricula() + "?");
             conf.setContentText("Esta acción puede afectar vuelos asociados.");
 
             Optional<ButtonType> r2 = conf.showAndWait();
             if (r2.isPresent() && r2.get() == ButtonType.OK) {
                 try {
-                    aerolinea.deleteAeropuerto(aeropuerto.getId());
-                    aerolinea.guardarAeropuerto();
+                    aerolinea.deleteAvion(avion.getMatricula());
+                    aerolinea.guardarAviones();
                     recargarTabla();
-                    estado("✔ Aeropuerto eliminado.");
+                    estado("✔ Avión eliminado.");
                 } catch (Exception ex) {
                     mostrarError(ex.getMessage());
                 }

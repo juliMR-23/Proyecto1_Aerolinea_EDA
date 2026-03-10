@@ -10,17 +10,9 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
-import principal.Administrador;
-import principal.Aeropuerto;
-import principal.Avion;
-import principal.Cliente;
-import principal.Piloto;
-import principal.TripulanteCabina;
-import principal.Vuelo;
+import principal.*;
 
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 public class LoginViewController implements Initializable {
@@ -32,8 +24,14 @@ public class LoginViewController implements Initializable {
     @FXML private Button           btnRegistrar;
     @FXML private Button           btnVolver;
 
+    private Aerolinea aerolinea;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {}
+
+    public void setAerolinea(Aerolinea aerolinea) {
+        this.aerolinea = aerolinea;
+    }
 
     @FXML
     public void handleLogin(ActionEvent event) {
@@ -44,13 +42,10 @@ public class LoginViewController implements Initializable {
             error("⚠ Por favor completa todos los campos.");
             return;
         }
-        if (!email.contains("@") || !email.contains(".")) {
-            error("⚠ Ingresa un correo electrónico válido.");
-            return;
-        }
 
         try {
-            Object usuario = resolverUsuario(email, password);
+            // Buscar en cada lista de la aerolinea por email y password
+            Persona usuario = resolverUsuario(email, password);
 
             if (usuario == null) {
                 error("⚠ Credenciales incorrectas.");
@@ -59,149 +54,72 @@ public class LoginViewController implements Initializable {
 
             Stage   stage = (Stage) btnLogin.getScene().getWindow();
             boolean maxim = stage.isMaximized();
-            Scene   scene;
+            FXMLLoader loader;
+            Parent root;
+            Scene scene;
 
             if (usuario instanceof Administrador) {
-                FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/MainPageAdminView.fxml")
-                );
-                Parent root = loader.load();
+                loader = new FXMLLoader(getClass().getResource("/view/MainPageAdminView.fxml"));
+                root   = loader.load();
                 MainPageAdminViewController ctrl = loader.getController();
                 ctrl.setAdmin((Administrador) usuario);
-                scene = new Scene(root);
+                ctrl.setAerolinea(aerolinea);
 
             } else if (usuario instanceof Piloto) {
-                FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/MainPagePilotoView.fxml")
-                );
-                Parent root = loader.load();
+                loader = new FXMLLoader(getClass().getResource("/view/MainPagePilotoView.fxml"));
+                root   = loader.load();
                 MainPagePilotoViewController ctrl = loader.getController();
                 ctrl.setPiloto((Piloto) usuario);
-                scene = new Scene(root);
+                ctrl.setAerolinea(aerolinea);
 
             } else if (usuario instanceof TripulanteCabina) {
-                FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/MainPageTripulanteCabinaView.fxml")
-                );
-                Parent root = loader.load();
+                loader = new FXMLLoader(getClass().getResource("/view/MainPageTripulanteCabinaView.fxml"));
+                root   = loader.load();
                 MainPageTripulanteCabinaViewController ctrl = loader.getController();
                 ctrl.setTripulante((TripulanteCabina) usuario);
-                scene = new Scene(root);
+                ctrl.setAerolinea(aerolinea);
 
             } else if (usuario instanceof Cliente) {
-                FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/BuscarVuelosView.fxml")
-                );
-                Parent root = loader.load();
+                loader = new FXMLLoader(getClass().getResource("/view/BuscarVuelosView.fxml"));
+                root   = loader.load();
                 BuscarVuelosViewController ctrl = loader.getController();
                 ctrl.setUsuarioLogueado((Cliente) usuario);
-                scene = new Scene(root);
+                ctrl.setAerolinea(aerolinea);
 
             } else {
                 error("⚠ Tipo de usuario no reconocido.");
                 return;
             }
 
-            scene.getStylesheets().add(
-                getClass().getResource("/css/app.css").toExternalForm()
-            );
+            scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/css/app.css").toExternalForm());
             stage.setScene(scene);
             stage.setMaximized(maxim);
             stage.show();
 
         } catch (Exception e) {
-            error("Error: " + e.getMessage());
-            e.printStackTrace();
+            error("⚠ Error: " + e.getMessage());
         }
     }
 
-    private Object resolverUsuario(String email, String password) throws Exception {
-        Aeropuerto aeroO = new Aeropuerto("Olaya Herrera", "Medellín",
-                "Colombia", "America/Bogota", -75.4231, 6.1644);
-        Aeropuerto aeroD = new Aeropuerto("El Dorado", "Bogotá",
-                "Colombia", "America/Bogota", -74.1469, 4.7014);
+    private Persona resolverUsuario(String email, String password) {
 
-        Avion avion = new Avion("AV-TEST", "Airbus", "A320", 180, true, 850.0);
-
-        if (email.equals("admin@test.com")) {
-            return new Administrador(
-                    "Admin EDA", "CC", "9999999", "3199999999",
-                    email, password
-            );
+        // Buscar en administradores
+        for (Administrador a : aerolinea.listAdministradoresActivos()) {
+            if (a.getEmail().equalsIgnoreCase(email) && a.getPassword().equals(password))
+                return a;
         }
 
-        if (email.equals("piloto@test.com")) {
-            Piloto p = new Piloto(
-                    "Carlos Piloto", "CC", "1111111", "3000000000",
-                    email, password,
-                    8000000.0, new Date(), true, 5
-            );
-
-            TripulanteCabina[] trip = new TripulanteCabina[1];
-            trip[0] = new TripulanteCabina(
-                    "Ana Tripulante", "CC", "2222222", "3111111111",
-                    "tripulante@test.com", "Pass123",
-                    4000000.0, new Date(), true, 3
-            );
-
-            Piloto[] pilotos = new Piloto[2];
-            pilotos[0] = p;
-            pilotos[1] = p;
-
-            LocalDateTime ahora = LocalDateTime.now();
-
-            Vuelo vuelo1 = new Vuelo(aeroO, aeroD,
-                    ahora.plusDays(1).withHour(8).withMinute(0),
-                    avion, trip, pilotos);
-            Vuelo vuelo2 = new Vuelo(aeroD, aeroO,
-                    ahora.plusDays(3).withHour(15).withMinute(30),
-                    avion, trip, pilotos);
-
-            p.asignarVuelo(vuelo1);
-            p.asignarVuelo(vuelo2);
-
-            return p;
+        // Buscar en empleados (Piloto y TripulanteCabina)
+        for (Empleado e : aerolinea.listEmpleadosActivos()) {
+            if (e.getEmail().equalsIgnoreCase(email) && e.getPassword().equals(password))
+                return e;
         }
 
-        if (email.equals("tripulante@test.com")) {
-            TripulanteCabina t = new TripulanteCabina(
-                    "Ana Tripulante", "CC", "2222222", "3111111111",
-                    email, password,
-                    4000000.0, new Date(), true, 3
-            );
-
-            TripulanteCabina[] trip = new TripulanteCabina[1];
-            trip[0] = t;
-
-            Piloto pilotoDummy = new Piloto(
-                    "Piloto Dummy", "CC", "3333333", "3222222222",
-                    "dummy@piloto.com", "Pass123",
-                    7000000.0, new Date(), true, 4
-            );
-            Piloto[] pilotos = new Piloto[2];
-            pilotos[0] = pilotoDummy;
-            pilotos[1] = pilotoDummy;
-
-            LocalDateTime ahora = LocalDateTime.now();
-
-            Vuelo vuelo1 = new Vuelo(aeroO, aeroD,
-                    ahora.plusDays(2).withHour(9).withMinute(15),
-                    avion, trip, pilotos);
-            Vuelo vuelo2 = new Vuelo(aeroD, aeroO,
-                    ahora.plusDays(4).withHour(18).withMinute(45),
-                    avion, trip, pilotos);
-
-            t.asignarVuelo(vuelo1);
-            t.asignarVuelo(vuelo2);
-
-            return t;
-        }
-
-        if (email.equals("cliente@test.com")) {
-            return new Cliente(
-                    "Miguel", "CC", "0000000", "3056540300",
-                    email, password
-            );
+        // Buscar en clientes
+        for (Cliente c : aerolinea.listClientesActivos()) {
+            if (c.getEmail().equalsIgnoreCase(email) && c.getPassword().equals(password))
+                return c;
         }
 
         return null;
@@ -210,36 +128,38 @@ public class LoginViewController implements Initializable {
     @FXML
     public void handleRegistrar(ActionEvent event) {
         try {
-            Stage stage = (Stage) btnRegistrar.getScene().getWindow();
+            Stage stage   = (Stage) btnRegistrar.getScene().getWindow();
             boolean maxim = stage.isMaximized();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/RegisterView.fxml"));
             Parent root = loader.load();
+            RegisterViewController ctrl = loader.getController();
+            ctrl.setAerolinea(aerolinea);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/css/app.css").toExternalForm());
             stage.setScene(scene);
             stage.setMaximized(maxim);
             stage.show();
         } catch (Exception e) {
-            error("Error: " + e.getMessage());
-            e.printStackTrace();
+            error("⚠ Error: " + e.getMessage());
         }
     }
 
     @FXML
     public void handleVolver(ActionEvent event) {
         try {
-            Stage stage = (Stage) btnVolver.getScene().getWindow();
+            Stage stage   = (Stage) btnVolver.getScene().getWindow();
             boolean maxim = stage.isMaximized();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/BuscarVuelosView.fxml"));
             Parent root = loader.load();
+            BuscarVuelosViewController ctrl = loader.getController();
+            ctrl.setAerolinea(aerolinea);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/css/app.css").toExternalForm());
             stage.setScene(scene);
             stage.setMaximized(maxim);
             stage.show();
         } catch (Exception e) {
-            error("Error al volver: " + e.getMessage());
-            e.printStackTrace();
+            error("⚠ Error al volver: " + e.getMessage());
         }
     }
 

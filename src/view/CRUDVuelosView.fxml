@@ -7,19 +7,19 @@
             style="-fx-background-color: #1E2A35;"
             xmlns="http://javafx.com/javafx/23"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.CRUDClientesViewController">
+            fx:controller="controller.CRUDVuelosViewController">
 
     <VBox spacing="24.0"
           AnchorPane.topAnchor="40.0" AnchorPane.leftAnchor="40.0"
           AnchorPane.rightAnchor="40.0" AnchorPane.bottomAnchor="40.0">
 
         <HBox alignment="CENTER_LEFT" spacing="16.0">
-            <Label text="Gestión de Clientes"
+            <Label text="Gestión de Rutas / Vuelos"
                    style="-fx-text-fill: #ECF0F1; -fx-font-size: 28px; -fx-font-weight: bold;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button fx:id="btnNuevo"
-                    text="Nuevo cliente"
-                    onAction="#handleNuevoCliente"
+                    text="Nueva ruta"
+                    onAction="#handleNuevaRuta"
                     style="-fx-background-color: #C9A84C;
                            -fx-text-fill: #1E2A35;
                            -fx-font-size: 15px;
@@ -37,14 +37,14 @@
                            -fx-cursor: hand;"/>
         </HBox>
 
-        <TableView fx:id="tblClientes" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tblRutas" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colId"        text="ID"        prefWidth="120.0"/>
-                <TableColumn fx:id="colNombre"    text="Nombre"    prefWidth="220.0"/>
-                <TableColumn fx:id="colDocumento" text="Documento" prefWidth="180.0"/>
-                <TableColumn fx:id="colTelefono"  text="Teléfono"  prefWidth="160.0"/>
-                <TableColumn fx:id="colEmail"     text="Email"     prefWidth="260.0"/>
-                <TableColumn fx:id="colAcciones"  text="Acciones"  prefWidth="180.0"/>
+                <TableColumn fx:id="colOrigen"     text="Origen"          prefWidth="220.0"/>
+                <TableColumn fx:id="colDestino"    text="Destino"         prefWidth="220.0"/>
+                <TableColumn fx:id="colAvion"      text="Avión"           prefWidth="160.0"/>
+                <TableColumn fx:id="colFrecuencia" text="Frecuencia"      prefWidth="160.0"/>
+                <TableColumn fx:id="colVuelos"     text="Vuelos este mes" prefWidth="160.0"/>
+                <TableColumn fx:id="colAcciones"   text="Acciones"        prefWidth="160.0"/>
             </columns>
         </TableView>
 

@@ -14,7 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import principal.*;
-import excepciones.*;
 
 import java.net.URL;
 import java.text.NumberFormat;
@@ -33,10 +32,15 @@ public class VerReservasViewController implements Initializable {
     private static final DateTimeFormatter DT_FMT =
             DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm");
 
-    private Cliente clienteLogueado;
+    private Cliente   clienteLogueado;
+    private Aerolinea aerolinea;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {}
+
+    public void setAerolinea(Aerolinea aerolinea) {
+        this.aerolinea = aerolinea;
+    }
 
     public void setCliente(Cliente cliente) {
         this.clienteLogueado = cliente;
@@ -51,7 +55,7 @@ public class VerReservasViewController implements Initializable {
         vboxProximos.getChildren().clear();
         vboxPasados.getChildren().clear();
 
-        Reserva[]     reservas = clienteLogueado.getReservas();
+        Reserva[]     reservas = clienteLogueado.listReservasActivas();
         LocalDateTime ahora    = LocalDateTime.now();
 
         int proxCount   = 0;
@@ -83,7 +87,6 @@ public class VerReservasViewController implements Initializable {
         double       total    = reserva.calcularPrecioTotal();
         NumberFormat nf       = NumberFormat.getInstance(new Locale("es", "CO"));
 
-        // Card
         VBox card = new VBox(0);
         card.setStyle(
             "-fx-background-color: " + (pasado ? "#243342" : "#FFFFFF") + ";" +
@@ -91,7 +94,7 @@ public class VerReservasViewController implements Initializable {
             "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0, 3, 3);"
         );
 
-        //Header
+        // Header
         HBox header = new HBox(20);
         header.setAlignment(Pos.CENTER_LEFT);
         header.setPadding(new Insets(20, 32, 20, 32));
@@ -122,7 +125,6 @@ public class VerReservasViewController implements Initializable {
         Region spacerH = new Region();
         HBox.setHgrow(spacerH, Priority.ALWAYS);
 
-        // Badge estado
         Label lblEstado = new Label(estado);
         lblEstado.setStyle(
             "-fx-background-color: " + getBadgeColor(estado) + ";" +
@@ -140,21 +142,18 @@ public class VerReservasViewController implements Initializable {
         body.setAlignment(Pos.CENTER_LEFT);
         body.setPadding(new Insets(20, 32, 20, 32));
 
-        // Fecha salida
         VBox boxFecha = infoCol(
             "📅  Fecha de salida",
             vuelo.getFechaHoraSalida().format(DT_FMT),
             pasado
         );
 
-        // Total pagado
         VBox boxTotal = infoCol(
             "💳  Total pagado",
             "COP " + nf.format((long) total),
             pasado
         );
 
-        // Lista de pasajeros / tiquetes
         VBox boxTiquetes = new VBox(8);
         Label lblTitTiq = new Label("🎫  Pasajeros (" + tiquetes.length + ")");
         lblTitTiq.setStyle(
@@ -242,14 +241,13 @@ public class VerReservasViewController implements Initializable {
         try {
             Stage stage   = (Stage) btnVolver.getScene().getWindow();
             boolean maxim = stage.isMaximized();
-
             FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/view/BuscarVuelosView.fxml")
             );
             Parent root = loader.load();
             BuscarVuelosViewController ctrl = loader.getController();
+            ctrl.setAerolinea(aerolinea);
             ctrl.setUsuarioLogueado(clienteLogueado);
-
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
@@ -258,7 +256,9 @@ public class VerReservasViewController implements Initializable {
             stage.setMaximized(maxim);
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            // No hay vboxResultados aquí, así que usamos lblSubtitulo como fallback
+            lblSubtitulo.setStyle("-fx-text-fill: #C0392B; -fx-font-size: 14px;");
+            lblSubtitulo.setText("⚠ Error al volver: " + e.getMessage());
         }
     }
 }

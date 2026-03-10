@@ -7,76 +7,74 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import principal.Cliente;
-
-import java.io.IOException;
-
-import excepciones.EInvalidDocumento;
-import excepciones.EInvalidEmail;
-import excepciones.EInvalidPass;
-import excepciones.EInvalidTelefono;
-import excepciones.EValorNulo;
+import principal.Aerolinea;
+import excepciones.*;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 
 public class RegisterViewController {
 
-    @FXML private MFXTextField txtNombre;
-    @FXML private MFXTextField txtTipoDocumento;
-    @FXML private MFXTextField txtDocumento;
-    @FXML private MFXTextField txtTelefono;
-    @FXML private MFXTextField txtEmail;
+    @FXML private MFXTextField    txtNombre;
+    @FXML private MFXTextField    txtTipoDocumento;
+    @FXML private MFXTextField    txtDocumento;
+    @FXML private MFXTextField    txtTelefono;
+    @FXML private MFXTextField    txtEmail;
     @FXML private MFXPasswordField txtPassword;
-    @FXML private Label lblMensaje;
-    @FXML private MFXButton btnRegistrar;
-    @FXML private MFXButton btnVolver;
+    @FXML private Label           lblMensaje;
+    @FXML private MFXButton       btnRegistrar;
+    @FXML private MFXButton       btnVolver;
 
-    // Registrarse
+    private Aerolinea aerolinea;
+
+    public void setAerolinea(Aerolinea aerolinea) {
+        this.aerolinea = aerolinea;
+    }
+
     @FXML
-    public void handleRegistrar(ActionEvent event) throws EValorNulo, EInvalidPass, EInvalidTelefono, EInvalidEmail, EInvalidDocumento {
+    public void handleRegistrar(ActionEvent event) {
         String nombre    = txtNombre.getText().trim();
         String tipoDoc   = txtTipoDocumento.getText().trim();
         String documento = txtDocumento.getText().trim();
         String telefono  = txtTelefono.getText().trim();
         String email     = txtEmail.getText().trim();
         String password  = txtPassword.getText().trim();
-        
-        Cliente c = new Cliente(nombre, tipoDoc, documento, telefono, email, password);
 
-		
-		lblMensaje.setStyle("-fx-text-fill: #27AE60;");
-		lblMensaje.setText("✔ Cuenta creada exitosamente. ¡Ahora puedes iniciar sesión!");
+        try {
+            aerolinea.addCliente(nombre, tipoDoc, documento, telefono, email, password);
+            aerolinea.guardarClientes();
 
+            lblMensaje.setStyle("-fx-text-fill: #27AE60;");
+            lblMensaje.setText("✔ Cuenta creada exitosamente. ¡Ahora puedes iniciar sesión!");
+            btnRegistrar.setDisable(true);
 
-
+        } catch (Exception e) {
+            lblMensaje.setStyle("-fx-text-fill: #C0392B;");
+            lblMensaje.setText("⚠ " + e.getMessage());
+        }
     }
 
-    // Volver al login
     @FXML
     public void handleVolver(ActionEvent event) {
         try {
-            Stage stage = (Stage) btnVolver.getScene().getWindow();
-            boolean maximized = stage.isMaximized();
-
+            Stage stage   = (Stage) btnVolver.getScene().getWindow();
+            boolean maxim = stage.isMaximized();
             FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/view/LoginView.fxml")
             );
             Parent root = loader.load();
+            LoginViewController ctrl = loader.getController();
+            ctrl.setAerolinea(aerolinea);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
             );
-
             stage.setScene(scene);
-            stage.setMaximized(maximized);
+            stage.setMaximized(maxim);
             stage.show();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             lblMensaje.setStyle("-fx-text-fill: #C0392B;");
-            lblMensaje.setText("Error al volver al login: " + e.getMessage());
+            lblMensaje.setText("⚠ Error al volver: " + e.getMessage());
         }
-        
-        //TODO: Actualizar a NavegarA
     }
 }

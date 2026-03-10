@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import principal.Aerolinea;
 import principal.Piloto;
 import principal.Vuelo;
 
@@ -34,15 +35,20 @@ public class MainPagePilotoViewController implements Initializable {
     @FXML private Button btnProximoVuelo;
     @FXML private Button btnCerrarSesion;
 
-    private static final DateTimeFormatter DT_FMT =
+    private static final DateTimeFormatter DT_FMT  =
             DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm");
     private static final DateTimeFormatter MES_FMT =
-    		 DateTimeFormatter.ofPattern("MMMM yyyy", Locale.of("es", "CO"));
+            DateTimeFormatter.ofPattern("MMMM yyyy", Locale.of("es", "CO"));
 
-    private Piloto pilotoLogueado;
+    private Piloto    pilotoLogueado;
+    private Aerolinea aerolinea;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {}
+
+    public void setAerolinea(Aerolinea aerolinea) {
+        this.aerolinea = aerolinea;
+    }
 
     public void setPiloto(Piloto piloto) {
         this.pilotoLogueado = piloto;
@@ -106,19 +112,14 @@ public class MainPagePilotoViewController implements Initializable {
         // Ruta
         VBox boxRuta = new VBox(4);
         boxRuta.setPrefWidth(420);
-
         Label lblRuta = new Label(
             vuelo.getOrigen().getCiudad()  + " (" + abrev(vuelo.getOrigen().getNombre())  + ")" +
             "  →  " +
             vuelo.getDestino().getCiudad() + " (" + abrev(vuelo.getDestino().getNombre()) + ")"
         );
-        lblRuta.setStyle(
-            "-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #C9A84C;"
-        );
-
+        lblRuta.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #C9A84C;");
         Label lblId = new Label("Vuelo ID: " + vuelo.getId());
         lblId.setStyle("-fx-font-size: 12px; -fx-text-fill: #7F8C8D;");
-
         boxRuta.getChildren().addAll(lblRuta, lblId);
 
         // Fecha salida
@@ -130,7 +131,7 @@ public class MainPagePilotoViewController implements Initializable {
                 : "—";
         VBox boxLlegada = infoCol("🏁  Llegada", llegadaTxt, colorTexto);
 
-        // Avion
+        // Avión
         VBox boxAvion = infoCol(
             "✈  Avión",
             vuelo.getAvion() != null ? vuelo.getAvion().getModelo() : "—",
@@ -158,15 +159,30 @@ public class MainPagePilotoViewController implements Initializable {
     private VBox infoCol(String titulo, String valor, String colorValor) {
         VBox box = new VBox(4);
         box.setPrefWidth(220);
-
         Label lbl = new Label(titulo);
         lbl.setStyle("-fx-font-size: 12px; -fx-text-fill: #888888; -fx-font-weight: bold;");
-
         Label val = new Label(valor);
         val.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: " + colorValor + ";");
-
         box.getChildren().addAll(lbl, val);
         return box;
+    }
+
+    private Vuelo buscarProximoVuelo() {
+        Vuelo[]       vuelos  = pilotoLogueado.getVuelosAsignados();
+        LocalDateTime ahora   = LocalDateTime.now();
+        Vuelo         proximo = null;
+
+        for (int i = 0; i < pilotoLogueado.getCantidadVuelos(); i++) {
+            Vuelo v = vuelos[i];
+            if (v == null) continue;
+            if (v.getFechaHoraSalida().isAfter(ahora)) {
+                if (proximo == null ||
+                    v.getFechaHoraSalida().isBefore(proximo.getFechaHoraSalida())) {
+                    proximo = v;
+                }
+            }
+        }
+        return proximo;
     }
 
     private String getBadgeColor(String estado) {
@@ -204,6 +220,7 @@ public class MainPagePilotoViewController implements Initializable {
             Parent root = loader.load();
             InfoVueloEspecificoPilotoViewController ctrl = loader.getController();
             ctrl.setDatos(proximo, pilotoLogueado);
+            ctrl.setAerolinea(aerolinea);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
@@ -212,26 +229,9 @@ public class MainPagePilotoViewController implements Initializable {
             stage.setMaximized(maxim);
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            lblSubtitulo.setText("⚠ Error al abrir el vuelo: " + e.getMessage());
+            lblSubtitulo.setStyle("-fx-text-fill: #C0392B;");
         }
-    }
-
-    private Vuelo buscarProximoVuelo() {
-        Vuelo[]       vuelos  = pilotoLogueado.getVuelosAsignados();
-        LocalDateTime ahora   = LocalDateTime.now();
-        Vuelo         proximo = null;
-
-        for (int i = 0; i < pilotoLogueado.getCantidadVuelos(); i++) {
-            Vuelo v = vuelos[i];
-            if (v == null) continue;
-            if (v.getFechaHoraSalida().isAfter(ahora)) {
-                if (proximo == null ||
-                    v.getFechaHoraSalida().isBefore(proximo.getFechaHoraSalida())) {
-                    proximo = v;
-                }
-            }
-        }
-        return proximo;
     }
 
     @FXML
@@ -243,6 +243,8 @@ public class MainPagePilotoViewController implements Initializable {
                 getClass().getResource("/view/BuscarVuelosView.fxml")
             );
             Parent root = loader.load();
+            BuscarVuelosViewController ctrl = loader.getController();
+            ctrl.setAerolinea(aerolinea);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                 getClass().getResource("/css/app.css").toExternalForm()
@@ -251,7 +253,8 @@ public class MainPagePilotoViewController implements Initializable {
             stage.setMaximized(maxim);
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            lblSubtitulo.setText("⚠ Error al cerrar sesión: " + e.getMessage());
+            lblSubtitulo.setStyle("-fx-text-fill: #C0392B;");
         }
     }
 }

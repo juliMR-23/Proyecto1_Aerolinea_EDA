@@ -15,24 +15,26 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import principal.Aerolinea;
-import principal.Cliente;
+import principal.Piloto;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class CRUDClientesViewController implements Initializable {
+public class CRUDPilotosViewController implements Initializable {
 
-    @FXML private TableView<Cliente>          tblClientes;
-    @FXML private TableColumn<Cliente,String> colId;
-    @FXML private TableColumn<Cliente,String> colNombre;
-    @FXML private TableColumn<Cliente,String> colDocumento;
-    @FXML private TableColumn<Cliente,String> colTelefono;
-    @FXML private TableColumn<Cliente,String> colEmail;
-    @FXML private TableColumn<Cliente,Void>   colAcciones;
-    @FXML private Label                       lblEstado;
-    @FXML private Button                      btnNuevo;
-    @FXML private Button                      btnVolver;
+    @FXML private TableView<Piloto>          tblPilotos;
+    @FXML private TableColumn<Piloto,String> colId;
+    @FXML private TableColumn<Piloto,String> colNombre;
+    @FXML private TableColumn<Piloto,String> colDocumento;
+    @FXML private TableColumn<Piloto,String> colEmail;
+    @FXML private TableColumn<Piloto,Double> colSalario;
+    @FXML private TableColumn<Piloto,Double> colHorasAcumuladas;
+    @FXML private TableColumn<Piloto,Void>   colAcciones;
+    @FXML private Label                      lblEstado;
+    @FXML private Button                     btnNuevo;
+    @FXML private Button                     btnVolver;
 
     private Aerolinea aerolinea;
 
@@ -41,8 +43,9 @@ public class CRUDClientesViewController implements Initializable {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colDocumento.setCellValueFactory(new PropertyValueFactory<>("documento"));
-        colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+        colSalario.setCellValueFactory(new PropertyValueFactory<>("salarioBase"));
+        colHorasAcumuladas.setCellValueFactory(new PropertyValueFactory<>("horasVueloAcumuladas"));
 
         agregarColumnaAcciones();
     }
@@ -56,9 +59,9 @@ public class CRUDClientesViewController implements Initializable {
     // Tabla
     // -------------------------------------------------------
     private void recargarTabla() {
-        Cliente[] arr = aerolinea.listClientesActivos();
-        tblClientes.setItems(FXCollections.observableArrayList(arr));
-        lblEstado.setText("Total clientes: " + arr.length);
+        Piloto[] arr = aerolinea.listPilotosActivos();
+        tblPilotos.setItems(FXCollections.observableArrayList(arr));
+        lblEstado.setText("Total pilotos: " + arr.length);
     }
 
     private void agregarColumnaAcciones() {
@@ -73,8 +76,8 @@ public class CRUDClientesViewController implements Initializable {
                     "-fx-padding: 4 14 4 14; -fx-border-color: transparent;"
                 );
                 btnEditar.setOnAction(e -> {
-                    Cliente c = getTableView().getItems().get(getIndex());
-                    abrirDialogo(c);
+                    Piloto p = getTableView().getItems().get(getIndex());
+                    abrirDialogo(p);
                 });
             }
 
@@ -96,31 +99,36 @@ public class CRUDClientesViewController implements Initializable {
     // CRUD
     // -------------------------------------------------------
     @FXML
-    public void handleNuevoCliente(ActionEvent event) {
+    public void handleNuevoPiloto(ActionEvent event) {
         abrirDialogo(null);
     }
 
-    private void abrirDialogo(Cliente cliente) {
+    private void abrirDialogo(Piloto piloto) {
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle(cliente == null ? "Nuevo cliente" : "Editar cliente");
+        dialog.setTitle(piloto == null ? "Nuevo piloto" : "Editar piloto");
         dialog.initModality(Modality.APPLICATION_MODAL);
 
-        Label     lblNombre   = new Label("Nombre:");
-        TextField txtNombre   = new TextField(cliente != null ? cliente.getNombre() : "");
+        Label     lblNombre    = new Label("Nombre:");
+        TextField txtNombre    = new TextField(piloto != null ? piloto.getNombre() : "");
 
-        Label     lblTipoDoc  = new Label("Tipo documento:");
-        TextField txtTipoDoc  = new TextField(cliente != null ? cliente.getTipoDocumento() : "");
+        Label     lblTipoDoc   = new Label("Tipo documento:");
+        TextField txtTipoDoc   = new TextField(piloto != null ? piloto.getTipoDocumento() : "");
 
-        Label     lblDoc      = new Label("Documento:");
-        TextField txtDoc      = new TextField(cliente != null ? cliente.getDocumento() : "");
-        // Documento no editable en edición, es identificador del cliente
-        if (cliente != null) txtDoc.setDisable(true);
+        Label     lblDoc       = new Label("Documento:");
+        TextField txtDoc       = new TextField(piloto != null ? piloto.getDocumento() : "");
+        if (piloto != null) txtDoc.setDisable(true);
 
-        Label     lblTelefono = new Label("Teléfono:");
-        TextField txtTelefono = new TextField(cliente != null ? cliente.getTelefono() : "");
+        Label     lblTelefono  = new Label("Teléfono:");
+        TextField txtTelefono  = new TextField(piloto != null ? piloto.getTelefono() : "");
 
-        Label     lblEmail    = new Label("Email:");
-        TextField txtEmail    = new TextField(cliente != null ? cliente.getEmail() : "");
+        Label     lblEmail     = new Label("Email:");
+        TextField txtEmail     = new TextField(piloto != null ? piloto.getEmail() : "");
+
+        Label     lblSalario   = new Label("Salario base:");
+        TextField txtSalario   = new TextField(piloto != null ? String.valueOf(piloto.getSalarioBase()) : "");
+
+        Label     lblAnios     = new Label("Años experiencia:");
+        TextField txtAnios     = new TextField(piloto != null ? String.valueOf(piloto.getAniosExperiencia()) : "");
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -131,13 +139,15 @@ public class CRUDClientesViewController implements Initializable {
         grid.add(lblDoc,      0, 2); grid.add(txtDoc,      1, 2);
         grid.add(lblTelefono, 0, 3); grid.add(txtTelefono, 1, 3);
         grid.add(lblEmail,    0, 4); grid.add(txtEmail,    1, 4);
+        grid.add(lblSalario,  0, 5); grid.add(txtSalario,  1, 5);
+        grid.add(lblAnios,    0, 6); grid.add(txtAnios,    1, 6);
 
-        // Contraseña solo en creación, el admin no puede editarla
-        if (cliente == null) {
+        // Contraseña solo en creación
+        if (piloto == null) {
             Label     lblPassword = new Label("Contraseña:");
             TextField txtPassword = new TextField();
-            grid.add(lblPassword, 0, 5);
-            grid.add(txtPassword, 1, 5);
+            grid.add(lblPassword, 0, 7);
+            grid.add(txtPassword, 1, 7);
 
             dialog.getDialogPane().setContent(grid);
             ButtonType btGuardar  = new ButtonType("Guardar",  ButtonBar.ButtonData.OK_DONE);
@@ -149,17 +159,23 @@ public class CRUDClientesViewController implements Initializable {
 
             if (result.get() == btGuardar) {
                 try {
-                    aerolinea.addCliente(
+                    aerolinea.addPiloto(
                         txtNombre.getText().trim(),
                         txtTipoDoc.getText().trim(),
                         txtDoc.getText().trim(),
                         txtTelefono.getText().trim(),
                         txtEmail.getText().trim(),
-                        txtPassword.getText().trim()
+                        txtPassword.getText().trim(),
+                        Double.parseDouble(txtSalario.getText().trim()),
+                        new Date(),
+                        true,
+                        Integer.parseInt(txtAnios.getText().trim())
                     );
-                    aerolinea.guardarClientes();
+                    aerolinea.guardarPilotos();
                     recargarTabla();
-                    estado("✔ Cliente creado correctamente.");
+                    estado("✔ Piloto creado correctamente.");
+                } catch (NumberFormatException ex) {
+                    mostrarError("Salario y años de experiencia deben ser numéricos.");
                 } catch (Exception ex) {
                     mostrarError(ex.getMessage());
                 }
@@ -177,30 +193,34 @@ public class CRUDClientesViewController implements Initializable {
 
             if (result.get() == btGuardar) {
                 try {
-                    cliente.setNombre(txtNombre.getText().trim());
-                    cliente.setTipoDocumento(txtTipoDoc.getText().trim());
-                    cliente.setTelefono(txtTelefono.getText().trim());
-                    cliente.setEmail(txtEmail.getText().trim());
-                    aerolinea.guardarClientes();
+                    piloto.setNombre(txtNombre.getText().trim());
+                    piloto.setTipoDocumento(txtTipoDoc.getText().trim());
+                    piloto.setTelefono(txtTelefono.getText().trim());
+                    piloto.setEmail(txtEmail.getText().trim());
+                    piloto.setSalarioBase(Double.parseDouble(txtSalario.getText().trim()));
+                    piloto.setAniosExperiencia(Integer.parseInt(txtAnios.getText().trim()));
+                    aerolinea.guardarPilotos();
                     recargarTabla();
-                    estado("✔ Cliente actualizado.");
+                    estado("✔ Piloto actualizado.");
+                } catch (NumberFormatException ex) {
+                    mostrarError("Salario y años de experiencia deben ser numéricos.");
                 } catch (Exception ex) {
                     mostrarError(ex.getMessage());
                 }
 
             } else if (result.get() == btEliminar) {
                 Alert conf = new Alert(Alert.AlertType.CONFIRMATION);
-                conf.setTitle("Eliminar cliente");
-                conf.setHeaderText("¿Eliminar cliente " + cliente.getNombre() + "?");
-                conf.setContentText("Esta acción eliminará también sus reservas asociadas.");
+                conf.setTitle("Eliminar piloto");
+                conf.setHeaderText("¿Eliminar piloto " + piloto.getNombre() + "?");
+                conf.setContentText("Esta acción puede afectar vuelos asignados a este piloto.");
 
                 Optional<ButtonType> r2 = conf.showAndWait();
                 if (r2.isPresent() && r2.get() == ButtonType.OK) {
                     try {
-                        aerolinea.deleteCliente(cliente.getId());
-                        aerolinea.guardarClientes();
+                        aerolinea.deleteEmpleado(piloto.getId());
+                        aerolinea.guardarPilotos();
                         recargarTabla();
-                        estado("✔ Cliente eliminado.");
+                        estado("✔ Piloto eliminado.");
                     } catch (Exception ex) {
                         mostrarError(ex.getMessage());
                     }
