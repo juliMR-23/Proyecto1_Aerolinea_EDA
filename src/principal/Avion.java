@@ -85,20 +85,20 @@ public class Avion implements Serializable{
 		this.velocidad = velocidad;
 	}
 	
-	public void wFicheroAvion(String dir) throws IOException {
+	public void copiarFicheroAvion(String dir) throws IOException {
 		FileOutputStream f = new FileOutputStream(dir);
 		ObjectOutputStream b = new ObjectOutputStream(f);
 		b.writeObject((Avion)this);
-		f.close();
 		b.close();
+		f.close();
 	}
-	public static Avion rFicheroAvion(String dir) throws IOException, ClassNotFoundException, EValorNulo {
+	public static Avion leerFicheroAvion(String dir) throws IOException, ClassNotFoundException, EValorNulo {
 		Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
 	    FileInputStream f = new FileInputStream(dir);
 	    ObjectInputStream b = new ObjectInputStream(f);
 	    Avion a = (Avion) b.readObject();
-	    f.close();
 	    b.close();
+	    f.close();
 	    return a;
 	}
 	

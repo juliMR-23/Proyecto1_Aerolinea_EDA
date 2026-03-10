@@ -1,5 +1,10 @@
 package principal;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
@@ -10,6 +15,7 @@ import excepciones.EInvalidPass;
 import excepciones.EInvalidTelefono;
 import excepciones.EValorNegativo;
 import excepciones.EValorNulo;
+import util.Valida;
 
 
 
@@ -59,4 +65,22 @@ public class TripulanteCabina extends Empleado implements Serializable{
 		this.idiomas = idiomas;
 	}
 	
+	public void copiarFicheroTripulanteCabina(String dir) throws IOException, EValorNulo {
+	    Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	    FileOutputStream f = new FileOutputStream(dir);
+	    ObjectOutputStream b = new ObjectOutputStream(f);
+	    b.writeObject((TripulanteCabina)this);
+	    b.close();
+	    f.close();
+	}
+
+	public static TripulanteCabina leerFicheroTripulanteCabina(String dir) throws IOException, ClassNotFoundException, EValorNulo {
+	    Valida.validarTexto(dir, "La dirección del fichero no puede estar vacía");
+	    FileInputStream f = new FileInputStream(dir);
+	    ObjectInputStream b = new ObjectInputStream(f);
+	    TripulanteCabina tripulante = (TripulanteCabina) b.readObject();
+	    b.close();
+	    f.close();
+	    return tripulante;
+	}
 }
