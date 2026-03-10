@@ -86,7 +86,7 @@ public class Aerolinea implements Serializable{
 	
 	
 	//lo mismo para las otras listas
-	public void addAeropuerto(String nombre, String ciudad, String pais, String codigoIATA, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
+	public void addAeropuerto(String nombre, String ciudad, String pais, String zonaHoraria, double longitud, double latitud) throws EIDRepetido, EValorNulo {
 		
 		Aeropuerto a = new Aeropuerto(nombre, ciudad, pais, zonaHoraria, longitud, latitud);
 		if(indexAeropuerto(a.getId())!=-1)
