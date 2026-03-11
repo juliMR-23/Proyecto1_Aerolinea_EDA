@@ -350,7 +350,7 @@ public class Aerolinea implements Serializable{
     public Piloto[] listPilotosActivos() {
         Piloto[] activos = new Piloto[0];
         for (Empleado e : empleados) {
-            if (e instanceof Piloto && e.isActivo()) {
+            if (e instanceof Piloto && e.isActive()) {
                 activos = Arrays.copyOf(activos, activos.length + 1);
                 activos[activos.length - 1] = (Piloto) e;
             }
@@ -361,7 +361,7 @@ public class Aerolinea implements Serializable{
     public TripulanteCabina[] listTripulantesActivos() {
         TripulanteCabina[] activos = new TripulanteCabina[0];
         for (Empleado e : empleados) {
-            if (e instanceof TripulanteCabina && e.isActivo()) {
+            if (e instanceof TripulanteCabina && e.isActive()) {
                 activos = Arrays.copyOf(activos, activos.length + 1);
                 activos[activos.length - 1] = (TripulanteCabina) e;
             }

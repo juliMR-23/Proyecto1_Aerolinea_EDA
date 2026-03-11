@@ -17,11 +17,10 @@ public abstract class Empleado extends Persona implements Serializable {
     // ATRIBUTOS
     protected double salarioBase;
     protected Date fechaContratacion;
-    protected boolean activo;
     protected int aniosExperiencia;
     protected Vuelo[] vuelosAsignados;
     protected Aerolinea aerolinea;
-    private int cantidadVuelos;
+    protected int cantidadVuelos;
     protected static final int MAX_VUELOS = 10;
     protected double horasVueloAcumuladas;
 
@@ -36,7 +35,6 @@ public abstract class Empleado extends Persona implements Serializable {
     		throw new EValorNegativo("Años de experiencia no puede ser negativo");
     	this.salarioBase = salarioBase;
     	this.fechaContratacion = fechaContratacion;
-    	this.activo = true;
     	this.aniosExperiencia = aniosExperiencia;
     	this.vuelosAsignados = new Vuelo[MAX_VUELOS];
     	this.setCantidadVuelos(0);
@@ -160,10 +158,6 @@ public abstract class Empleado extends Persona implements Serializable {
         return this.fechaContratacion;
     }
 
-    public boolean isActivo() {
-        return this.activo;
-    }
-
     public int getAniosExperiencia() {
         return this.aniosExperiencia;
     }
@@ -180,10 +174,6 @@ public abstract class Empleado extends Persona implements Serializable {
             throw new EValorNegativo("Las horas de vuelo acumuladas no pueden ser negativas");
         }
         
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
     }
 
     public void setAniosExperiencia(int aniosExperiencia) throws EValorNegativo {
