@@ -19,7 +19,6 @@ public abstract class Empleado extends Persona implements Serializable {
     protected Date fechaContratacion;
     protected int aniosExperiencia;
     protected Vuelo[] vuelosAsignados;
-    protected Aerolinea aerolinea;
     protected int cantidadVuelos;
     protected static final int MAX_VUELOS = 10;
     protected double horasVueloAcumuladas;

@@ -4,7 +4,7 @@ import excepciones.EValorNulo;
 
 public class Valida {
     public static void validarTexto(String valor, String msg) throws EValorNulo {
-        if (valor == null || valor.isBlank()) {
+        if (valor.equals(null) || valor.isBlank()) {
             throw new EValorNulo(msg);
         }
     }
